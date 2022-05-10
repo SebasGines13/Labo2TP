@@ -5,7 +5,7 @@ using namespace std;
 ///Constructor
 personaje::personaje(int sprClase, int cantX, int cantY, Vector2i frameActual) {
     _sprPersonaje = new sprite(sprClase, cantX, cantY, frameActual);
-    _velDesplaz = 0.5f;
+    _velDesplaz = 0.15f;
     _velocidad = Vector2f(0, 0);
     _estado = Estados::QUIETO;
     _direccion = ABAJO;
@@ -13,8 +13,7 @@ personaje::personaje(int sprClase, int cantX, int cantY, Vector2i frameActual) {
 
 ///sets
 void personaje::setPosicion(Vector2f position) {
-    _posicion = position;
-    _sprPersonaje->setPosicion(_posicion);
+    _sprPersonaje->setPosicion(position);
 }
 
 void personaje::setEstado(Estados estado) {
@@ -68,8 +67,7 @@ void personaje::setSentidoY(int frame) {
 }
 
 void personaje::mover(Vector2f movimiento) {
-    _posicion += movimiento;
-    _sprPersonaje->setPosicion(_posicion);
+    _sprPersonaje->setPosicion(getPosicion() + movimiento);
 }
 
 void personaje::animar() {

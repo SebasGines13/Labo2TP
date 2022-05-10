@@ -17,7 +17,6 @@ sprite::sprite(int sprClase, int cantX, int cantY, Vector2i frameActual) {
 
 ///sets
 void sprite::setPosicion(Vector2f position) {
-    _posicion = position;
     _sprPersonaje->setPosition(position);
 }
 
@@ -69,9 +68,11 @@ Sprite sprite::getSprite() {
     return *_sprPersonaje;
 }
 
+
 Vector2f sprite::getPosicion() {
-    return _posicion;
+    return _sprPersonaje->getPosition();
 }
+
 
 int sprite::getFrameX() {
     return _frameActual.x;

@@ -10,7 +10,6 @@ class sprite
 		int _sprActual; /// Nro de sprite actual		
 		int _cantX; // Cantidad de frames en el eje x
 		int _cantY; // Cantidad de frames en el eje y
-		Vector2f _posicion; //Posicion del sprite
 		Vector2f _frameSize; //Tamaño del frame.
 		Vector2i _frameActual; //Frame Actual.
 	public:

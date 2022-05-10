@@ -12,8 +12,7 @@ class personaje
     private:
         sprite      *_sprPersonaje; /// Composición del objeto con propiedades y métodos propios para el manejo de sprites.
         Estados     _estado; /// enum para chequear estados, como por ejemplo si el jugador está caminando o no.
-        Vector2f    _posicion; /// Posición en la cual se encuentra el jugador
-        Vector2f    _velocidad; /// Velocidad actual
+        Vector2f    _velocidad; /// Velocidad actual o posición donde se encuentra
         float       _velDesplaz; /// Velocidad a la cual camina
         int         _direccion; /// Dirección a la que el jugador está mirando
     public:
