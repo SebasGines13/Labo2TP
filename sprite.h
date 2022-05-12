@@ -5,13 +5,13 @@ using namespace sf;
 class sprite
 {
 	private:
-		Texture* _txtPersonaje; ///textura del personaje
-		Sprite* _sprPersonaje; ///sprite del personaje
-		int _sprActual; /// Nro de sprite actual		
-		int _cantX; // Cantidad de frames en el eje x
-		int _cantY; // Cantidad de frames en el eje y
-		Vector2f _frameSize; //Tamaño del frame.
-		Vector2i _frameActual; //Frame Actual.
+		Texture*   _txtPersonaje; ///textura del personaje
+		Sprite*	   _sprPersonaje; ///sprite del personaje
+		int		   _sprActual; /// Nro de sprite actual		
+		int		   _cantX; // Cantidad de frames en el eje x
+		int		   _cantY; // Cantidad de frames en el eje y
+		Vector2f   _frameSize; //Tamaño del frame.
+		Vector2i   _frameActual; //Frame Actual.
 	public:
 		//Constructor
 		sprite(int sprClase, int cantX, int cantY, Vector2i frameActual);

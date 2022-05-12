@@ -5,10 +5,14 @@ using namespace std;
 ///Constructor
 personaje::personaje(int sprClase, int cantX, int cantY, Vector2i frameActual) {
     _sprPersonaje = new sprite(sprClase, cantX, cantY, frameActual);
-    _velDesplaz = 0.15f;
+    _velDesplaz = 3.5f;
     _velocidad = Vector2f(0, 0);
     _estado = Estados::QUIETO;
     _direccion = ABAJO;
+    _buffer.loadFromFile("audio/paso.wav");
+    _sound.setBuffer(_buffer);
+    _sound.setVolume(4.f);
+    _sound.setPitch(0.3f);
 }
 
 ///sets
@@ -57,6 +61,7 @@ int personaje::getDireccion() {
     return _direccion;
 }
 
+
 ///Métodos
 void personaje::setSentidoX(int frame) {
     _sprPersonaje->setFrameX(frame);
@@ -75,10 +80,11 @@ void personaje::animar() {
 }
 
 void personaje::update() {
-    if (_estado==Estados::CAMINANDO) {
+    if (_estado == Estados::CAMINANDO) {
         seleccionarVelocidad();
         mover(_velocidad);
         animar();
+        _sound.play(); // sonido de pasos
     }
 }
 
@@ -87,35 +93,35 @@ void personaje::seleccionarVelocidad() {
     {
     case ABAJO:
         _velocidad = Vector2f(0, _velDesplaz);
-        setSentidoY(0);
+        setSentidoY(ABAJO);
         break;
     case IZQABAJO:
         _velocidad = Vector2f(-_velDesplaz, _velDesplaz);
-        setSentidoY(0);
+        setSentidoY(ABAJO);
         break;
     case DERABAJO:
         _velocidad = Vector2f(_velDesplaz, _velDesplaz);
-        setSentidoY(0);
+        setSentidoY(ABAJO);
         break;
     case IZQUIERDA:
         _velocidad = Vector2f(-_velDesplaz, 0);
-        setSentidoY(1);
+        setSentidoY(IZQUIERDA);
         break;
     case DERECHA:
         _velocidad = Vector2f(_velDesplaz, 0);
-        setSentidoY(2);
+        setSentidoY(DERECHA);
         break;
     case ARRIBA:
         _velocidad = Vector2f(0, -_velDesplaz);
-        setSentidoY(3);
+        setSentidoY(ARRIBA);
         break;
     case IZQARRIBA:
         _velocidad = Vector2f(-_velDesplaz, -_velDesplaz);
-        setSentidoY(3);
+        setSentidoY(ARRIBA);
         break;
     case DERARRIBA:
         _velocidad = Vector2f(_velDesplaz, -_velDesplaz);
-        setSentidoY(3);
+        setSentidoY(ARRIBA);
         break;
     }
 }

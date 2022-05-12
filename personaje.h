@@ -1,10 +1,12 @@
 #pragma once
 #include "SFML/Graphics.hpp"
+#include <SFML/Audio.hpp>
 #include "sprite.h"
 #include "teclado.h"
 using namespace sf;
 
 enum class Estados{QUIETO, CAMINANDO, MUERTO};
+//enum class Direcciones{ABAJO = 0, IZQUIERDA = 1, DERECHA = 2, ARRIBA = 3, IZQABAJO = 4, DERABAJO = 5, IZQARRIBA = 6, DERARRIBA = 7};
 const int ABAJO=0, IZQUIERDA=1, DERECHA=2, ARRIBA=3, IZQABAJO=4, DERABAJO=5, IZQARRIBA=6, DERARRIBA=7;
 
 class personaje
@@ -15,6 +17,8 @@ class personaje
         Vector2f    _velocidad; /// Velocidad actual o posición donde se encuentra
         float       _velDesplaz; /// Velocidad a la cual camina
         int         _direccion; /// Dirección a la que el jugador está mirando
+        SoundBuffer _buffer;  /// buffer para el sonido
+        Sound       _sound;   /// canal utilizado por el buffer
     public:
         //constructor
         personaje(int sprClase, int cantX, int cantY, Vector2i frameActual);
@@ -38,5 +42,6 @@ class personaje
         void    mover(Vector2f movimiento); /// Mueve al jugador de acuerdo a la velocidad del mismo.
         void    update(); /// Actualiza las físicas del jugador.
         void    seleccionarVelocidad(); /// Para que actualice la velocidad de acuerdo a la dirección que se encuentre.
+
 };
 
