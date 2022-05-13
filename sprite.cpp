@@ -12,6 +12,7 @@ sprite::sprite(int sprClase, int cantX, int cantY, Vector2f frameActual) {
     _cantY = cantY;
     _frameSize = Vector2f(_txtPersonaje->getSize().x / _cantX, _txtPersonaje->getSize().y / _cantY);
     _frameActual = frameActual;
+    _sprPersonaje->move(100.f, 100.f);
     seleccionarFrame();
 }
 
@@ -91,7 +92,7 @@ void sprite::seleccionarFrame() {
 
 void sprite::animarFrame() {
     if (_frameActual.x < _cantX-1 ) ///Si no es el último frame, avanzo a la siguiente posición del frame.
-        _frameActual.x += .1f; ///Incremento un frame
+        _frameActual.x += .1f; ///Incremento el frame
     else _frameActual.x = 0; ///Si es el caso de que era el último, ahora se reinicia el ciclo de frames.
     seleccionarFrame(); ///Selecciono el rectángulo correspondiente al frame
 }

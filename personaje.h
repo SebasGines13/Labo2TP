@@ -2,7 +2,6 @@
 #include "SFML/Graphics.hpp"
 #include <SFML/Audio.hpp>
 #include "sprite.h"
-#include "teclado.h"
 using namespace sf;
 
 enum class Estados{QUIETO, CAMINANDO, MUERTO};

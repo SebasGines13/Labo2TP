@@ -1,7 +1,7 @@
 #include "juego.h"
 
 juego::juego(Vector2u resolucion) { //Constructor
-	_ventana = new RenderWindow(VideoMode(resolucion.x, resolucion.y), "Moquitos v0.3");
+	_ventana = new RenderWindow(VideoMode(resolucion.x, resolucion.y), "Moquitos v0.4");
 	//_ventana->setFramerateLimit(60);
 	inicializar();
 	gameLoop();

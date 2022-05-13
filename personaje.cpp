@@ -12,7 +12,7 @@ personaje::personaje(int sprClase, int cantX, int cantY, Vector2f frameActual) {
     _buffer.loadFromFile("audio/paso.wav");
     _pasos.setBuffer(_buffer);
     _pasos.setVolume(4.f);
-    _pasos.setPitch(0.8f);
+    _pasos.setPitch(1.f);
     _pasos.setLoop(true);
 }
 

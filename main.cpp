@@ -5,6 +5,6 @@ using namespace std;
 
 int main()
 {
-    juego *game = new juego(Vector2u(866, 677));
+    juego *game = new juego(Vector2u(1024, 768));
     return 0;
 }
