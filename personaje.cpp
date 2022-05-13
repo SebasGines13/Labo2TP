@@ -3,16 +3,17 @@
 using namespace std;
 
 ///Constructor
-personaje::personaje(int sprClase, int cantX, int cantY, Vector2i frameActual) {
+personaje::personaje(int sprClase, int cantX, int cantY, Vector2f frameActual) {
     _sprPersonaje = new sprite(sprClase, cantX, cantY, frameActual);
     _velDesplaz = 3.5f;
     _velocidad = Vector2f(0, 0);
     _estado = Estados::QUIETO;
     _direccion = ABAJO;
     _buffer.loadFromFile("audio/paso.wav");
-    _sound.setBuffer(_buffer);
-    _sound.setVolume(4.f);
-    _sound.setPitch(0.3f);
+    _pasos.setBuffer(_buffer);
+    _pasos.setVolume(4.f);
+    _pasos.setPitch(0.8f);
+    _pasos.setLoop(true);
 }
 
 ///sets
@@ -84,7 +85,12 @@ void personaje::update() {
         seleccionarVelocidad();
         mover(_velocidad);
         animar();
-        _sound.play(); // sonido de pasos
+        if (_pasos.getStatus() != _pasos.Playing) { // si no está sonando ya los pasos, inicio el sonido en loop.
+            _pasos.play(); // sonido de pasos
+        }
+    }
+    else if(_estado == Estados::QUIETO) {
+        _pasos.stop(); // para de sonar los pasos, porque está quieto
     }
 }
 

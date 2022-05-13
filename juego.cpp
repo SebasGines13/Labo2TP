@@ -10,8 +10,8 @@ juego::juego(Vector2u resolucion) { //Constructor
 
 void juego::inicializar() { ///Inicializa las variables y diferentes aspectos.
 	_gameOver = false;
-	//_j1 = new personaje(2,6,4,Vector2i(0,0)); ///Inicilizo la variable dináminca de jugador.
-	_j1 = new personaje(11,4,4,Vector2i(0,0)); ///Inicilizo la variable dináminca de jugador.
+	_j1 = new personaje(2,6,4,Vector2f(0,0)); ///Inicilizo la variable dináminca de jugador.
+	//_j1 = new personaje(11,4,4,Vector2f(0,0)); ///Inicilizo la variable dináminca de jugador.
 	_mapa = new mapa(2); //Inicializo la variable dinámica para el mapa.
 	_evento = new Event(); ///Inicializo la variable dinámica del evento.
 	_fps = 60; /// 60 frames por segundo
@@ -53,8 +53,8 @@ void juego::procesarEventos() { ///Interacción con el usuario, bien sea mouse, t
 				_teclasJugador[ABAJO] = true;			
 			}
 			else if (_evento->key.code == Keyboard::M) { /// Para quitar la música
-				if (std::to_string(_music.getStatus()) == "paused") {
-					_music.pause();
+				if (_music.getStatus() == _music.Playing) {
+					_music.pause();					
 				}
 				else _music.play();
 			}

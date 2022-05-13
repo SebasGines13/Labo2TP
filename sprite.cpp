@@ -2,7 +2,7 @@
 using namespace std;
 
 ///Constructor
-sprite::sprite(int sprClase, int cantX, int cantY, Vector2i frameActual) {
+sprite::sprite(int sprClase, int cantX, int cantY, Vector2f frameActual) {
     String path = "img/personaje" + to_string(sprClase) + ".png"; //contruyo la ruta para conocer la imagen actual del sprite.
     _sprActual = sprClase; //nro del sprite actual
     _txtPersonaje = new Texture();
@@ -32,7 +32,7 @@ void sprite::setFrameSize(Vector2f frameSize) {
     _frameSize = frameSize;
 }
 
-void sprite::setFrameActual(Vector2i frameActual) {
+void sprite::setFrameActual(Vector2f frameActual) {
     _frameActual = frameActual;
 }
 
@@ -60,7 +60,7 @@ Vector2f sprite::getFrameSize() {
     return _frameSize;
 }
 
-Vector2i sprite::getFrameActual() {
+Vector2f sprite::getFrameActual() {
     return _frameActual;
 }
 
@@ -85,13 +85,13 @@ int sprite::getFrameY() {
 
 ///Métodos
 void sprite::seleccionarFrame() {
-    IntRect rectangulo(_frameActual.x * _frameSize.x, _frameActual.y * _frameSize.y, _frameSize.x, _frameSize.y); /// Ubico el sprite que necesito recortar dentro de la textura.
+    IntRect rectangulo((int)(_frameActual.x) * _frameSize.x, _frameActual.y* _frameSize.y, _frameSize.x, _frameSize.y); /// Ubico el sprite que necesito recortar dentro de la textura.
     _sprPersonaje->setTextureRect(rectangulo); ///Recorto la textura.
 }
 
 void sprite::animarFrame() {
     if (_frameActual.x < _cantX-1 ) ///Si no es el último frame, avanzo a la siguiente posición del frame.
-        _frameActual.x ++; ///Incremento un frame
+        _frameActual.x += .1f; ///Incremento un frame
     else _frameActual.x = 0; ///Si es el caso de que era el último, ahora se reinicia el ciclo de frames.
     seleccionarFrame(); ///Selecciono el rectángulo correspondiente al frame
 }

@@ -18,10 +18,10 @@ class personaje
         float       _velDesplaz; /// Velocidad a la cual camina
         int         _direccion; /// Dirección a la que el jugador está mirando
         SoundBuffer _buffer;  /// buffer para el sonido
-        Sound       _sound;   /// canal utilizado por el buffer
+        Sound       _pasos;   /// canal utilizado por el buffer
     public:
         //constructor
-        personaje(int sprClase, int cantX, int cantY, Vector2i frameActual);
+        personaje(int sprClase, int cantX, int cantY, Vector2f frameActual);
         //sets
         void    setPosicion(Vector2f position); //Setea la posición del jugador a un determinado punto x e y
         void    setEstado(Estados estado);
