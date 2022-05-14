@@ -11,9 +11,8 @@ personaje::personaje(int sprClase, int cantX, int cantY, Vector2f frameActual) {
     _direccion = ABAJO;
     _buffer.loadFromFile("audio/paso.wav");
     _pasos.setBuffer(_buffer);
-    _pasos.setVolume(4.f);
+    _pasos.setVolume(10.f);
     _pasos.setPitch(1.f);
-    _pasos.setLoop(true);
 }
 
 ///sets
@@ -80,12 +79,12 @@ void personaje::animar() {
     _sprPersonaje->animarFrame();
 }
 
-void personaje::update() {
+void personaje::update(Vector2f velocidad) {
     if (_estado == Estados::CAMINANDO) {
-        seleccionarVelocidad();
+        actualizaVelocidad(velocidad);
         mover(_velocidad);
         animar();
-        if (_pasos.getStatus() != _pasos.Playing) { // si no está sonando ya los pasos, inicio el sonido en loop.
+        if (_pasos.getStatus() != _pasos.Playing) { // si no está sonando ya los pasos, se inicia el sonido
             _pasos.play(); // sonido de pasos
         }
     }
@@ -94,39 +93,32 @@ void personaje::update() {
     }
 }
 
-void personaje::seleccionarVelocidad() {
+void personaje::actualizaVelocidad(Vector2f velocidad) {
+    _velocidad = velocidad;
     switch (_direccion)
     {
     case ABAJO:
-        _velocidad = Vector2f(0, _velDesplaz);
         setSentidoY(ABAJO);
         break;
     case IZQABAJO:
-        _velocidad = Vector2f(-_velDesplaz, _velDesplaz);
         setSentidoY(ABAJO);
         break;
     case DERABAJO:
-        _velocidad = Vector2f(_velDesplaz, _velDesplaz);
         setSentidoY(ABAJO);
         break;
     case IZQUIERDA:
-        _velocidad = Vector2f(-_velDesplaz, 0);
         setSentidoY(IZQUIERDA);
         break;
     case DERECHA:
-        _velocidad = Vector2f(_velDesplaz, 0);
         setSentidoY(DERECHA);
         break;
     case ARRIBA:
-        _velocidad = Vector2f(0, -_velDesplaz);
         setSentidoY(ARRIBA);
         break;
     case IZQARRIBA:
-        _velocidad = Vector2f(-_velDesplaz, -_velDesplaz);
         setSentidoY(ARRIBA);
         break;
     case DERARRIBA:
-        _velocidad = Vector2f(_velDesplaz, -_velDesplaz);
         setSentidoY(ARRIBA);
         break;
     }

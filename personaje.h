@@ -1,5 +1,5 @@
 #pragma once
-#include "SFML/Graphics.hpp"
+#include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include "sprite.h"
 using namespace sf;
@@ -39,8 +39,8 @@ class personaje
         void    setSentidoY(int frame); /// Para conocer si está mirando hacia arriba o abajo
         void    animar(); /// pose de la animación.
         void    mover(Vector2f movimiento); /// Mueve al jugador de acuerdo a la velocidad del mismo.
-        void    update(); /// Actualiza las físicas del jugador.
-        void    seleccionarVelocidad(); /// Para que actualice la velocidad de acuerdo a la dirección que se encuentre.
+        void    update(Vector2f velocidad); /// Actualiza las físicas del jugador.
+        void    actualizaVelocidad(Vector2f velocidad); /// actualiza la posición del jugador de acuerdo a su dirección.
 
 };
 

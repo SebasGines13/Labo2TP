@@ -12,7 +12,7 @@ void juego::inicializar() { ///Inicializa las variables y diferentes aspectos.
 	_gameOver = false;
 	_j1 = new personaje(2,6,4,Vector2f(0,0)); ///Inicilizo la variable dináminca de jugador.
 	//_j1 = new personaje(11,4,4,Vector2f(0,0)); ///Inicilizo la variable dináminca de jugador.
-	_mapa = new mapa(2); //Inicializo la variable dinámica para el mapa.
+	_mapa = new mapa(2,16,16); //Inicializo la variable dinámica para el mapa.
 	_evento = new Event(); ///Inicializo la variable dinámica del evento.
 	_fps = 60; /// 60 frames por segundo
 	_reloj1 = new Clock(); /// reloj para que junto con el cronómetro, pueda medir el tiempo transcurrido.
@@ -128,8 +128,61 @@ void juego::procesarLogica() { ///Lógicas y reglas propias del juego.
 		_j1->setEstado(Estados::CAMINANDO); // jugador comienza a caminar
 		_j1->setDireccion(ABAJO);
 	}
+
+	/// Selecciono la velocidad (hacia donde se va a evaluar si el jugador puede dirigirse)
+	proximaPosicion();
+
 	/// Actualiza las físicas del jugador.
-	_j1->update(); 
+
+	if (!existeColision()) { /// si no tiene colisión, se actualiza la posición del jugador.
+		_j1->update(_velocidadAux);
+	}	
+}
+
+void juego::proximaPosicion() {
+	switch (_j1->getDireccion())
+	{
+	case ABAJO:
+		_velocidadAux = Vector2f(0, _j1->getVelDesplaz());
+		_posicionAux = _j1->getPosicion() + _velocidadAux;
+		break;
+	case IZQABAJO:
+		_velocidadAux = Vector2f(-_j1->getVelDesplaz(), _j1->getVelDesplaz());
+		_posicionAux = _j1->getPosicion() + _velocidadAux;
+		break;
+	case DERABAJO:
+		_velocidadAux = Vector2f(_j1->getVelDesplaz(), _j1->getVelDesplaz());
+		_posicionAux = _j1->getPosicion() + _velocidadAux;
+		break;
+	case IZQUIERDA:
+		_velocidadAux = Vector2f(-_j1->getVelDesplaz(), 0);
+		_posicionAux = _j1->getPosicion() + _velocidadAux;
+		break;
+	case DERECHA:
+		_velocidadAux = Vector2f(_j1->getVelDesplaz(), 0);
+		_posicionAux = _j1->getPosicion() + _velocidadAux;
+		break;
+	case ARRIBA:
+		_velocidadAux = Vector2f(0, -_j1->getVelDesplaz());
+		_posicionAux = _j1->getPosicion() + _velocidadAux;
+		break;
+	case IZQARRIBA:
+		_velocidadAux = Vector2f(-_j1->getVelDesplaz(), -_j1->getVelDesplaz());
+		_posicionAux = _j1->getPosicion() + _velocidadAux;
+		break;
+	case DERARRIBA:
+		_velocidadAux = Vector2f(_j1->getVelDesplaz(), -_j1->getVelDesplaz());
+		_posicionAux = _j1->getPosicion() + _velocidadAux;
+		break;
+	}
+}
+
+bool juego::existeColision()
+{
+	if (_mapa->existeBloqueo(_posicionAux)) {
+		return true;
+	}
+	return false;
 }
 
 void juego::gameLoop() {

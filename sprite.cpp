@@ -12,7 +12,8 @@ sprite::sprite(int sprClase, int cantX, int cantY, Vector2f frameActual) {
     _cantY = cantY;
     _frameSize = Vector2f(_txtPersonaje->getSize().x / _cantX, _txtPersonaje->getSize().y / _cantY);
     _frameActual = frameActual;
-    _sprPersonaje->move(100.f, 100.f);
+    _sprPersonaje->setOrigin(_frameSize.x / 2, _frameSize.y / 2);
+    _sprPersonaje->move(100.f, 100.f); /// Posición inicial del jugador en el mapa
     seleccionarFrame();
 }
 

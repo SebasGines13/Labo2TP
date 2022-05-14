@@ -17,6 +17,8 @@ class juego
         int           _fps;
         bool          _teclasJugador[4];  /// Izquierda, derecha, arriba y abajo.
         Music         _music;    /// música de fondo
+        Vector2f      _velocidadAux; /// variable auxiliar para el próximo paso del jugador y que se calcula antes de actualizarlo.
+        Vector2f      _posicionAux; /// variable auxiliar para el próximo paso del jugador y que se calcula antes de actualizarlo.
     public:
         //Constructor
         juego(Vector2u resolucion); 
@@ -26,4 +28,6 @@ class juego
         void procesarLogica(); ///Lógicas y reglas propias del juego.
         void procesarEventos();
         void gameLoop();
+        void proximaPosicion(); /// Para que actualice la velocidad de acuerdo a la dirección que se encuentre.
+        bool existeColision(); /// Verifica si es válida la posición (_velocidadAux) a la cual quiere dirigirse el jugador.
 };
