@@ -146,17 +146,21 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="enemigo.cpp" />
+    <ClCompile Include="interfazJuego.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="juego.cpp" />
     <ClCompile Include="mapa.cpp" />
     <ClCompile Include="personaje.cpp" />
+    <ClCompile Include="proyectil.cpp" />
     <ClCompile Include="sprite.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="enemigo.h" />
+    <ClInclude Include="juegoProyectil.h" />
     <ClInclude Include="juego.h" />
     <ClInclude Include="mapa.h" />
     <ClInclude Include="personaje.h" />
+    <ClInclude Include="proyectil.h" />
     <ClInclude Include="sprite.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

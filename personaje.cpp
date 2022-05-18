@@ -3,8 +3,10 @@
 using namespace std;
 
 ///Constructor
-personaje::personaje(int sprClase, int cantX, int cantY, Vector2f frameActual) {
-    _sprPersonaje = new sprite(sprClase, cantX, cantY, frameActual);
+personaje::personaje(int sprClase, int cantX, int cantY, Vector2f frameActual, juegoProyectil& juego)
+    : _juego(juego)
+{
+    _sprPersonaje = new sprite(sprClase, cantX, cantY, frameActual, .1f);
     _velDesplaz = 3.5f;
     _velocidad = Vector2f(0, 0);
     _estado = Estados::QUIETO;
@@ -13,6 +15,7 @@ personaje::personaje(int sprClase, int cantX, int cantY, Vector2f frameActual) {
     _pasos.setBuffer(_buffer);
     _pasos.setVolume(10.f);
     _pasos.setPitch(1.f);
+    _coolDown = 5;
 }
 
 ///sets
@@ -34,6 +37,10 @@ void personaje::setVelDesplaz(float velDesplaz) {
 
 void personaje::setDireccion(int direccion) {
     _direccion = direccion;
+}
+
+void personaje::setCoolDown(unsigned int coolDown){
+    _coolDown = coolDown;
 }
 
 ///gets
@@ -59,6 +66,15 @@ float personaje::getVelDesplaz() {
 
 int personaje::getDireccion() {
     return _direccion;
+}
+
+juegoProyectil& personaje::getJuegoActual(){
+    return _juego;
+}
+
+unsigned int personaje::getCoolDown()
+{
+    return _coolDown;
 }
 
 
@@ -122,4 +138,10 @@ void personaje::actualizaVelocidad(Vector2f velocidad) {
         setSentidoY(ARRIBA);
         break;
     }
+}
+
+void personaje::disparar()
+{
+    getJuegoActual().crearProyectil(getPosicion());
+    _coolDown = 7;
 }

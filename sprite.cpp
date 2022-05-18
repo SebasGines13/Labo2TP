@@ -2,8 +2,8 @@
 using namespace std;
 
 ///Constructor
-sprite::sprite(int sprClase, int cantX, int cantY, Vector2f frameActual) {
-    String path = "img/personaje" + to_string(sprClase) + ".png"; //contruyo la ruta para conocer la imagen actual del sprite.
+sprite::sprite(int sprClase, int cantX, int cantY, Vector2f frameActual, float velAnima) {
+    String path = "img/" + to_string(sprClase) + ".png"; //contruyo la ruta para conocer la imagen actual del sprite.
     _sprActual = sprClase; //nro del sprite actual
     _txtPersonaje = new Texture();
     _txtPersonaje->loadFromFile(path);
@@ -14,6 +14,7 @@ sprite::sprite(int sprClase, int cantX, int cantY, Vector2f frameActual) {
     _frameActual = frameActual;
     _sprPersonaje->setOrigin(_frameSize.x / 2, _frameSize.y / 2);
     _sprPersonaje->move(100.f, 100.f); /// Posición inicial del jugador en el mapa
+    _velAnima = velAnima;
     seleccionarFrame();
 }
 
@@ -93,7 +94,7 @@ void sprite::seleccionarFrame() {
 
 void sprite::animarFrame() {
     if (_frameActual.x < _cantX-1 ) ///Si no es el último frame, avanzo a la siguiente posición del frame.
-        _frameActual.x += .1f; ///Incremento el frame
+        _frameActual.x += _velAnima; ///Incremento el frame
     else _frameActual.x = 0; ///Si es el caso de que era el último, ahora se reinicia el ciclo de frames.
     seleccionarFrame(); ///Selecciono el rectángulo correspondiente al frame
 }

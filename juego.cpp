@@ -10,7 +10,7 @@ juego::juego(Vector2u resolucion) { //Constructor
 
 void juego::inicializar() { ///Inicializa las variables y diferentes aspectos.
 	_gameOver = false;
-	_j1 = new personaje(2,6,4,Vector2f(0,0)); ///Inicilizo la variable dináminca de jugador.
+	_j1 = new personaje(2,6,4,Vector2f(0,0), *this); ///Inicilizo la variable dináminca de jugador.
 	//_j1 = new personaje(11,4,4,Vector2f(0,0)); ///Inicilizo la variable dináminca de jugador.
 	_mapa = new mapa(2,16,16); //Inicializo la variable dinámica para el mapa.
 	_evento = new Event(); ///Inicializo la variable dinámica del evento.
@@ -20,15 +20,8 @@ void juego::inicializar() { ///Inicializa las variables y diferentes aspectos.
 	_music.openFromFile("audio/fondo.wav");
 	_music.play();
 	_music.setVolume(5.f);
+	
 }
-
-
-void juego::dibujar() { ///Dibuja en pantalla los elementos.
-	_ventana->clear(); ///Limpio la pantalla con lo que había antes.
-	_ventana->draw(_mapa->getSprite()); ///Dibujo el mapa
-	_ventana->draw(_j1->getSpritePersonaje().getSprite()); /// Dibujo el personaje.
-	_ventana->display(); //Muestro la ventana.
-} 
 
 
 void juego::procesarEventos() { ///Interacción con el usuario, bien sea mouse, teclado, etc.
@@ -68,6 +61,8 @@ void juego::procesarEventos() { ///Interacción con el usuario, bien sea mouse, t
 					_music.setVolume(_music.getVolume() + 1.f);
 				}				
 			}
+			
+			
 		break;
 		/// 
 		///					SOLTAR TECLA
@@ -89,7 +84,13 @@ void juego::procesarEventos() { ///Interacción con el usuario, bien sea mouse, t
 				_teclasJugador[ABAJO] = false;
 				_j1->setSentidoX(0); /// Para que al soltar, se establezca el primer sprite de cada fila
 			}
+			else if (_evento->key.code == Keyboard::Space && _j1->getCoolDown() == 0) { /// Para disparar
+				_j1->disparar();
+			}
 		break;
+	}
+	if (_j1->getCoolDown() > 0) {
+		_j1->setCoolDown(_j1->getCoolDown() - 1);
 	}
 } 
 
@@ -136,7 +137,20 @@ void juego::procesarLogica() { ///Lógicas y reglas propias del juego.
 
 	if (!existeColision()) { /// si no tiene colisión, se actualiza la posición del jugador.
 		_j1->update(_velocidadAux);
-	}	
+	}
+
+	std::list<proyectil>::iterator i = _proyectiles.begin(); /// iterator para recorrer todo la lista de proyectiles
+	while (i != _proyectiles.end()) {
+		proyectil& p = (*i);
+		p.update();
+		if (p.getSprite().getPosicion().x > 976) { /// si se pasa de la pantalla lo elimino de la lista
+			i = _proyectiles.erase(i);
+		}
+		else {
+			i++;
+		}
+	}
+	
 }
 
 void juego::proximaPosicion() {
@@ -197,4 +211,27 @@ void juego::gameLoop() {
 			_reloj1->restart(); /// Como es acumulativo el tiempo, tengo que reiniciarlo para que se pueda evaluar un nuevo evento.
 		}	
 	}
+}
+
+void juego::dibujar() { ///Dibuja en pantalla los elementos.
+	_ventana->clear(); ///Limpio la pantalla con lo que había antes.
+	_ventana->draw(_mapa->getSprite()); ///Dibujo el mapa	
+	_ventana->draw(_j1->getSpritePersonaje().getSprite()); /// Dibujo el personaje.	
+	for (proyectil& p : _proyectiles) { /// recorro con un for each la lista de proyectiles y las dibujo
+		_ventana->draw(p.getSprite().getSprite());
+	}
+	_ventana->display(); //Muestro la ventana.
+}
+
+void juego::crearProyectil(Vector2f posicion)
+{
+
+	static SoundBuffer _bufferP;  /// buffer para el sonido
+	static Sound _sonido;   /// canal utilizado por el buffer
+	_bufferP.loadFromFile("audio/proyectil.wav");
+	_sonido.setBuffer(_bufferP);
+	_sonido.setVolume(20.f);
+	_sonido.setPitch(1.f);
+	_sonido.play();
+	_proyectiles.push_back(proyectil(posicion));
 }

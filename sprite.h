@@ -12,9 +12,10 @@ class sprite
 		int		   _cantY; // Cantidad de frames en el eje y
 		Vector2f   _frameSize; //Tamaño del frame.
 		Vector2f   _frameActual; //Frame Actual.
+		float	   _velAnima; // Velocidad del cambio de frame para la animación
 	public:
 		//Constructor
-		sprite(int sprClase, int cantX, int cantY, Vector2f frameActual);
+		sprite(int sprClase, int cantX, int cantY, Vector2f frameActual, float velAnima);
 		//sets
 		void setPosicion(Vector2f position);
 		void setCantX(int cantX);
