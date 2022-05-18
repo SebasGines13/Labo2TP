@@ -4,8 +4,8 @@ using namespace std;
 
 ///Constructor
 proyectil::proyectil(Vector2f posicion) {
-    _sprProyectil = new sprite(12, 5, 1, Vector2f(0, 0), .5f);
-    _velDesplaz = 15.f;
+    _sprProyectil = new sprite(13, 5, 1, Vector2f(0, 0), .5f);
+    _velDesplaz = 10.f;
     _velocidad = Vector2f(0, 0);
     respawn(posicion);
 }
@@ -33,4 +33,9 @@ void proyectil::update() {
 
 void proyectil::respawn(Vector2f posicion) {
     _sprProyectil->setPosicion(posicion);
+}
+
+FloatRect proyectil::getBounds()
+{
+    return _sprProyectil->getSprite().getGlobalBounds();
 }

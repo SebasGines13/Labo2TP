@@ -2,9 +2,10 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include "sprite.h"
+#include "colisionable.h"
 using namespace sf;
 
-class proyectil
+class proyectil: public colisionable
 {
 private:
     sprite*     _sprProyectil; /// Composición del objeto con propiedades y métodos propios para el manejo de sprites.
@@ -18,5 +19,6 @@ public:
     void setVelocidad(Vector2f vel);
     void update();
     void respawn(Vector2f posicion);
+    FloatRect getBounds() override;
 };
 

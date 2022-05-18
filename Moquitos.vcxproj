@@ -145,22 +145,35 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="archivos.cpp" />
+    <ClCompile Include="colisionable.cpp" />
+    <ClCompile Include="configuracion.cpp" />
     <ClCompile Include="enemigo.cpp" />
+    <ClCompile Include="GUI.cpp" />
     <ClCompile Include="interfazJuego.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="juego.cpp" />
     <ClCompile Include="mapa.cpp" />
+    <ClCompile Include="menu.cpp" />
     <ClCompile Include="personaje.cpp" />
     <ClCompile Include="proyectil.cpp" />
+    <ClCompile Include="ranking.cpp" />
     <ClCompile Include="sprite.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="archivos.h" />
+    <ClInclude Include="colisionable.h" />
+    <ClInclude Include="configuracion.h" />
     <ClInclude Include="enemigo.h" />
+    <ClInclude Include="GUI.h" />
     <ClInclude Include="juegoProyectil.h" />
     <ClInclude Include="juego.h" />
     <ClInclude Include="mapa.h" />
+    <ClInclude Include="menu.h" />
     <ClInclude Include="personaje.h" />
     <ClInclude Include="proyectil.h" />
+    <ClInclude Include="ranking.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="sprite.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -143,7 +143,7 @@ void juego::procesarLogica() { ///Lógicas y reglas propias del juego.
 	while (i != _proyectiles.end()) {
 		proyectil& p = (*i);
 		p.update();
-		if (p.getSprite().getPosicion().x > 976) { /// si se pasa de la pantalla lo elimino de la lista
+		if (p.getSprite().getPosicion().x > 950) { /// si se pasa de la pantalla lo elimino de la lista
 			i = _proyectiles.erase(i);
 		}
 		else {
