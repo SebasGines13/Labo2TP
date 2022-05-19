@@ -24,6 +24,7 @@
     <ProjectGuid>{1523cd6c-93c0-4343-9856-cc184ba9e52e}</ProjectGuid>
     <RootNamespace>Moquitos</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>Dungeon++</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

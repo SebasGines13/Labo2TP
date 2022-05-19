@@ -1,7 +1,7 @@
 #include "juego.h"
 
 juego::juego(Vector2u resolucion) { //Constructor
-	_ventana = new RenderWindow(VideoMode(resolucion.x, resolucion.y), "Moquitos v0.4");
+	_ventana = new RenderWindow(VideoMode(resolucion.x, resolucion.y), "Dungeon ++ v0.5");
 	//_ventana->setFramerateLimit(60);
 	inicializar();
 	gameLoop();
@@ -10,8 +10,9 @@ juego::juego(Vector2u resolucion) { //Constructor
 
 void juego::inicializar() { ///Inicializa las variables y diferentes aspectos.
 	_gameOver = false;
-	_j1 = new personaje(2,6,4,Vector2f(0,0), *this); ///Inicilizo la variable dináminca de jugador.
-	//_j1 = new personaje(11,4,4,Vector2f(0,0)); ///Inicilizo la variable dináminca de jugador.
+	_j1 = new personaje(2,6,4,Vector2f(0,0), *this); ///Inicilizo la variable dinámica de jugador.
+	//_j1 = new personaje(11,4,4,Vector2f(0,0)); ///Inicilizo la variable dinámica de jugador.
+	_mago1 = new enemigo(Vector2f(800,400)); /// Inicializo la variable dinámica de jugador
 	_mapa = new mapa(2,16,16); //Inicializo la variable dinámica para el mapa.
 	_evento = new Event(); ///Inicializo la variable dinámica del evento.
 	_fps = 60; /// 60 frames por segundo
@@ -220,6 +221,7 @@ void juego::dibujar() { ///Dibuja en pantalla los elementos.
 	for (proyectil& p : _proyectiles) { /// recorro con un for each la lista de proyectiles y las dibujo
 		_ventana->draw(p.getSprite().getSprite());
 	}
+	_ventana->draw(_mago1->getSprite().getSprite());
 	_ventana->display(); //Muestro la ventana.
 }
 

@@ -5,6 +5,7 @@
 #include "mapa.h"
 #include "proyectil.h"
 #include "juegoProyectil.h"
+#include "enemigo.h"
 #include <list>
 using namespace sf;
 
@@ -14,6 +15,7 @@ class juego: public juegoProyectil
         RenderWindow*           _ventana;  ///Ventana donde se va a mostrar el juego.
         bool                    _gameOver;  ///Booleano que controla si se terminó el juego.
         personaje*              _j1;          ///Objeto de clase personaje.
+        enemigo*                _mago1;         ///Objeto de clase enemigo.
         mapa*                   _mapa;          ///Objeto de la clase mapa.
         Event*                  _evento;          /// Evento es todo aquello que suceda durante el juego.
         Clock*                  _reloj1;
