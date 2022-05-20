@@ -1,12 +1,11 @@
 #include "proyectil.h"
-using namespace std;
 
 
 ///Constructor
-proyectil::proyectil(Vector2f posicion) {
-    _sprProyectil = new sprite(13, 5, 1, Vector2f(0, 0), .5f);
+proyectil::proyectil(sf::Vector2f posicion) {
+    _sprProyectil = new sprite(13, 5, 1, sf::Vector2f(0, 0), .5f);
     _velDesplaz = 10.f;
-    _velocidad = Vector2f(0, 0);
+    _velocidad = sf::Vector2f(0, 0);
     respawn(posicion);
 }
 
@@ -16,26 +15,32 @@ sprite proyectil::getSprite()
     return *_sprProyectil;
 }
 
-void proyectil::animar() {
-    _sprProyectil->animarFrame();
-}
 
-void proyectil::setVelocidad(Vector2f vel)
+void proyectil::setVelocidad(sf::Vector2f vel)
 {
     _velocidad += vel;
 }
 
 void proyectil::update() {
-    _sprProyectil->setPosicion(Vector2f(_sprProyectil->getPosicion().x + _velDesplaz, _sprProyectil->getPosicion().y));
+    move(_velDesplaz, 0);
     animar();   
 }
 
-
-void proyectil::respawn(Vector2f posicion) {
-    _sprProyectil->setPosicion(posicion);
+void proyectil::animar() {
+    _sprProyectil->animarFrame();
 }
 
-FloatRect proyectil::getBounds()
+void proyectil::respawn(sf::Vector2f posicion) {
+    setPosition(posicion);
+}
+
+sf::FloatRect proyectil::getBounds()
 {
     return _sprProyectil->getSprite().getGlobalBounds();
+}
+
+void proyectil::draw(sf::RenderTarget& target, sf::RenderStates states) const
+{  
+    states.transform *= getTransform();
+    target.draw(_sprProyectil->getSprite(), states);
 }

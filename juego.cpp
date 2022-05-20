@@ -1,8 +1,8 @@
 #include "juego.h"
 
-juego::juego(Vector2u resolucion) { //Constructor
-	_ventana = new RenderWindow(VideoMode(resolucion.x, resolucion.y), "Dungeon ++ v0.5");
-	//_ventana->setFramerateLimit(60);
+juego::juego(sf::Vector2u resolucion) { //Constructor
+	_ventana = new sf::RenderWindow(sf::VideoMode(resolucion.x, resolucion.y), "Dungeon ++ v0.5");
+	_ventana->setFramerateLimit(_fps);
 	inicializar();
 	gameLoop();
 }
@@ -10,54 +10,51 @@ juego::juego(Vector2u resolucion) { //Constructor
 
 void juego::inicializar() { ///Inicializa las variables y diferentes aspectos.
 	_gameOver = false;
-	_j1 = new personaje(2,6,4,Vector2f(0,0), *this); ///Inicilizo la variable dinámica de jugador.
+	_j1 = new personaje(2,6,4, sf::Vector2f(0,0), *this); ///Inicilizo la variable dinámica de jugador.
 	//_j1 = new personaje(11,4,4,Vector2f(0,0)); ///Inicilizo la variable dinámica de jugador.
-	_mago1 = new enemigo(Vector2f(800,400)); /// Inicializo la variable dinámica de jugador
-	_mapa = new mapa(2,16,16); //Inicializo la variable dinámica para el mapa.
-	_evento = new Event(); ///Inicializo la variable dinámica del evento.
-	_fps = 60; /// 60 frames por segundo
-	_reloj1 = new Clock(); /// reloj para que junto con el cronómetro, pueda medir el tiempo transcurrido.
-	_cronometro1 = new Time(); ///Ver reloj.
+	_mago1 = new enemigo(sf::Vector2f(800,400)); /// Inicializo la variable dinámica de jugador
+	_mapa = new mapa(1,16,16,48,64); //Inicializo la variable dinámica para el mapa.
+	_evento = new sf::Event(); ///Inicializo la variable dinámica del evento.
 	_music.openFromFile("audio/fondo.wav");
 	_music.play();
-	_music.setVolume(5.f);
-	
+	_music.setVolume(5.f);	
 }
 
 
 void juego::procesarEventos() { ///Interacción con el usuario, bien sea mouse, teclado, etc.
 	switch (_evento->type){
-		case Event::Closed: ///Para que se pueda presionar sobre la cruz y se cierre la ventana.
+		case sf::Event::Closed: ///Para que se pueda presionar sobre la cruz y se cierre la ventana.
 			exit(1);
 		break;
 		/// 
 		///					PRESIONAR TECLA
 		///
-		case Event::KeyPressed: ///Verifica si existe una tecla presionada
-			if (_evento->key.code == Keyboard::A) {
+		case sf::Event::KeyPressed: ///Verifica si existe una tecla presionada
+			if (_evento->key.code == sf::Keyboard::A) {
 				_teclasJugador[IZQUIERDA] = true;
 			}
-			else if (_evento->key.code == Keyboard::D) {
+			else if (_evento->key.code == sf::Keyboard::D) {
 				_teclasJugador[DERECHA] = true;
 			}
-			else if (_evento->key.code == Keyboard::W) {
+			else if (_evento->key.code == sf::Keyboard::W) {
 				_teclasJugador[ARRIBA] = true;
 			}
-			else if (_evento->key.code == Keyboard::S) {
+			else if (_evento->key.code == sf::Keyboard::S) {
 				_teclasJugador[ABAJO] = true;			
 			}
-			else if (_evento->key.code == Keyboard::M) { /// Para quitar la música
+			
+			else if (_evento->key.code == sf::Keyboard::M) { /// Para quitar la música
 				if (_music.getStatus() == _music.Playing) {
 					_music.pause();					
 				}
 				else _music.play();
 			}
-			else if (_evento->key.code == Keyboard::Subtract) { /// Para bajar música
+			else if (_evento->key.code == sf::Keyboard::Subtract) { /// Para bajar música
 				if (_music.getVolume() > 1) {
 					_music.setVolume(_music.getVolume() - 1.f);
 				}			
 			}
-			else if (_evento->key.code == Keyboard::Add) { /// Para subir música
+			else if (_evento->key.code == sf::Keyboard::Add) { /// Para subir música
 				if (_music.getVolume() < 50.f) {
 					_music.setVolume(_music.getVolume() + 1.f);
 				}				
@@ -69,23 +66,23 @@ void juego::procesarEventos() { ///Interacción con el usuario, bien sea mouse, t
 		///					SOLTAR TECLA
 		///
 		case Event::KeyReleased: ///Verifica si es que se suelta la tecla
-			if (_evento->key.code == Keyboard::A) {
+			if (_evento->key.code == sf::Keyboard::A) {
 				_teclasJugador[IZQUIERDA] = false;
 				_j1->setSentidoX(0); /// Para que al soltar, se establezca el primer sprite de cada fila
 			}
-			else if (_evento->key.code == Keyboard::D) {
+			else if (_evento->key.code == sf::Keyboard::D) {
 				_teclasJugador[DERECHA] = false;
 				_j1->setSentidoX(0); /// Para que al soltar, se establezca el primer sprite de cada fila
 			}
-			else if (_evento->key.code == Keyboard::W) {
+			else if (_evento->key.code == sf::Keyboard::W) {
 				_teclasJugador[ARRIBA] = false;
 				_j1->setSentidoX(0); /// Para que al soltar, se establezca el primer sprite de cada fila
 			}
-			else if (_evento->key.code == Keyboard::S) {
+			else if (_evento->key.code == sf::Keyboard::S) {
 				_teclasJugador[ABAJO] = false;
 				_j1->setSentidoX(0); /// Para que al soltar, se establezca el primer sprite de cada fila
 			}
-			else if (_evento->key.code == Keyboard::Space && _j1->getCoolDown() == 0) { /// Para disparar
+			else if (_evento->key.code == sf::Keyboard::Space && _j1->getCoolDown() == 0) { /// Para disparar
 				_j1->disparar();
 			}
 		break;
@@ -158,36 +155,36 @@ void juego::proximaPosicion() {
 	switch (_j1->getDireccion())
 	{
 	case ABAJO:
-		_velocidadAux = Vector2f(0, _j1->getVelDesplaz());
-		_posicionAux = _j1->getPosicion() + _velocidadAux;
+		_velocidadAux = sf::Vector2f(0, _j1->getVelDesplaz());
+		_posicionAux = _j1->getPosition() + _velocidadAux;
 		break;
 	case IZQABAJO:
-		_velocidadAux = Vector2f(-_j1->getVelDesplaz(), _j1->getVelDesplaz());
-		_posicionAux = _j1->getPosicion() + _velocidadAux;
+		_velocidadAux = sf::Vector2f(-_j1->getVelDesplaz(), _j1->getVelDesplaz());
+		_posicionAux = _j1->getPosition() + _velocidadAux;
 		break;
 	case DERABAJO:
-		_velocidadAux = Vector2f(_j1->getVelDesplaz(), _j1->getVelDesplaz());
-		_posicionAux = _j1->getPosicion() + _velocidadAux;
+		_velocidadAux = sf::Vector2f(_j1->getVelDesplaz(), _j1->getVelDesplaz());
+		_posicionAux = _j1->getPosition() + _velocidadAux;
 		break;
 	case IZQUIERDA:
-		_velocidadAux = Vector2f(-_j1->getVelDesplaz(), 0);
-		_posicionAux = _j1->getPosicion() + _velocidadAux;
+		_velocidadAux = sf::Vector2f(-_j1->getVelDesplaz(), 0);
+		_posicionAux = _j1->getPosition() + _velocidadAux;
 		break;
 	case DERECHA:
-		_velocidadAux = Vector2f(_j1->getVelDesplaz(), 0);
-		_posicionAux = _j1->getPosicion() + _velocidadAux;
+		_velocidadAux = sf::Vector2f(_j1->getVelDesplaz(), 0);
+		_posicionAux = _j1->getPosition() + _velocidadAux;
 		break;
 	case ARRIBA:
-		_velocidadAux = Vector2f(0, -_j1->getVelDesplaz());
-		_posicionAux = _j1->getPosicion() + _velocidadAux;
+		_velocidadAux = sf::Vector2f(0, -_j1->getVelDesplaz());
+		_posicionAux = _j1->getPosition() + _velocidadAux;
 		break;
 	case IZQARRIBA:
-		_velocidadAux = Vector2f(-_j1->getVelDesplaz(), -_j1->getVelDesplaz());
-		_posicionAux = _j1->getPosicion() + _velocidadAux;
+		_velocidadAux = sf::Vector2f(-_j1->getVelDesplaz(), -_j1->getVelDesplaz());
+		_posicionAux = _j1->getPosition() + _velocidadAux;
 		break;
 	case DERARRIBA:
-		_velocidadAux = Vector2f(_j1->getVelDesplaz(), -_j1->getVelDesplaz());
-		_posicionAux = _j1->getPosicion() + _velocidadAux;
+		_velocidadAux = sf::Vector2f(_j1->getVelDesplaz(), -_j1->getVelDesplaz());
+		_posicionAux = _j1->getPosition() + _velocidadAux;
 		break;
 	}
 }
@@ -202,24 +199,20 @@ bool juego::existeColision()
 
 void juego::gameLoop() {
 	while (!_gameOver) {
-		*_cronometro1 = _reloj1->getElapsedTime(); /// Obtenemos el tiempo transcurrido
-		if (_cronometro1->asSeconds() > 1.f/_fps) { /// Tiempo a esperar para que se ejecute el siguiente evento.
 			while (_ventana->pollEvent(*_evento)) {
 				procesarEventos();					
 			}		
 			procesarLogica();
 			dibujar();
-			_reloj1->restart(); /// Como es acumulativo el tiempo, tengo que reiniciarlo para que se pueda evaluar un nuevo evento.
 		}	
-	}
 }
 
 void juego::dibujar() { ///Dibuja en pantalla los elementos.
 	_ventana->clear(); ///Limpio la pantalla con lo que había antes.
-	_ventana->draw(_mapa->getSprite()); ///Dibujo el mapa	
-	_ventana->draw(_j1->getSpritePersonaje().getSprite()); /// Dibujo el personaje.	
+	_ventana->draw(*_mapa); ///Dibujo el mapa	
+	_ventana->draw(*_j1); /// Dibujo el personaje.	
 	for (proyectil& p : _proyectiles) { /// recorro con un for each la lista de proyectiles y las dibujo
-		_ventana->draw(p.getSprite().getSprite());
+		_ventana->draw(p);
 	}
 	_ventana->draw(_mago1->getSprite().getSprite());
 	_ventana->display(); //Muestro la ventana.

@@ -1,6 +1,4 @@
 #include "personaje.h"
-#include <stdlib.h>
-using namespace std;
 
 ///Constructor
 personaje::personaje(int sprClase, int cantX, int cantY, Vector2f frameActual, juegoProyectil& juego)
@@ -16,12 +14,10 @@ personaje::personaje(int sprClase, int cantX, int cantY, Vector2f frameActual, j
     _pasos.setVolume(10.f);
     _pasos.setPitch(1.f);
     _coolDown = 5;
+    move(100.f, 100.f);
 }
 
 ///sets
-void personaje::setPosicion(Vector2f position) {
-    _sprPersonaje->setPosicion(position);
-}
 
 void personaje::setEstado(Estados estado) {
     _estado = estado;
@@ -35,7 +31,7 @@ void personaje::setVelDesplaz(float velDesplaz) {
     _velDesplaz = velDesplaz;
 }
 
-void personaje::setDireccion(int direccion) {
+void personaje::setDireccion(unsigned int  direccion) {
     _direccion = direccion;
 }
 
@@ -44,9 +40,6 @@ void personaje::setCoolDown(unsigned int coolDown){
 }
 
 ///gets
-Vector2f personaje::getPosicion() {
-    return _sprPersonaje->getPosicion();
-}
 
 sprite personaje::getSpritePersonaje() {
     return *_sprPersonaje;
@@ -64,7 +57,7 @@ float personaje::getVelDesplaz() {
     return _velDesplaz;
 }
 
-int personaje::getDireccion() {
+unsigned int  personaje::getDireccion() {
     return _direccion;
 }
 
@@ -87,10 +80,6 @@ void personaje::setSentidoY(int frame) {
     _sprPersonaje->setFrameY(frame);
 }
 
-void personaje::mover(Vector2f movimiento) {
-    _sprPersonaje->setPosicion(getPosicion() + movimiento);
-}
-
 void personaje::animar() {
     _sprPersonaje->animarFrame();
 }
@@ -98,7 +87,7 @@ void personaje::animar() {
 void personaje::update(Vector2f velocidad) {
     if (_estado == Estados::CAMINANDO) {
         actualizaVelocidad(velocidad);
-        mover(_velocidad);
+        move(_velocidad);
         animar();
         if (_pasos.getStatus() != _pasos.Playing) { // si no está sonando ya los pasos, se inicia el sonido
             _pasos.play(); // sonido de pasos
@@ -142,6 +131,13 @@ void personaje::actualizaVelocidad(Vector2f velocidad) {
 
 void personaje::disparar()
 {
-    getJuegoActual().crearProyectil(getPosicion());
+    getJuegoActual().crearProyectil(getPosition());
     _coolDown = 7;
 }
+
+void personaje::draw(sf::RenderTarget& target, sf::RenderStates states) const
+{
+    states.transform *= getTransform();
+    target.draw(_sprPersonaje->getSprite(), states);
+}
+

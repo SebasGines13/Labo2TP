@@ -1,25 +1,22 @@
 #include "sprite.h"
-using namespace std;
 
 ///Constructor
-sprite::sprite(int sprClase, int cantX, int cantY, Vector2f frameActual, float velAnima) {
-    String path = "img/" + to_string(sprClase) + ".png"; //contruyo la ruta para conocer la imagen actual del sprite.
+sprite::sprite(int sprClase, int cantX, int cantY, sf::Vector2f frameActual, float velAnima) {
+    std::string path = "img/" + std::to_string(sprClase) + ".png"; //contruyo la ruta para conocer la imagen actual del sprite.
     _sprActual = sprClase; //nro del sprite actual
-    _txtPersonaje = new Texture();
+    _txtPersonaje = new sf::Texture();
     _txtPersonaje->loadFromFile(path);
-    _sprPersonaje = new Sprite(*_txtPersonaje);
+    _sprPersonaje = new sf::Sprite(*_txtPersonaje);
     _cantX = cantX;
     _cantY = cantY;
-    _frameSize = Vector2f(_txtPersonaje->getSize().x / _cantX, _txtPersonaje->getSize().y / _cantY);
+    _frameSize = sf::Vector2f(_txtPersonaje->getSize().x / _cantX, _txtPersonaje->getSize().y / _cantY);
     _frameActual = frameActual;
-    _sprPersonaje->setOrigin(_frameSize.x / 2, _frameSize.y / 2);
-    _sprPersonaje->move(100.f, 100.f); /// Posición inicial del jugador en el mapa
     _velAnima = velAnima;
     seleccionarFrame();
 }
 
 ///sets
-void sprite::setPosicion(Vector2f position) {
+void sprite::setPosicion(sf::Vector2f position) {
     _sprPersonaje->setPosition(position);
 }
 
@@ -31,11 +28,11 @@ void sprite::setCantY(int cantY) {
     _cantY = cantY;
 }
 
-void sprite::setFrameSize(Vector2f frameSize) {
+void sprite::setFrameSize(sf::Vector2f frameSize) {
     _frameSize = frameSize;
 }
 
-void sprite::setFrameActual(Vector2f frameActual) {
+void sprite::setFrameActual(sf::Vector2f frameActual) {
     _frameActual = frameActual;
 }
 
@@ -59,20 +56,20 @@ int sprite::getCantY() {
     return _cantY;
 }
 
-Vector2f sprite::getFrameSize() {
+sf::Vector2f sprite::getFrameSize() {
     return _frameSize;
 }
 
-Vector2f sprite::getFrameActual() {
+sf::Vector2f sprite::getFrameActual() {
     return _frameActual;
 }
 
-Sprite sprite::getSprite() {
+sf::Sprite sprite::getSprite() {
     return *_sprPersonaje;
 }
 
 
-Vector2f sprite::getPosicion() {
+sf::Vector2f sprite::getPosicion() {
     return _sprPersonaje->getPosition();
 }
 
@@ -88,7 +85,7 @@ int sprite::getFrameY() {
 
 ///Métodos
 void sprite::seleccionarFrame() {
-    IntRect rectangulo((int)(_frameActual.x) * _frameSize.x, _frameActual.y* _frameSize.y, _frameSize.x, _frameSize.y); /// Ubico el sprite que necesito recortar dentro de la textura.
+    sf::IntRect rectangulo((int)(_frameActual.x) * _frameSize.x, _frameActual.y* _frameSize.y, _frameSize.x, _frameSize.y); /// Ubico el sprite que necesito recortar dentro de la textura.
     _sprPersonaje->setTextureRect(rectangulo); ///Recorto la textura.
 }
 
