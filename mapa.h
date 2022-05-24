@@ -1,14 +1,16 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include "bloque.h"
+#include "colisionable.h"
 
 
 class mapa : public sf::Drawable, public sf::Transformable
 {
 public:
 	mapa(int sprClase, int tilewidth, int tileheight, int mapwidth, int mapheight); /// Constructor
-	bool		  existeBloqueo(sf::Vector2f casilla); /// devuelve si esa casilla está marcada como que existe un objeto o no.
 	void		  draw(sf::RenderTarget& target, sf::RenderStates states) const override; /// Polimorfismo del método draw en Drawable.
 	void		  cargar();
+	bool	      isCollision(colisionable& obj);
 
 private:
 	sf::Texture*	_txtMapa; ///textura del mapa
@@ -17,7 +19,7 @@ private:
 	int				_sprActual; /// Nro de sprite actual
 	int				_mapWidth; // Ancho del mapa en tiles
 	int				_mapHeight; // Alto del mapa en tiles
-	sf::Sprite		_tilemapSprite[48][64];/// Matriz de sprites
+	bloque			_tilemapSprite[48][64];/// Matriz de sprites
 	int				_mapa[48][64]	= {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 										1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 										1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,

@@ -149,8 +149,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="archivos.cpp" />
+    <ClCompile Include="bloque.cpp" />
     <ClCompile Include="colisionable.cpp" />
     <ClCompile Include="configuracion.cpp" />
+    <ClCompile Include="Controller.cpp" />
     <ClCompile Include="enemigo.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="interfazJuego.cpp" />
@@ -165,8 +167,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="archivos.h" />
+    <ClInclude Include="bloque.h" />
     <ClInclude Include="colisionable.h" />
     <ClInclude Include="configuracion.h" />
+    <ClInclude Include="Controller.h" />
     <ClInclude Include="enemigo.h" />
     <ClInclude Include="GUI.h" />
     <ClInclude Include="juegoProyectil.h" />
@@ -181,6 +185,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />
+    <None Include="ClassDiagram11.cd" />
     <None Include="Diagrama de Clases.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

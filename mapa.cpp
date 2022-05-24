@@ -13,25 +13,17 @@ mapa::mapa(int sprClase, int tilewidth, int tileheight, int mapwidth, int maphei
     cargar();
 }
 
-bool mapa::existeBloqueo(sf::Vector2f casilla)
-{   
-    /*
-    if (_mapa[(int)casilla.x / _tilewidth][(int)casilla.y / _tileheight] == 8) {
-        return false;
-    } 
-    */
-    return false;
-}
 
-
-void mapa::draw(sf::RenderTarget& target, sf::RenderStates states) const 
-{
-    for (int y = 0; y < _mapHeight; y++){
-        for (int x = 0; x < _mapWidth; x++){     
-            states.transform *= getTransform();
-            target.draw(_tilemapSprite[x][y],states);
+bool mapa::isCollision(colisionable& obj) {
+    sf::FloatRect auxRect = obj.getBounds();
+    for (int y = 0; y < _mapHeight; y++) {
+        for (int x = 0; x < _mapWidth; x++) {     
+            if (_tilemapSprite[x][y].getBounds().intersects(obj.getBounds()) && _tilemapSprite[x][y].esSolido()) {
+                return true;
+           }
         }
-    } 
+    }
+    return false;
 }
 
 
@@ -39,20 +31,31 @@ void mapa::cargar()
 { 
     for (int y = 0; y < _mapHeight; y++) {
         for (int x = 0; x < _mapWidth; x++) { 
-            _tilemapSprite[x][y].setTexture(*_txtMapa);
+            _tilemapSprite[x][y].setTextureBloque(*_txtMapa);
             int id = _mapa[x][y]-2;
             if (id != -1) {
                 int columnas = _txtMapa->getSize().x / _tilewidth;
                 int xAux = id % columnas;
                 int yAux = id / columnas;
-                _tilemapSprite[x][y].setTextureRect(sf::IntRect(xAux * _tilewidth, yAux * _tileheight, _tilewidth, _tileheight));
+                _tilemapSprite[x][y].setTextureRectBloque(sf::IntRect(xAux * _tilewidth, yAux * _tileheight, _tilewidth, _tileheight));
             }
             else {
-                _tilemapSprite[x][y].setColor(sf::Color::Black);
-            }         
-            _tilemapSprite[x][y].setPosition(sf::Vector2f(y* _tileheight, x * _tilewidth));
+                _tilemapSprite[x][y].setColorBloque(sf::Color::Black);
+            }
+            if (id != 6) { /// Si no es el piso, se establece bloqueado para el personaje.
+                _tilemapSprite[x][y].setSolido(true);
+            }
+            _tilemapSprite[x][y].setPosition(sf::Vector2f((float)y * _tileheight, (float)x * _tilewidth));
         }
     }
 }
 
-
+void mapa::draw(sf::RenderTarget& target, sf::RenderStates states) const
+{    
+    for (int y = 0; y < _mapHeight; y++) {
+        for (int x = 0; x < _mapWidth; x++) {
+            states.transform *= getTransform();
+            target.draw(_tilemapSprite[x][y], states);
+        }
+    }
+}

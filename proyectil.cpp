@@ -9,12 +9,10 @@ proyectil::proyectil(sf::Vector2f posicion) {
     respawn(posicion);
 }
 
-
 sprite proyectil::getSprite()
 {
     return *_sprProyectil;
 }
-
 
 void proyectil::setVelocidad(sf::Vector2f vel)
 {
