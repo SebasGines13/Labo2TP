@@ -13,8 +13,7 @@ personaje::personaje(int sprClase, int cantX, int cantY, sf::Vector2f frameActua
     _pasos.setBuffer(_buffer);
     _pasos.setVolume(10.f);
     _pasos.setPitch(1.f);
-    _coolDown = 5;
-    move(200.f, 200.f);
+    _coolDown = 30;
 }
 
 ///sets
@@ -23,20 +22,24 @@ void personaje::setVelDesplaz(float velDesplaz) {
 }
 
 ///gets
-sprite personaje::getSpritePersonaje(){
+const sprite& personaje::getSpritePersonaje(){
     return *_sprPersonaje;
 }
 
-float personaje::getVelDesplaz(){
+const float& personaje::getVelDesplaz(){
     return _velDesplaz;
 }
 
-unsigned int  personaje::getDireccion(){
+const unsigned int&  personaje::getDireccion(){
     return _direccion;
 }
 
 juegoProyectil& personaje::getJuegoActual(){
     return _juego;
+}
+
+const sf::Vector2f& personaje::getVelocidad() {
+    return _velocidad;
 }
 
 
@@ -54,32 +57,36 @@ void personaje::animar() {
 }
 
 void personaje::update() {
+    _velocidad = {};
     ///Chequeo las teclas
     _estado = (unsigned int)Estados::Quieto; // inicio con el jugador asumiéndolo como que no está caminando.
     if (_controller.isPressed(Controller::Buttons::Left)) {
         _estado = (unsigned int)Estados::Caminando; // jugador comienza a caminar
         _direccion = (unsigned int)Direcciones::Left;
         _sprPersonaje->setFrameY(_direccion);
-        move(-_velDesplaz, 0);
+        _velocidad.x = -_velDesplaz;
     }
-    if (_controller.isPressed(Controller::Buttons::Right)) {
+    else if (_controller.isPressed(Controller::Buttons::Right)) {
         _estado = (unsigned int)Estados::Caminando; // jugador comienza a caminar
         _direccion = (unsigned int)Direcciones::Right;
         _sprPersonaje->setFrameY(_direccion);
-        move(_velDesplaz, 0);
+        _velocidad.x = _velDesplaz;
     }
-    if (_controller.isPressed(Controller::Buttons::Up)) {
+    else if (_controller.isPressed(Controller::Buttons::Up)) {
         _estado = (unsigned int)Estados::Caminando; // jugador comienza a caminar
         _direccion = (unsigned int)Direcciones::Up;
         _sprPersonaje->setFrameY(_direccion);
-        move(0, -_velDesplaz);
+        _velocidad.y = -_velDesplaz;
     }
-    if (_controller.isPressed(Controller::Buttons::Down)) {
+    else if (_controller.isPressed(Controller::Buttons::Down)) {
         _estado = (unsigned int)Estados::Caminando; // jugador comienza a caminar
         _direccion = (unsigned int)Direcciones::Down;
         _sprPersonaje->setFrameY(_direccion);
-        move(0, _velDesplaz);
+        _velocidad.y = _velDesplaz;
     }
+
+    move(_velocidad);
+
     if (_controller.isPressed(Controller::Buttons::ButtonShoot) && (_coolDown == 0)) {
         disparar();
     }

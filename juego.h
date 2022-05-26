@@ -29,4 +29,5 @@ class juego: public juegoProyectil
         void update(); ///Lógicas y reglas propias del juego.
         void draw(); ///Dibuja en pantalla los elementos.
         void crearProyectil(sf::Vector2f posicion) override; /// Para que disparar un proyectil
+        void colisionConBloques();
 };

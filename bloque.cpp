@@ -1,38 +1,39 @@
 #include "bloque.h"
 
-bloque::bloque(){
-    _solido = false;
+bloque::bloque()
+    :_solid(false)
+{
+    _body.setSize(sf::Vector2f(16.f, 16.f));
+    /*_texture.loadFromFile("img/dungeon.png");
+    _body.setTexture(&_texture);
+    */
 }
 
-void bloque::draw(sf::RenderTarget& target, sf::RenderStates states) const{
+void bloque::draw(sf::RenderTarget& target, sf::RenderStates states) const
+{
     states.transform *= getTransform();
-    target.draw(_sprite, states);
+    target.draw(_body, states);
 }
 
-bool bloque::esSolido(){
-    return _solido;
-}
-
-void bloque::setSolido(bool solido){
-    _solido = solido;
-}
-
-sf::FloatRect bloque::getBounds(){ /// dimensiones del bloque
-    sf::FloatRect rect = sf::FloatRect(sf::Vector2f(getPosition().x, getPosition().y), sf::Vector2f(16.f, 16.f));
+sf::FloatRect bloque::getBounds()/// dimensiones del bloque
+{ 
+    sf::FloatRect rect = _body.getGlobalBounds();
+    rect.left = getPosition().x;
+    rect.top = getPosition().y;
     return rect;
 }
 
+bool bloque::isSolid() const
+{
+    return _solid;
+}
 
-void bloque::setTextureBloque(sf::Texture& txtMapa) {
-    _sprite.setTexture(txtMapa);
+void bloque::setTextureBloque(sf::Texture& textura)
+{
+    _body.setTexture(&textura);
 }
 
 void bloque::setTextureRectBloque(sf::IntRect rect)
 {
-    _sprite.setTextureRect(rect);
-}
-
-void bloque::setColorBloque(sf::Color color)
-{
-    _sprite.setColor(color);
+    _body.setTextureRect(rect);
 }

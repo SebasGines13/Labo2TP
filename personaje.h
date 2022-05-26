@@ -29,10 +29,11 @@ class personaje: public sf::Drawable, public sf::Transformable, public colisiona
         //sets
         void            setVelDesplaz(float velDesplaz);
         //gets
-        sprite          getSpritePersonaje(); ///obtengo el objeto sprite
-        float           getVelDesplaz();
-        unsigned int    getDireccion();
-        juegoProyectil& getJuegoActual(); /// retorna referencia la juego actual.
+        const sprite&           getSpritePersonaje(); ///obtengo el objeto sprite
+        const float&            getVelDesplaz();
+        const unsigned int&     getDireccion();
+        const sf::Vector2f&     getVelocidad();
+        juegoProyectil&         getJuegoActual(); /// retorna referencia la juego actual.
         //Métodos
         void            setSentidoX(int frame); /// Para conocer si está mirando hacia la izquierda o derecha.
         void            setSentidoY(int frame); /// Para conocer si está mirando hacia arriba o abajo

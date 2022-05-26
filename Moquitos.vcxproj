@@ -150,6 +150,7 @@
   <ItemGroup>
     <ClCompile Include="archivos.cpp" />
     <ClCompile Include="bloque.cpp" />
+    <ClCompile Include="bloqueSolido.cpp" />
     <ClCompile Include="colisionable.cpp" />
     <ClCompile Include="configuracion.cpp" />
     <ClCompile Include="Controller.cpp" />
@@ -168,6 +169,7 @@
   <ItemGroup>
     <ClInclude Include="archivos.h" />
     <ClInclude Include="bloque.h" />
+    <ClInclude Include="bloqueSolido.h" />
     <ClInclude Include="colisionable.h" />
     <ClInclude Include="configuracion.h" />
     <ClInclude Include="Controller.h" />

@@ -1,6 +1,5 @@
 #include "proyectil.h"
 
-
 ///Constructor
 proyectil::proyectil(sf::Vector2f posicion) {
     _sprProyectil = new sprite(13, 5, 1, sf::Vector2f(0, 0), .5f);
@@ -34,7 +33,8 @@ void proyectil::respawn(sf::Vector2f posicion) {
 
 sf::FloatRect proyectil::getBounds()
 {
-    return _sprProyectil->getSprite().getGlobalBounds();
+    sf::FloatRect rect = sf::FloatRect(sf::Vector2f(getPosition().x, getPosition().y), sf::Vector2f(_sprProyectil->getFrameSize().x, _sprProyectil->getFrameSize().y));
+    return rect;
 }
 
 void proyectil::draw(sf::RenderTarget& target, sf::RenderStates states) const
