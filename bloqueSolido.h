@@ -1,9 +1,9 @@
 #pragma once
-#include "bloque.h"
-class bloqueSolido :
-    public bloque
+#include "Bloque.h"
+class BloqueSolido :
+    public Bloque
 {
 public:
-    bloqueSolido();
+    BloqueSolido();
 };
 

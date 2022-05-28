@@ -1,8 +1,8 @@
-#include "mapa.h"
-#include "bloqueSolido.h"
+#include "Mapa.h"
+#include "BloqueSolido.h"
 
 ///Constructor
-mapa::mapa(int sprClase, int tilewidth, int tileheight, int mapwidth, int mapheight) 
+Mapa::Mapa(int sprClase, int tilewidth, int tileheight, int mapwidth, int mapheight)
 {
     std::string path = "img/mapa" + std::to_string(sprClase) + ".png"; //contruyo la ruta para conocer la imagen actual del mapa.
     _sprActual = sprClase; //nro del sprite actual
@@ -13,7 +13,7 @@ mapa::mapa(int sprClase, int tilewidth, int tileheight, int mapwidth, int maphei
     _mapWidth = mapwidth;
     _mapHeight = mapheight;
     int i = 0;
-    bloque* pBloque = nullptr;
+    Bloque* pBloque = nullptr;
     for (int f = 0; f < _mapHeight; f++) { 
         for (int c = 0; c < _mapWidth; c++) { 
             int columnas = _txtMapa->getSize().x / _tilewidth;
@@ -22,14 +22,14 @@ mapa::mapa(int sprClase, int tilewidth, int tileheight, int mapwidth, int maphei
             int yAux = id / columnas;
             switch (_vMapa[i++])
             {
-            case 34: case 35: case 36: case 98: case 99: case 100: case 114: case 115: case 116: case 110: case 184: case 167: case 168: case 183: case 185: case 182: case 186: case 181: case 50:
-                pBloque = new bloqueSolido();
+            case 34: case 35: case 36: case 62: case 98: case 99: case 100: case 114: case 115: case 116: case 110: case 184: case 167: case 168: case 183: case 185: case 182: case 186: case 181: case 50:
+                pBloque = new BloqueSolido();
                 break;
             case 171:
                 _spawnPlayer.x = (float)c;
                 _spawnPlayer.y = (float)f;
             default:
-                pBloque = new bloque();
+                pBloque = new Bloque();
                 break;
             }
             pBloque->setTextureBloque(*_txtMapa);
@@ -40,48 +40,30 @@ mapa::mapa(int sprClase, int tilewidth, int tileheight, int mapwidth, int maphei
     }
 }
 
-void mapa::draw(sf::RenderTarget& target, sf::RenderStates states) const
+void Mapa::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {    
-    for (bloque* pBloque : _bloques) {
+    for (Bloque* pBloque : _bloques) {
         states.transform *= getTransform();
         target.draw(*pBloque, states);
     }    
 }
 
-sf::Vector2f mapa::getPlayerSpawn() const
+sf::Vector2f Mapa::getPlayerSpawn() const
 {
     return _spawnPlayer;
 }
 
-int mapa::getTileWidth() const
+int Mapa::getTileWidth() const
 {
     return _tilewidth;
 }
 
-int mapa::getTilHeight() const
+int Mapa::getTilHeight() const
 {
     return _tileheight;
 }
 
-std::vector<bloque*> mapa::getBloques() const
+std::vector<Bloque*> Mapa::getBloques() const
 {
     return _bloques;
 }
-
-
-
-/* codigo viejo de asignación de sprites --- NO BORRAR
-int id = _vMapa[x][y]-2;
-            if (id != -1) {
-                int columnas = _txtMapa->getSize().x / _tilewidth;
-                int xAux = id % columnas;
-                int yAux = id / columnas;
-                _tilemapSprite[x][y].setTextureRectBloque(sf::IntRect(xAux * _tilewidth, yAux * _tileheight, _tilewidth, _tileheight));
-            }
-            else {
-                _tilemapSprite[x][y].setColorBloque(sf::Color::Black);
-            }
-            if (id != 6) { /// Si no es el piso, se establece bloqueado para el personaje.
-                _tilemapSprite[x][y].setSolido(true);
-            }
-*/

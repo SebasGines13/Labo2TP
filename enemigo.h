@@ -1,13 +1,13 @@
 #pragma once
 #include "SFML/Graphics.hpp"
-#include "sprite.h"
+#include "Sprite.h"
 
-class enemigo {
+class Enemigo {
 private:
-    sprite*      _sprMago;
+    Sprite*      _sprMago;
     sf::Texture  _txtMago;
 public:
-    enemigo(sf::Vector2f posicion);
-    sprite getSprite();
+    Enemigo(sf::Vector2f posicion);
+    Sprite getSprite();
 };
 

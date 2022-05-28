@@ -1,2 +1,151 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ClassDiagram /> 
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="Archivos" Collapsed="true">
+    <Position X="15.75" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Archivos.h</FileName>
+      <NewMemberFileName>archivos.h</NewMemberFileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Bloque">
+    <Position X="5.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAQAEAAAAAAIAAAACAAAAAAAAAAgAAQAAEgA=</HashCode>
+      <FileName>Bloque.h</FileName>
+      <NewMemberFileName>bloque.h</NewMemberFileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BloqueSolido">
+    <Position X="5.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>BloqueSolido.h</FileName>
+      <NewMemberFileName>bloqueSolido.h</NewMemberFileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IColisionable">
+    <Position X="3.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=</HashCode>
+      <FileName>IColisionable.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Configuracion" Collapsed="true">
+    <Position X="8.75" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Configuracion.h</FileName>
+      <NewMemberFileName>configuracion.h</NewMemberFileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Controller">
+    <Position X="12.25" Y="0.5" Width="1.75" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="Controller::Buttons">
+        <TypeIdentifier>
+          <NewMemberFileName>Controller.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAAAAAAAAAAAAAAAAABAAAAAAAICAAAAAA=</HashCode>
+      <FileName>Controller.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Enemigo">
+    <Position X="14" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAABAAAAAAAAAAIBAAAAAAAQAAAAA=</HashCode>
+      <FileName>Enemigo.h</FileName>
+      <NewMemberFileName>enemigo.h</NewMemberFileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GUI" Collapsed="true">
+    <Position X="7" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>GUI.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="JuegoProyectil">
+    <Position X="0.5" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAA=</HashCode>
+      <FileName>JuegoProyectil.h</FileName>
+      <NewMemberFileName>juegoProyectil.h</NewMemberFileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="juego">
+    <Position X="2.75" Y="2.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAAAACABAAIAAAEAAAQgAAAAAEEAAEAEhAA=</HashCode>
+      <FileName>Juego.h</FileName>
+      <NewMemberFileName>juego.h</NewMemberFileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Mapa">
+    <Position X="9.5" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAACAQEAAAAAEgAIAAAAAAAAAAIgIQgAAIQAAAAA=</HashCode>
+      <FileName>Mapa.h</FileName>
+      <NewMemberFileName>mapa.h</NewMemberFileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Menu" Collapsed="true">
+    <Position X="10.5" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Menu.h</FileName>
+      <NewMemberFileName>menu.h</NewMemberFileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="personaje">
+    <Position X="0.5" Y="1.75" Width="2" />
+    <NestedTypes>
+      <Enum Name="personaje::Estados" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>personaje.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="personaje::Direcciones" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>personaje.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AQAADAggIAAACAAAAAKgAAAEQAAkACACBAAgAEAEBAI=</HashCode>
+      <FileName>Personaje.h</FileName>
+      <NewMemberFileName>personaje.h</NewMemberFileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="proyectil">
+    <Position X="7.25" Y="1.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAACABgAAAAAAAAAhIAAAAAAAAgACQAAAAAAAAEAIA=</HashCode>
+      <FileName>Proyectil.h</FileName>
+      <NewMemberFileName>proyectil.h</NewMemberFileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Ranking" Collapsed="true">
+    <Position X="12.25" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Ranking.h</FileName>
+      <NewMemberFileName>ranking.h</NewMemberFileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sprite">
+    <Position X="14.25" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>gAAgAIAAJRAAACFEABREAEAkAAAAAEAQAgAAAAAACEA=</HashCode>
+      <FileName>Sprite.h</FileName>
+      <NewMemberFileName>sprite.h</NewMemberFileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

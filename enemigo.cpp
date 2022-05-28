@@ -1,11 +1,11 @@
-#include "enemigo.h"
+#include "Enemigo.h"
 
-enemigo::enemigo(sf::Vector2f posicion) {
-    _sprMago = new sprite(20, 16, 4, sf::Vector2f(9, 0), .1f);
+Enemigo::Enemigo(sf::Vector2f posicion) {
+    _sprMago = new Sprite(20, 16, 4, sf::Vector2f(9, 0), .1f);
     _sprMago->setPosicion(posicion);
 }
 
-sprite enemigo::getSprite() {
+Sprite Enemigo::getSprite() {
     return *_sprMago;
 }
 

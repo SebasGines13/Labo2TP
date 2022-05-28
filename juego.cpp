@@ -1,39 +1,63 @@
 #include <iostream>
-#include "juego.h"
+#include "Juego.h"
 
-juego::juego(sf::Vector2u resolucion) 
+Juego::Juego(sf::Vector2u resolucion)
 { //Constructor
 	_ventana = new sf::RenderWindow(sf::VideoMode(resolucion.x, resolucion.y), "Dungeon ++ v0.6");
 	_fps = 60;
 	_ventana->setFramerateLimit(_fps);
 	_gameOver = false;
-	_mapa = new mapa(1, 16, 16, 50, 40); //Inicializo la variable dinámica para el mapa.
-	_j1 = new personaje(11, 4, 4, sf::Vector2f(0, 0), *this, _controller); ///Inicilizo la variable dinámica de jugador.
+	_mapa = new Mapa(1, 16, 16, 50, 40); //Inicializo la variable dinámica para el mapa.
+	_j1 = new Personaje(11, 4, 4, sf::Vector2f(0, 0), *this, _controller); ///Inicilizo la variable dinámica de jugador.
 	_j1->setPosition(sf::Vector2f(_mapa->getPlayerSpawn().x * _mapa->getTileWidth(), _mapa->getPlayerSpawn().y * _mapa->getTilHeight())); /// Ubico el personaje de acuerdo a spawn definido en el mapa.
 	//_mago1 = new enemigo(sf::Vector2f(800, 400)); /// Inicializo la variable dinámica de jugador
-	
 	_music.openFromFile("audio/fondo.wav");
 	_music.play();
 	_music.setVolume(5.f);
+	_menu = new Menu();
 	gameLoop();
 }
 
-void juego::gameLoop() 
+void Juego::gameLoop()
 {
 	sf::Event event;
-	while (_ventana->isOpen()) {
-		while (_ventana->pollEvent(event)) {
+	while (_ventana->isOpen() && !_gameOver) {
+		while (_ventana->pollEvent(event) ) {
 			if (event.type == sf::Event::Closed) {
 				_ventana->close();
 			}
+			else {
+				_menu->command();
+			}
 		}
-		command();
-		update();
-		draw();
+		
+		_menu->update();
+		_ventana->clear();
+		if (_menu->getOpcMenuPress()[(int)Menu::OpcMenu::Play]) {
+			command();
+			update();
+			draw();
+		}
+		else if (_menu->getOpcMenuPress()[(int)Menu::OpcMenu::Exit]) {
+			_gameOver = true;
+		}
+		else if (_menu->getOpcMenuPress()[(int)Menu::OpcMenu::Ranking]) {
+
+		}
+		else if (_menu->getOpcMenuPress()[(int)Menu::OpcMenu::Config]) {
+
+		}
+		else if (_menu->getOpcMenuPress()[(int)Menu::OpcMenu::Credit]) {
+
+		}
+		else {
+			_ventana->draw(*_menu);
+			_ventana->display();
+		}
 	}
 }
 
-void juego::command()
+void Juego::command()
 {
 	_controller.reset();
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) { /// Izquierda
@@ -62,16 +86,16 @@ void juego::command()
 	}
 }
 
-void juego::update() 
+void Juego::update()
 {   ///Lógicas y reglas propias del juego.
 	/// Actualiza las físicas del jugador.
 	_j1->update();
 	colisionConBloques();
 
 	/// iterator para recorrer todo la lista de proyectiles y actualizarlos.
-	std::list<proyectil>::iterator i = _proyectiles.begin(); 
+	std::list<Proyectil>::iterator i = _proyectiles.begin(); 
 	while (i != _proyectiles.end()) {
-		proyectil& p = (*i);
+		Proyectil& p = (*i);
 		p.update();
 		if (p.getPosition().x > _ventana->getSize().x) { /// si se pasa de la pantalla lo elimino de la lista
 			i = _proyectiles.erase(i);
@@ -93,18 +117,18 @@ void juego::update()
 	}	
 }
 
-void juego::draw()
+void Juego::draw()
 {	///Dibuja en pantalla los elementos.
 	_ventana->clear(); ///Limpio la pantalla con lo que había antes.
 	_ventana->draw(*_mapa); ///Dibujo el mapa
 	_ventana->draw(*_j1); /// Dibujo el personaje.	
-	for (proyectil& p : _proyectiles) { /// recorro con un for each la lista de proyectiles y las dibujo
+	for (Proyectil& p : _proyectiles) { /// recorro con un for each la lista de proyectiles y las dibujo
 		_ventana->draw(p);
 	}
 	_ventana->display();//Muestro la ventana.
 }
 
-void juego::crearProyectil(sf::Vector2f posicion) 
+void Juego::crearProyectil(sf::Vector2f posicion)
 {
 	static sf::SoundBuffer _bufferP;  /// buffer para el sonido
 	static sf::Sound _sonido;   /// canal utilizado por el buffer
@@ -113,13 +137,13 @@ void juego::crearProyectil(sf::Vector2f posicion)
 	_sonido.setVolume(20.f);
 	_sonido.setPitch(1.f);
 	_sonido.play();
-	_proyectiles.push_back(proyectil(posicion));
+	_proyectiles.push_back(Proyectil(posicion));
 }
 
-void juego::colisionConBloques() /// el juego evalua cuando el personaje colisiona con los bloques y qué hacer con él en caso de que sea sólido o no.
+void Juego::colisionConBloques() /// el juego evalua cuando el personaje colisiona con los bloques y qué hacer con él en caso de que sea sólido o no.
 {
-	const std::vector<bloque*>& bloques = _mapa->getBloques();
-	for (bloque* pBloque : bloques) {
+	const std::vector<Bloque*>& bloques = _mapa->getBloques();
+	for (Bloque* pBloque : bloques) {
 		if (pBloque->isSolid() && _j1->isCollision(*pBloque)) {
 			if (_j1->getVelocidad().y > 0) {
 				_j1->move(0, -(_j1->getBounds().top + _j1->getBounds().height - pBloque->getBounds().top));
@@ -135,4 +159,9 @@ void juego::colisionConBloques() /// el juego evalua cuando el personaje colisio
 			}
 		}
 	}
+}
+
+sf::RenderWindow* Juego::getVentana()
+{
+	return _ventana;
 }

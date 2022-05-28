@@ -1,6 +1,6 @@
-#include "bloqueSolido.h"
+#include "BloqueSolido.h"
 
-bloqueSolido::bloqueSolido()
+BloqueSolido::BloqueSolido()
 {
 	_solid = true;
 }

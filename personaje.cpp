@@ -1,10 +1,10 @@
-#include "personaje.h"
+#include "Personaje.h"
 
 ///Constructor
-personaje::personaje(int sprClase, int cantX, int cantY, sf::Vector2f frameActual, juegoProyectil& juego, Controller& controller)
+Personaje::Personaje(int sprClase, int cantX, int cantY, sf::Vector2f frameActual, JuegoProyectil& juego, Controller& controller)
     : _juego(juego), _controller(controller)
 {
-    _sprPersonaje = new sprite(sprClase, cantX, cantY, frameActual, .1f);
+    _sprPersonaje = new Sprite(sprClase, cantX, cantY, frameActual, .1f);
     _velDesplaz = 3.5f;
     _velocidad = sf::Vector2f(0, 0);
     _estado = (unsigned int)Estados::Quieto;
@@ -17,46 +17,46 @@ personaje::personaje(int sprClase, int cantX, int cantY, sf::Vector2f frameActua
 }
 
 ///sets
-void personaje::setVelDesplaz(float velDesplaz) {
+void Personaje::setVelDesplaz(float velDesplaz) {
     _velDesplaz = velDesplaz;
 }
 
 ///gets
-const sprite& personaje::getSpritePersonaje(){
+const Sprite& Personaje::getSpritePersonaje(){
     return *_sprPersonaje;
 }
 
-const float& personaje::getVelDesplaz(){
+const float& Personaje::getVelDesplaz(){
     return _velDesplaz;
 }
 
-const unsigned int&  personaje::getDireccion(){
+const unsigned int& Personaje::getDireccion(){
     return _direccion;
 }
 
-juegoProyectil& personaje::getJuegoActual(){
+JuegoProyectil& Personaje::getJuegoActual(){
     return _juego;
 }
 
-const sf::Vector2f& personaje::getVelocidad() {
+const sf::Vector2f& Personaje::getVelocidad() {
     return _velocidad;
 }
 
 
 ///Métodos
-void personaje::setSentidoX(int frame) {
+void Personaje::setSentidoX(float frame) {
     _sprPersonaje->setFrameX(frame);
 }
 
-void personaje::setSentidoY(int frame) {
+void Personaje::setSentidoY(float frame) {
     _sprPersonaje->setFrameY(frame);
 }
 
-void personaje::animar() {
+void Personaje::animar() {
     _sprPersonaje->animarFrame();
 }
 
-void personaje::update() {
+void Personaje::update() {
     _velocidad = {};
     ///Chequeo las teclas
     _estado = (unsigned int)Estados::Quieto; // inicio con el jugador asumiéndolo como que no está caminando.
@@ -105,19 +105,19 @@ void personaje::update() {
 }
 
 
-void personaje::disparar()
+void Personaje::disparar()
 {
     getJuegoActual().crearProyectil(getPosition());
     _coolDown = 30;
 }
 
-void personaje::draw(sf::RenderTarget& target, sf::RenderStates states) const
+void Personaje::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
     states.transform *= getTransform();
     target.draw(_sprPersonaje->getSprite(), states);
 }
 
-sf::FloatRect personaje::getBounds()
+sf::FloatRect Personaje::getBounds()
 {
     sf::FloatRect rect = sf::FloatRect(sf::Vector2f(getPosition().x, getPosition().y), sf::Vector2f(_sprPersonaje->getFrameSize().x, _sprPersonaje->getFrameSize().y));
     return rect;

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -148,47 +148,45 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="archivos.cpp" />
-    <ClCompile Include="bloque.cpp" />
-    <ClCompile Include="bloqueSolido.cpp" />
-    <ClCompile Include="colisionable.cpp" />
-    <ClCompile Include="configuracion.cpp" />
+    <ClCompile Include="Archivos.cpp" />
+    <ClCompile Include="Bloque.cpp" />
+    <ClCompile Include="BloqueSolido.cpp" />
+    <ClCompile Include="IColisionable.cpp" />
+    <ClCompile Include="Configuracion.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="enemigo.cpp" />
     <ClCompile Include="GUI.cpp" />
-    <ClCompile Include="interfazJuego.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="juego.cpp" />
-    <ClCompile Include="mapa.cpp" />
-    <ClCompile Include="menu.cpp" />
-    <ClCompile Include="personaje.cpp" />
-    <ClCompile Include="proyectil.cpp" />
-    <ClCompile Include="ranking.cpp" />
-    <ClCompile Include="sprite.cpp" />
+    <ClCompile Include="JuegoProyectil.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Juego.cpp" />
+    <ClCompile Include="Mapa.cpp" />
+    <ClCompile Include="Menu.cpp" />
+    <ClCompile Include="Personaje.cpp" />
+    <ClCompile Include="Proyectil.cpp" />
+    <ClCompile Include="Ranking.cpp" />
+    <ClCompile Include="Sprite.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="archivos.h" />
-    <ClInclude Include="bloque.h" />
-    <ClInclude Include="bloqueSolido.h" />
-    <ClInclude Include="colisionable.h" />
-    <ClInclude Include="configuracion.h" />
+    <ClInclude Include="Archivos.h" />
+    <ClInclude Include="Bloque.h" />
+    <ClInclude Include="BloqueSolido.h" />
+    <ClInclude Include="IColisionable.h" />
+    <ClInclude Include="Configuracion.h" />
     <ClInclude Include="Controller.h" />
-    <ClInclude Include="enemigo.h" />
+    <ClInclude Include="Enemigo.h" />
     <ClInclude Include="GUI.h" />
-    <ClInclude Include="juegoProyectil.h" />
-    <ClInclude Include="juego.h" />
-    <ClInclude Include="mapa.h" />
-    <ClInclude Include="menu.h" />
-    <ClInclude Include="personaje.h" />
-    <ClInclude Include="proyectil.h" />
-    <ClInclude Include="ranking.h" />
-    <ClInclude Include="resource.h" />
-    <ClInclude Include="sprite.h" />
+    <ClInclude Include="JuegoProyectil.h" />
+    <ClInclude Include="Juego.h" />
+    <ClInclude Include="Mapa.h" />
+    <ClInclude Include="Menu.h" />
+    <ClInclude Include="Personaje.h" />
+    <ClInclude Include="Proyectil.h" />
+    <ClInclude Include="Ranking.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="Sprite.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />
-    <None Include="ClassDiagram11.cd" />
-    <None Include="Diagrama de Clases.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

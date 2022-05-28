@@ -1,1 +1,1 @@
-#include "configuracion.h"
+#include "Configuracion.h"

@@ -1,21 +1,18 @@
-#include "bloque.h"
+#include "Bloque.h"
 
-bloque::bloque()
+Bloque::Bloque()
     :_solid(false)
 {
     _body.setSize(sf::Vector2f(16.f, 16.f));
-    /*_texture.loadFromFile("img/dungeon.png");
-    _body.setTexture(&_texture);
-    */
 }
 
-void bloque::draw(sf::RenderTarget& target, sf::RenderStates states) const
+void Bloque::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
     states.transform *= getTransform();
     target.draw(_body, states);
 }
 
-sf::FloatRect bloque::getBounds()/// dimensiones del bloque
+sf::FloatRect Bloque::getBounds()/// dimensiones del bloque
 { 
     sf::FloatRect rect = _body.getGlobalBounds();
     rect.left = getPosition().x;
@@ -23,17 +20,17 @@ sf::FloatRect bloque::getBounds()/// dimensiones del bloque
     return rect;
 }
 
-bool bloque::isSolid() const
+bool Bloque::isSolid() const
 {
     return _solid;
 }
 
-void bloque::setTextureBloque(sf::Texture& textura)
+void Bloque::setTextureBloque(sf::Texture& textura)
 {
     _body.setTexture(&textura);
 }
 
-void bloque::setTextureRectBloque(sf::IntRect rect)
+void Bloque::setTextureRectBloque(sf::IntRect rect)
 {
     _body.setTextureRect(rect);
 }
