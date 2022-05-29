@@ -3,18 +3,18 @@
 
 Juego::Juego(sf::Vector2u resolucion)
 { //Constructor
-	_ventana = new sf::RenderWindow(sf::VideoMode(resolucion.x, resolucion.y), "Dungeon ++ v0.6");
+	_ventana = new sf::RenderWindow(sf::VideoMode(resolucion.x, resolucion.y), "Dungeon ++ v0.7");
 	_fps = 60;
 	_ventana->setFramerateLimit(_fps);
 	_gameOver = false;
 	_mapa = new Mapa(1, 16, 16, 50, 40); //Inicializo la variable dinámica para el mapa.
 	_j1 = new Personaje(11, 4, 4, sf::Vector2f(0, 0), *this, _controller); ///Inicilizo la variable dinámica de jugador.
 	_j1->setPosition(sf::Vector2f(_mapa->getPlayerSpawn().x * _mapa->getTileWidth(), _mapa->getPlayerSpawn().y * _mapa->getTilHeight())); /// Ubico el personaje de acuerdo a spawn definido en el mapa.
-	//_mago1 = new enemigo(sf::Vector2f(800, 400)); /// Inicializo la variable dinámica de jugador
 	_music.openFromFile("audio/fondo.wav");
 	_music.play();
-	_music.setVolume(5.f);
+	_music.setVolume(10.f);
 	_menu = new Menu();
+	_primerIngreso = true;
 	gameLoop();
 }
 
@@ -29,11 +29,18 @@ void Juego::gameLoop()
 			else {
 				_menu->command();
 			}
-		}
-		
+		}		
 		_menu->update();
-		_ventana->clear();
 		if (_menu->getOpcMenuPress()[(int)Menu::OpcMenu::Play]) {
+			if (_primerIngreso) {
+				do {
+					_primerIngreso = false;
+					_ventana->clear();
+					_ventana->draw(_menu->getImgControles());
+					_ventana->display();
+				} while (!sf::Keyboard::isKeyPressed(sf::Keyboard::Space));
+				_menu->getSonidoTeclas().play();
+			}
 			command();
 			update();
 			draw();
@@ -51,6 +58,7 @@ void Juego::gameLoop()
 
 		}
 		else {
+			_ventana->clear();
 			_ventana->draw(*_menu);
 			_ventana->display();
 		}

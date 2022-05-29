@@ -22,6 +22,7 @@ class Juego: public JuegoProyectil
         std::list<Proyectil>    _proyectiles; /// lista de proyectiles
         Controller              _controller; /// controles asociados al jugador
         Menu*                   _menu; /// para el menú del juego.
+        bool                    _primerIngreso; /// para validar si es el primer ingreso y mostrar la pantalla de controles
     public:
         //Constructor
         Juego(sf::Vector2u resolucion);

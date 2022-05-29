@@ -10,7 +10,6 @@ private:
     Sprite*         _sprProyectil; /// Composición del objeto con propiedades y métodos propios para el manejo de sprites.
     sf::Vector2f    _velocidad; /// Velocidad actual o posición donde se encuentra
     float           _velDesplaz; /// Velocidad a la cual camina
-    //int         _direccion; /// Dirección a la que el jugador está mirando
 public:
 	Proyectil(sf::Vector2f posicion);
     Sprite getSprite();

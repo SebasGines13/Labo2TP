@@ -1,23 +1,29 @@
 #include "Menu.h"
 
+
 Menu::Menu()
 {
-	_font.loadFromFile("font/Metamorphous-Regular.ttf");
-	//_font.loadFromFile("font/PressStart2P-Regular.ttf");
-	//_font.loadFromFile("font/HiMelody-Regular.ttf");
-	//_font.loadFromFile("font/BowlbyOneSC-Regular.ttf");
+	_font.loadFromFile("font/CELTG.ttf");
 	_gameTitle.setFont(_font);
 	_gameTitle.setString("Dungeon++");
-	_gameTitle.setCharacterSize(100);
+	_gameTitle.setCharacterSize(100); 
 	_gameTitle.setFillColor(sf::Color(255, 255, 255, 128));
 	_gameTitle.setOrigin(_gameTitle.getGlobalBounds().width / 2, _gameTitle.getGlobalBounds().height / 2);
 	_gameTitle.setPosition(400.f, 250.f);
 	_txtFondo.loadFromFile("img/dungeon_menu.png");
+	_txtControles.loadFromFile("img/menu_controles.jpg");
+	_txtControles.setSmooth(true);
 	_txtFondo.setSmooth(true);
+	_sprControles.setTexture(_txtControles);
 	_sprFondo.setTexture(_txtFondo);
 	_sprFondo.setColor(sf::Color(255, 255, 255, 150));
 	_sprFuego = new Sprite(17, 75, 1, sf::Vector2f(0,0), 2.f);
 	_sprFuego->setPosicion(sf::Vector2f(550.f,5.f));
+	_buffer.loadFromFile("audio/teclas_menu.wav");
+	_soundTeclas.setBuffer(_buffer);
+	_soundTeclas.setVolume(40.f);
+
+	//
 
 	for (int i = 0; i < std::size(_vButtons); i++) {
 		switch (i)
@@ -69,6 +75,7 @@ Menu::Menu()
 
 void Menu::command() {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+		_soundTeclas.play();
 		if (_vOpcMenuSelect[(int)OpcMenu::Play]) {
 			_vOpcMenuSelect[(int)OpcMenu::Play] = false;
 			_vOpcMenuSelect[(int)OpcMenu::Exit] = true;
@@ -91,9 +98,10 @@ void Menu::command() {
 		}
 	}
 	else if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Down))) {
+		_soundTeclas.play();
 		if (_vOpcMenuSelect[(int)OpcMenu::Play]) {
 			_vOpcMenuSelect[(int)OpcMenu::Play] = false;
-			_vOpcMenuSelect[(int)OpcMenu::Ranking] = true;
+			_vOpcMenuSelect[(int)OpcMenu::Ranking] = true;			
 		}
 		else if (_vOpcMenuSelect[(int)OpcMenu::Ranking]) {
 			_vOpcMenuSelect[(int)OpcMenu::Ranking] = false;
@@ -113,6 +121,7 @@ void Menu::command() {
 		}
 	}
 	else if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Enter))) {
+		_soundTeclas.play();
 		if (_vOpcMenuSelect[(int)OpcMenu::Play]) {
 			_vOpcMenuPress[(int)OpcMenu::Play]    = true;
 			_vOpcMenuPress[(int)OpcMenu::Ranking] = false;
@@ -239,3 +248,14 @@ bool* Menu::getOpcMenuPress()
 {
 	return _vOpcMenuPress;
 }
+
+sf::Sprite& Menu::getImgControles() {
+	return _sprControles;
+}
+
+sf::Sound& Menu::getSonidoTeclas()
+{
+	return _soundTeclas;
+}
+
+

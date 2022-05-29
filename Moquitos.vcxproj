@@ -154,7 +154,7 @@
     <ClCompile Include="IColisionable.cpp" />
     <ClCompile Include="Configuracion.cpp" />
     <ClCompile Include="Controller.cpp" />
-    <ClCompile Include="enemigo.cpp" />
+    <ClCompile Include="Enemigo.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="JuegoProyectil.cpp" />
     <ClCompile Include="Main.cpp" />
