@@ -3,7 +3,7 @@
 
 Juego::Juego(sf::Vector2u resolucion)
 { //Constructor
-	_ventana = new sf::RenderWindow(sf::VideoMode(resolucion.x, resolucion.y), "Dungeon ++ v0.7");
+	_ventana = new sf::RenderWindow(sf::VideoMode(resolucion.x, resolucion.y), "Dungeon ++ v0.8");
 	_fps = 60;
 	_ventana->setFramerateLimit(_fps);
 	_gameOver = false;
