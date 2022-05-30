@@ -10,10 +10,10 @@ protected:
 	sf::Texture			_texture;
 public:
 	Bloque();
-	void				draw(sf::RenderTarget& target, sf::RenderStates states) const override; /// Polimorfismo del método draw en Drawable.
-	sf::FloatRect		getBounds();
-	bool				isSolid() const;
-	void				setTextureBloque(sf::Texture &textura);
-	void				setTextureRectBloque(sf::IntRect rect);
+	void				 draw(sf::RenderTarget& target, sf::RenderStates states) const override; /// Polimorfismo del método draw en Drawable.
+	const sf::FloatRect  getBounds();
+	bool				 isSolid() const;
+	void				 setTextureBloque(sf::Texture &textura);
+	void				 setTextureRectBloque(sf::IntRect rect);
 };
 

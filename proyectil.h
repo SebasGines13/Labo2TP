@@ -17,7 +17,7 @@ public:
     void setVelocidad(sf::Vector2f vel);
     void update();
     void respawn(sf::Vector2f posicion);
-    sf::FloatRect getBounds() override;
+    const sf::FloatRect getBounds() override;
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override; /// Polimorfismo del método draw en Drawable.
 };
 

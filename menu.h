@@ -13,8 +13,10 @@ private:
 	sf::Texture _txtFondo;
 	sf::Texture _txtFuego;
 	sf::Texture _txtControles;
+	sf::Texture _txtCaminoDun;
 	sf::Sprite	_sprFondo;
 	sf::Sprite	_sprControles;
+	sf::Sprite  _sprCaminoDun;
 	Sprite*		_sprFuego;
 	sf::SoundBuffer     _buffer;  /// buffer para el sonido
 	sf::Sound           _soundTeclas;   /// canal utilizado por el buffer
@@ -27,7 +29,10 @@ public:
 	void update();
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override; /// Polimorfismo del método draw en Drawable.
 	bool* getOpcMenuPress();
-	sf::Sprite& getImgControles();
+	sf::Sprite& getSprCamino();
+	sf::Sprite& getSprControles();
+	sf::Sprite& getSprFondo();
+	Sprite* getSprFuego();
 	sf::Sound& getSonidoTeclas();
 };
 

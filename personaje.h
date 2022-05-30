@@ -41,6 +41,6 @@ class Personaje: public sf::Drawable, public sf::Transformable, public IColision
         void            update(); /// Actualiza las físicas del jugador.
         void            disparar(); // método para disparar proyectil
         void            draw(sf::RenderTarget& target, sf::RenderStates states) const override; /// Polimorfismo del método draw en Drawable.
-        sf::FloatRect   getBounds() override;
+        const sf::FloatRect   getBounds() override;
 };
 

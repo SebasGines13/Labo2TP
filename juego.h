@@ -33,5 +33,4 @@ class Juego: public JuegoProyectil
         void draw(); ///Dibuja en pantalla los elementos.
         void crearProyectil(sf::Vector2f posicion) override; /// Para que disparar un proyectil
         void colisionConBloques();
-        sf::RenderWindow* getVentana();
 };

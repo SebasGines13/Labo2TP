@@ -98,6 +98,7 @@ void Personaje::update() {
         }
     } else if(_estado == (unsigned int)Estados::Quieto) {
         _pasos.stop(); // para de sonar los pasos, porque está quieto
+        _sprPersonaje->setFrameX(0); // para que se ubique en el primer frame de cada fila de animación.
     }
     if (_coolDown > 0) {
         _coolDown--;
@@ -117,7 +118,7 @@ void Personaje::draw(sf::RenderTarget& target, sf::RenderStates states) const
     target.draw(_sprPersonaje->getSprite(), states);
 }
 
-sf::FloatRect Personaje::getBounds()
+const sf::FloatRect Personaje::getBounds()
 {
     sf::FloatRect rect = sf::FloatRect(sf::Vector2f(getPosition().x, getPosition().y), sf::Vector2f(_sprPersonaje->getFrameSize().x, _sprPersonaje->getFrameSize().y));
     return rect;

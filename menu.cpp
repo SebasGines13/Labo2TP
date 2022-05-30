@@ -11,21 +11,24 @@ Menu::Menu()
 	_gameTitle.setOrigin(_gameTitle.getGlobalBounds().width / 2, _gameTitle.getGlobalBounds().height / 2);
 	_gameTitle.setPosition(400.f, 250.f);
 	_txtFondo.loadFromFile("img/dungeon_menu.png");
-	_txtControles.loadFromFile("img/menu_controles.jpg");
-	_txtControles.setSmooth(true);
+	_txtControles.loadFromFile("img/controles.png");
+	_txtCaminoDun.loadFromFile("img/camino_mazmorra.png");
 	_txtFondo.setSmooth(true);
-	_sprControles.setTexture(_txtControles);
+	_txtControles.setSmooth(true);
+	_txtCaminoDun.setSmooth(true);
 	_sprFondo.setTexture(_txtFondo);
+	_sprControles.setTexture(_txtControles);
 	_sprFondo.setColor(sf::Color(255, 255, 255, 150));
+	_sprCaminoDun.setColor(sf::Color(255, 255, 255, 150));
 	_sprFuego = new Sprite(17, 75, 1, sf::Vector2f(0,0), 2.f);
 	_sprFuego->setPosicion(sf::Vector2f(550.f,5.f));
+	_sprCaminoDun.setTexture(_txtCaminoDun);
+	_sprCaminoDun.setOrigin(sf::Vector2f(_txtCaminoDun.getSize().x  /2, _txtCaminoDun.getSize().y / 2));
 	_buffer.loadFromFile("audio/teclas_menu.wav");
 	_soundTeclas.setBuffer(_buffer);
 	_soundTeclas.setVolume(40.f);
 
-	//
-
-	for (int i = 0; i < std::size(_vButtons); i++) {
+	for (int i = 0; i < std::size(_vButtons); i++) { /// creo las opciones del menú
 		switch (i)
 		{
 		case (int)OpcMenu::Play:
@@ -73,7 +76,7 @@ Menu::Menu()
 	}
 }
 
-void Menu::command() {
+void Menu::command() { /// Segun las teclas presionadas, se indica la selcción.
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
 		_soundTeclas.play();
 		if (_vOpcMenuSelect[(int)OpcMenu::Play]) {
@@ -123,45 +126,24 @@ void Menu::command() {
 	else if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Enter))) {
 		_soundTeclas.play();
 		if (_vOpcMenuSelect[(int)OpcMenu::Play]) {
-			_vOpcMenuPress[(int)OpcMenu::Play]    = true;
-			_vOpcMenuPress[(int)OpcMenu::Ranking] = false;
-			_vOpcMenuPress[(int)OpcMenu::Config]  = false;
-			_vOpcMenuPress[(int)OpcMenu::Credit]  = false;
-			_vOpcMenuPress[(int)OpcMenu::Exit]	  = false;
+			_vOpcMenuPress[(int)OpcMenu::Play] = true;
 		}
 		else if (_vOpcMenuSelect[(int)OpcMenu::Ranking]) {
-			_vOpcMenuPress[(int)OpcMenu::Play]    = false;
 			_vOpcMenuPress[(int)OpcMenu::Ranking] = true;
-			_vOpcMenuPress[(int)OpcMenu::Config]  = false;
-			_vOpcMenuPress[(int)OpcMenu::Credit]  = false;
-			_vOpcMenuPress[(int)OpcMenu::Exit]    = false;
 		}
 		else if (_vOpcMenuSelect[(int)OpcMenu::Config]) {
-			_vOpcMenuPress[(int)OpcMenu::Play]    = false;
-			_vOpcMenuPress[(int)OpcMenu::Ranking] = false;
-			_vOpcMenuPress[(int)OpcMenu::Config]  = true;
-			_vOpcMenuPress[(int)OpcMenu::Credit]  = false;
-			_vOpcMenuPress[(int)OpcMenu::Exit]    = false;
+			_vOpcMenuPress[(int)OpcMenu::Config] = true;
 		}
 		else if (_vOpcMenuSelect[(int)OpcMenu::Credit]) {
-			_vOpcMenuPress[(int)OpcMenu::Play]    = false;
-			_vOpcMenuPress[(int)OpcMenu::Ranking] = false;
-			_vOpcMenuPress[(int)OpcMenu::Config]  = false;
-			_vOpcMenuPress[(int)OpcMenu::Credit]  = true;
-			_vOpcMenuPress[(int)OpcMenu::Exit]    = false;
+			_vOpcMenuPress[(int)OpcMenu::Credit] = true;
 		}
 		else if (_vOpcMenuSelect[(int)OpcMenu::Exit]) {
-			_vOpcMenuPress[(int)OpcMenu::Play]    = false;
-			_vOpcMenuPress[(int)OpcMenu::Ranking] = false;
-			_vOpcMenuPress[(int)OpcMenu::Config]  = false;
-			_vOpcMenuPress[(int)OpcMenu::Credit]  = false;
-			_vOpcMenuPress[(int)OpcMenu::Exit]    = true;
+			_vOpcMenuPress[(int)OpcMenu::Exit] = true;
 		}
 	}
 }
 
-
-void Menu::update() 
+void Menu::update()  /// Segun las teclas seleccionada, actualizo colores y tamaño de los botones
 {
 	if (_vOpcMenuSelect[(int)OpcMenu::Play]) {
 		_vButtons[(int)OpcMenu::Play].setFillColor(sf::Color::Yellow);
@@ -229,7 +211,7 @@ void Menu::update()
 		_vButtons[(int)OpcMenu::Credit].setScale(sf::Vector2f(1.f, 1.f));
 		_vButtons[(int)OpcMenu::Exit].setScale(sf::Vector2f(1.5f, 1.5f));
 	}
-	_sprFuego->animarFrame();
+	_sprFuego->animarFrame(); /// animación del fuego en el menú principal.
 }
 
 
@@ -249,8 +231,24 @@ bool* Menu::getOpcMenuPress()
 	return _vOpcMenuPress;
 }
 
-sf::Sprite& Menu::getImgControles() {
+sf::Sprite& Menu::getSprFondo()
+{
+	return _sprFondo;
+}
+
+sf::Sprite& Menu::getSprCamino()
+{
+	return _sprCaminoDun;
+}
+
+sf::Sprite& Menu::getSprControles()
+{
 	return _sprControles;
+}
+
+Sprite* Menu::getSprFuego()
+{
+	return _sprFuego;
 }
 
 sf::Sound& Menu::getSonidoTeclas()

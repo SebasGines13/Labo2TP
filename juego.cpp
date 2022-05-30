@@ -18,6 +18,7 @@ Juego::Juego(sf::Vector2u resolucion)
 	gameLoop();
 }
 
+
 void Juego::gameLoop()
 {
 	sf::Event event;
@@ -32,14 +33,24 @@ void Juego::gameLoop()
 		}		
 		_menu->update();
 		if (_menu->getOpcMenuPress()[(int)Menu::OpcMenu::Play]) {
-			if (_primerIngreso) {
+			if (_primerIngreso) { // evalua si es el primer ingreso para mostrar luego la imagen de controles
 				do {
-					_primerIngreso = false;
+					_primerIngreso = false; 
 					_ventana->clear();
-					_ventana->draw(_menu->getImgControles());
+					_menu->getSprFuego()->animarFrame();
+					_ventana->draw(_menu->getSprFondo());
+					_ventana->draw(_menu->getSprControles());					
+					_ventana->draw(*_menu->getSprFuego());
 					_ventana->display();
 				} while (!sf::Keyboard::isKeyPressed(sf::Keyboard::Space));
 				_menu->getSonidoTeclas().play();
+				_menu->getSprCamino().setPosition((sf::Vector2f(_menu->getSprCamino().getGlobalBounds().width/2, _menu->getSprCamino().getGlobalBounds().height/2))); // para que luego pueda aplicar correctamente el efecto de zoom y avanzar en el camino de la mazmorra
+				for (int i = 1; i < 300; i++) {		
+					_ventana->clear();
+					_menu->getSprCamino().setScale(sf::Vector2f(1+(i/60.f), 1+(i/60.f)));
+					_ventana->draw(_menu->getSprCamino());
+					_ventana->display();
+				}
 			}
 			command();
 			update();
@@ -167,9 +178,4 @@ void Juego::colisionConBloques() /// el juego evalua cuando el personaje colisio
 			}
 		}
 	}
-}
-
-sf::RenderWindow* Juego::getVentana()
-{
-	return _ventana;
 }

@@ -31,7 +31,7 @@ void Proyectil::respawn(sf::Vector2f posicion) {
     setPosition(posicion);
 }
 
-sf::FloatRect Proyectil::getBounds()
+const sf::FloatRect Proyectil::getBounds()
 {
     sf::FloatRect rect = sf::FloatRect(sf::Vector2f(getPosition().x, getPosition().y), sf::Vector2f(_sprProyectil->getFrameSize().x, _sprProyectil->getFrameSize().y));
     return rect;

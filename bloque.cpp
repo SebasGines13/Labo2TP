@@ -12,7 +12,7 @@ void Bloque::draw(sf::RenderTarget& target, sf::RenderStates states) const
     target.draw(_body, states);
 }
 
-sf::FloatRect Bloque::getBounds()/// dimensiones del bloque
+const sf::FloatRect Bloque::getBounds()/// dimensiones del bloque
 { 
     sf::FloatRect rect = _body.getGlobalBounds();
     rect.left = getPosition().x;
