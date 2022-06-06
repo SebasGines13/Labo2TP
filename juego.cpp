@@ -3,18 +3,24 @@
 
 Juego::Juego(sf::Vector2u resolucion)
 { //Constructor
-	_ventana = new sf::RenderWindow(sf::VideoMode(resolucion.x, resolucion.y), "Dungeon ++ v0.8");
+	_ventana = new sf::RenderWindow(sf::VideoMode(resolucion.x, resolucion.y), "Dungeon ++ v0.9");
 	_fps = 60;
 	_ventana->setFramerateLimit(_fps);
 	_gameOver = false;
 	_mapa = new Mapa(1, 16, 16, 50, 40); //Inicializo la variable dinámica para el mapa.
 	_j1 = new Personaje(11, 4, 4, sf::Vector2f(0, 0), *this, _controller); ///Inicilizo la variable dinámica de jugador.
-	_j1->setPosition(sf::Vector2f(_mapa->getPlayerSpawn().x * _mapa->getTileWidth(), _mapa->getPlayerSpawn().y * _mapa->getTilHeight())); /// Ubico el personaje de acuerdo a spawn definido en el mapa.
+	_j1->setPosition(sf::Vector2f(_mapa->getPlayerSpawn())); /// Ubico el personaje de acuerdo a spawn definido en el mapa.
 	_music.openFromFile("audio/fondo.wav");
 	_music.play();
 	_music.setVolume(10.f);
 	_menu = new Menu();
 	_primerIngreso = true;
+	srand(time(NULL));
+	int i = rand() % 3;
+	_enemigos.push_back(Enemigo(sf::Vector2f(_mapa->getEnemigoSpawn(i))));
+	_coolDown[(int)coolDown::Lastimado] = COOLDOWNLASTIMADO;
+	_coolDown[(int)coolDown::Enemigo] = COOLDOWNENEMIGOS;
+	_coolDown[(int)coolDown::Menu] = COOLDOWNMENU;
 	gameLoop();
 }
 
@@ -37,7 +43,7 @@ void Juego::gameLoop()
 				do {
 					_primerIngreso = false; 
 					_ventana->clear();
-					_menu->getSprFuego()->animarFrame();
+					_menu->getSprFuego()->animar();
 					_ventana->draw(_menu->getSprFondo());
 					_ventana->draw(_menu->getSprControles());					
 					_ventana->draw(*_menu->getSprFuego());
@@ -45,7 +51,7 @@ void Juego::gameLoop()
 				} while (!sf::Keyboard::isKeyPressed(sf::Keyboard::Space));
 				_menu->getSonidoTeclas().play();
 				_menu->getSprCamino().setPosition((sf::Vector2f(_menu->getSprCamino().getGlobalBounds().width/2, _menu->getSprCamino().getGlobalBounds().height/2))); // para que luego pueda aplicar correctamente el efecto de zoom y avanzar en el camino de la mazmorra
-				for (int i = 1; i < 300; i++) {		
+				for (int i = 1; i < COOLDOWNMENU; i++) {
 					_ventana->clear();
 					_menu->getSprCamino().setScale(sf::Vector2f(1+(i/60.f), 1+(i/60.f)));
 					_ventana->draw(_menu->getSprCamino());
@@ -107,33 +113,24 @@ void Juego::command()
 
 void Juego::update()
 {   ///Lógicas y reglas propias del juego.
-	/// Actualiza las físicas del jugador.
 	_j1->update();
-	colisionConBloques();
+	colisionesPersonaje(); 
+	colisionesProyectil();
+	colisionesEnemigo();
 
-	/// iterator para recorrer todo la lista de proyectiles y actualizarlos.
-	std::list<Proyectil>::iterator i = _proyectiles.begin(); 
-	while (i != _proyectiles.end()) {
-		Proyectil& p = (*i);
-		p.update();
-		if (p.getPosition().x > _ventana->getSize().x) { /// si se pasa de la pantalla lo elimino de la lista
-			i = _proyectiles.erase(i);
-		}
-		else {
-			i++;
-		}
+	_coolDown[(int)coolDown::Lastimado] --; /// para evaluar si está lastimado el personaje
+	if (_coolDown[(int)coolDown::Lastimado] == 0) {
+		_coolDown[(int)coolDown::Lastimado] = COOLDOWNLASTIMADO;
+		_j1->setLastimado(false);
 	}
-	/// Actualizo controles de música
-	if (_controller.isPressed(Controller::Buttons::ButtonLess) && _music.getVolume() > 1.f) {
-		_music.setVolume(_music.getVolume() - 1.f);
-	} else if (_controller.isPressed(Controller::Buttons::ButtonMore) && _music.getVolume() < 50.f) {
-		_music.setVolume(_music.getVolume() + 1.f);
-	} else if (_controller.isPressed(Controller::Buttons::ButtonMute)) {
-		if (_music.getStatus() == _music.Playing) {
-			_music.pause();
-		}
-		else _music.play();
+
+	_coolDown[(int)coolDown::Enemigo] --; /// para evaluar el respawn de enemigos
+	if (_coolDown[(int)coolDown::Enemigo] == 0) {
+		int i = rand() % 3;
+		_enemigos.push_back(Enemigo(sf::Vector2f(_mapa->getEnemigoSpawn(i))));
+		_coolDown[(int)coolDown::Enemigo] = COOLDOWNENEMIGOS;
 	}	
+	updateMusic();
 }
 
 void Juego::draw()
@@ -141,6 +138,9 @@ void Juego::draw()
 	_ventana->clear(); ///Limpio la pantalla con lo que había antes.
 	_ventana->draw(*_mapa); ///Dibujo el mapa
 	_ventana->draw(*_j1); /// Dibujo el personaje.	
+	for (Enemigo& e : _enemigos) { /// recorro con un for each la lista de enemigos y los dibujo
+		_ventana->draw(e);
+	}
 	for (Proyectil& p : _proyectiles) { /// recorro con un for each la lista de proyectiles y las dibujo
 		_ventana->draw(p);
 	}
@@ -159,7 +159,7 @@ void Juego::crearProyectil(sf::Vector2f posicion)
 	_proyectiles.push_back(Proyectil(posicion));
 }
 
-void Juego::colisionConBloques() /// el juego evalua cuando el personaje colisiona con los bloques y qué hacer con él en caso de que sea sólido o no.
+void Juego::colisionesPersonaje() /// el juego evalua cuando el personaje colisiona con los bloques y qué hacer con él en caso de que sea sólido o no.
 {
 	const std::vector<Bloque*>& bloques = _mapa->getBloques();
 	for (Bloque* pBloque : bloques) {
@@ -179,3 +179,113 @@ void Juego::colisionConBloques() /// el juego evalua cuando el personaje colisio
 		}
 	}
 }
+
+void Juego::colisionesProyectil()
+{
+	/// iterator para recorrer todo la lista de proyectiles y actualizarlos.
+	std::list<Proyectil>::iterator i = _proyectiles.begin();
+	while (i != _proyectiles.end()) {
+		Proyectil& p = (*i);
+		p.update();
+		if (colisionConBloques(p)) {
+			i = _proyectiles.erase(i);
+		}
+		else {
+			i++;
+		}
+	}
+}
+
+void Juego::colisionesEnemigo()
+{
+	/// iterator para recorrer todo la lista de enemigos y actualizarlos.
+	std::list<Enemigo>::iterator i = _enemigos.begin();
+	while (i != _enemigos.end()) {
+		Enemigo& e = (*i);
+		e.update();
+		if (_j1->isCollision(e)) {
+			i = _enemigos.erase(i);
+			_j1->setLastimado(true);
+		}
+		else if (colisionProyectilEnemigo(e)) {
+			i = _enemigos.erase(i);
+		}
+		else {
+			colisionConBloques(e);
+			i++;
+		}
+	}
+}
+
+bool Juego::colisionConBloques(Proyectil& p)
+{
+	const std::vector<Bloque*>& bloques = _mapa->getBloques();
+	for (Bloque* pBloque : bloques) {
+		if (pBloque->isSolid() && p.isCollision(*pBloque)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+void Juego::colisionConBloques(Enemigo& e)
+{
+	const std::vector<Bloque*>& bloques = _mapa->getBloques();
+	for (Bloque* pBloque : bloques) {
+		if (pBloque->isSolid() && e.isCollision(*pBloque)) {
+			if (e.getVelocidad().y > 0) {
+				e.move(0, -(e.getBounds().top + e.getBounds().height - pBloque->getBounds().top));				
+				e.setSentidoY((int)Enemigo::Direcciones::Up);
+			}
+			else if (e.getVelocidad().y < 0) {
+				e.move(0, (pBloque->getBounds().top + pBloque->getBounds().height - e.getBounds().top));
+				e.setSentidoY((int)Enemigo::Direcciones::Down);
+			}
+			else if (e.getVelocidad().x > 0) {
+				e.move(-(e.getBounds().left + e.getBounds().width - pBloque->getBounds().left), 0);
+				e.setSentidoY((int)Enemigo::Direcciones::Left);
+			}
+			else if (e.getVelocidad().x < 0) {
+				e.move((pBloque->getBounds().left + pBloque->getBounds().width - e.getBounds().left), 0);
+				e.setSentidoY((int)Enemigo::Direcciones::Right);
+			}
+			e.setSentidoX(0);
+		}
+	}
+}
+
+
+bool Juego::colisionProyectilEnemigo(Enemigo& e)
+{
+	std::list<Proyectil>::iterator i = _proyectiles.begin();
+	while (i != _proyectiles.end()) {
+		Proyectil& p = (*i);
+		if (p.isCollision(e)) {
+			i = _proyectiles.erase(i);
+			return true;
+		}
+		else {
+			i++;
+		}
+	}
+	return false;
+}
+	
+
+void Juego::updateMusic() 
+{  /// Actualizo controles de música
+	if (_controller.isPressed(Controller::Buttons::ButtonLess) && _music.getVolume() > 1.f) {
+		_music.setVolume(_music.getVolume() - 1.f);
+	}
+	else if (_controller.isPressed(Controller::Buttons::ButtonMore) && _music.getVolume() < 50.f) {
+		_music.setVolume(_music.getVolume() + 1.f);
+	}
+	else if (_controller.isPressed(Controller::Buttons::ButtonMute)) {
+		if (_music.getStatus() == _music.Playing) {
+			_music.pause();
+		}
+		else _music.play();
+	}
+}
+
+

@@ -3,9 +3,9 @@
 
 class Sprite: public sf::Drawable, public sf::Transformable
 {
-	private:
+	protected:
 		sf::Texture*   _txtPersonaje; ///textura del personaje
-		sf::Sprite*	   _sprPersonaje; ///sprite del personaje
+		sf::Sprite*	   _sprite; ///sprite del personaje
 		int			   _sprActual; /// Nro de sprite actual		
 		int			   _cantX; // Cantidad de frames en el eje x
 		int		       _cantY; // Cantidad de frames en el eje y
@@ -22,10 +22,10 @@ class Sprite: public sf::Drawable, public sf::Transformable
 		//gets
 		sf::Sprite	 getSprite();
 		sf::Vector2f getFrameSize();
-		sf::Vector2f getPosicion();	
 		//métodos
 		void seleccionarFrame();
-		void animarFrame();
+		void animar();
 		void draw(sf::RenderTarget& target, sf::RenderStates states) const override; 
+		void setColor(sf::Color color);
 };
 

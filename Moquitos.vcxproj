@@ -150,7 +150,6 @@
   <ItemGroup>
     <ClCompile Include="Archivos.cpp" />
     <ClCompile Include="Bloque.cpp" />
-    <ClCompile Include="BloqueSolido.cpp" />
     <ClCompile Include="IColisionable.cpp" />
     <ClCompile Include="Configuracion.cpp" />
     <ClCompile Include="Controller.cpp" />
@@ -169,7 +168,6 @@
   <ItemGroup>
     <ClInclude Include="Archivos.h" />
     <ClInclude Include="Bloque.h" />
-    <ClInclude Include="BloqueSolido.h" />
     <ClInclude Include="IColisionable.h" />
     <ClInclude Include="Configuracion.h" />
     <ClInclude Include="Controller.h" />
@@ -184,9 +182,6 @@
     <ClInclude Include="Ranking.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Sprite.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

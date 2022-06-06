@@ -1,6 +1,4 @@
 #include "Mapa.h"
-#include "BloqueSolido.h"
-
 ///Constructor
 Mapa::Mapa(int sprClase, int tilewidth, int tileheight, int mapwidth, int mapheight)
 {
@@ -12,6 +10,7 @@ Mapa::Mapa(int sprClase, int tilewidth, int tileheight, int mapwidth, int maphei
     _tileheight = tileheight;
     _mapWidth = mapwidth;
     _mapHeight = mapheight;
+    for (sf::Vector2f &i : _spawnEnemigo) { i.x = 0.f; i.y = 0.f; }
     int i = 0;
     Bloque* pBloque = nullptr;
     for (int f = 0; f < _mapHeight; f++) { 
@@ -23,13 +22,25 @@ Mapa::Mapa(int sprClase, int tilewidth, int tileheight, int mapwidth, int maphei
             switch (_vMapa[i++])
             {
             case 34: case 35: case 36: case 62: case 98: case 99: case 100: case 114: case 115: case 116: case 110: case 184: case 167: case 168: case 183: case 185: case 182: case 186: case 181: case 50:
-                pBloque = new BloqueSolido();
+                pBloque = new Bloque(true);
                 break;
             case 171:
-                _spawnPlayer.x = (float)c;
-                _spawnPlayer.y = (float)f;
+                _spawnPlayer.x = (float)c * _tilewidth;
+                _spawnPlayer.y = (float)f * _tileheight;
+                pBloque = new Bloque(false);
+                break;
+            case 133:
+                for (sf::Vector2f& i : _spawnEnemigo) {
+                    if (i.x == 0.f && i.y == 0.f) {
+                        i.x = (float)c * _tilewidth;
+                        i.y = (float)f * _tileheight;
+                        break;
+                    }
+                }           
+                pBloque = new Bloque(false);
+                break;
             default:
-                pBloque = new Bloque();
+                pBloque = new Bloque(false);
                 break;
             }
             pBloque->setTextureBloque(*_txtMapa);
@@ -51,6 +62,11 @@ void Mapa::draw(sf::RenderTarget& target, sf::RenderStates states) const
 sf::Vector2f Mapa::getPlayerSpawn() const
 {
     return _spawnPlayer;
+}
+
+sf::Vector2f Mapa::getEnemigoSpawn(int i) const
+{
+    return _spawnEnemigo[i];
 }
 
 int Mapa::getTileWidth() const

@@ -1,7 +1,7 @@
 #include "Bloque.h"
 
-Bloque::Bloque()
-    :_solid(false)
+Bloque::Bloque(bool solid)
+    :_solid(solid)
 {
     _body.setSize(sf::Vector2f(16.f, 16.f));
 }

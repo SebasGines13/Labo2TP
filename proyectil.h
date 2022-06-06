@@ -7,13 +7,13 @@
 class Proyectil: public sf::Drawable, public sf::Transformable, public IColisionable
 {
 private:
-    Sprite*         _sprProyectil; /// Composición del objeto con propiedades y métodos propios para el manejo de sprites.
     sf::Vector2f    _velocidad; /// Velocidad actual o posición donde se encuentra
     float           _velDesplaz; /// Velocidad a la cual camina
+    Sprite*         _sprite;
 public:
+    enum class Direcciones { Down, Left, Right, Up };
 	Proyectil(sf::Vector2f posicion);
     Sprite getSprite();
-    void animar(); /// pose de la animación.
     void setVelocidad(sf::Vector2f vel);
     void update();
     void respawn(sf::Vector2f posicion);
