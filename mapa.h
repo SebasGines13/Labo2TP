@@ -8,7 +8,9 @@ class Mapa : public sf::Drawable, public sf::Transformable
 {
     public:
         /// Constructor
-	    Mapa(int sprClase, int tilewidth, int tileheight, int mapwidth, int mapheight); /// Constructor
+	    Mapa(int sprClase, int tilewidth, int tileheight, int mapwidth, int mapheight); 
+        /// Destructor
+        ~Mapa();
 	    /// Gets
         sf::Vector2f         getPlayerSpawn() const;
         sf::Vector2f         getEnemigoSpawn(int i) const;

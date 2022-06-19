@@ -8,7 +8,7 @@ Juego::Juego(sf::Vector2u resolucion)
 	_ventana->setFramerateLimit(_fps);
 	_gameOver = false;
 	_mapa = new Mapa(1, 16, 16, 50, 40); //Inicializo la variable dinámica para el mapa.
-	_j1 = new Personaje(11, 4, 4, sf::Vector2f(0, 0), *this, _controller); ///Inicilizo la variable dinámica de jugador.
+	_j1 = new Jugador(1, *this, _controller); ///Inicilizo la variable dinámica de jugador.
 	_j1->setPosition(sf::Vector2f(_mapa->getPlayerSpawn())); /// Ubico el personaje de acuerdo a spawn definido en el mapa.
 	_music.openFromFile("audio/fondo.wav");
 	_music.play();
@@ -17,11 +17,19 @@ Juego::Juego(sf::Vector2u resolucion)
 	_primerIngreso = true;
 	srand(time(NULL));
 	int i = rand() % 3;
-	_enemigos.push_back(Enemigo(sf::Vector2f(_mapa->getEnemigoSpawn(i))));
+	_enemigos.push_back(new Enemigo(11,sf::Vector2f(_mapa->getEnemigoSpawn(i))));
 	_coolDown[(int)coolDown::Lastimado] = COOLDOWNLASTIMADO;
 	_coolDown[(int)coolDown::Enemigo] = COOLDOWNENEMIGOS;
 	_coolDown[(int)coolDown::Menu] = COOLDOWNMENU;
 	gameLoop();
+}
+
+Juego::~Juego()
+{
+	delete _ventana;
+	delete _j1;
+	delete _mapa;
+	delete _menu;
 }
 
 
@@ -127,7 +135,7 @@ void Juego::update()
 	_coolDown[(int)coolDown::Enemigo] --; /// para evaluar el respawn de enemigos
 	if (_coolDown[(int)coolDown::Enemigo] == 0) {
 		int i = rand() % 3;
-		_enemigos.push_back(Enemigo(sf::Vector2f(_mapa->getEnemigoSpawn(i))));
+		_enemigos.push_back(new Enemigo(11,sf::Vector2f(_mapa->getEnemigoSpawn(i))));
 		_coolDown[(int)coolDown::Enemigo] = COOLDOWNENEMIGOS;
 	}	
 	updateMusic();
@@ -138,11 +146,11 @@ void Juego::draw()
 	_ventana->clear(); ///Limpio la pantalla con lo que había antes.
 	_ventana->draw(*_mapa); ///Dibujo el mapa
 	_ventana->draw(*_j1); /// Dibujo el personaje.	
-	for (Enemigo& e : _enemigos) { /// recorro con un for each la lista de enemigos y los dibujo
-		_ventana->draw(e);
+	for (Enemigo *e : _enemigos) { /// recorro con un for each la lista de enemigos y los dibujo
+		_ventana->draw(*e);
 	}
-	for (Proyectil& p : _proyectiles) { /// recorro con un for each la lista de proyectiles y las dibujo
-		_ventana->draw(p);
+	for (Proyectil *p : _proyectiles) { /// recorro con un for each la lista de proyectiles y las dibujo
+		_ventana->draw(*p);
 	}
 	_ventana->display();//Muestro la ventana.
 }
@@ -156,25 +164,29 @@ void Juego::crearProyectil(sf::Vector2f posicion)
 	_sonido.setVolume(20.f);
 	_sonido.setPitch(1.f);
 	_sonido.play();
-	_proyectiles.push_back(Proyectil(posicion));
+	_proyectiles.push_back(new Proyectil(posicion));
 }
 
-void Juego::colisionesPersonaje() /// el juego evalua cuando el personaje colisiona con los bloques y qué hacer con él en caso de que sea sólido o no.
+void Juego::colisionesPersonaje() /// el juego evalua cuando el personaje colisiona con los bloques y qué hacer con él en caso de que sea sólido.
 {
 	const std::vector<Bloque*>& bloques = _mapa->getBloques();
 	for (Bloque* pBloque : bloques) {
 		if (pBloque->isSolid() && _j1->isCollision(*pBloque)) {
-			if (_j1->getVelocidad().y > 0) {
+			Personaje::Direcciones direccion = _j1->getDireccion();
+			switch (direccion)
+			{
+			case Personaje::Direcciones::Down:
 				_j1->move(0, -(_j1->getBounds().top + _j1->getBounds().height - pBloque->getBounds().top));
-			}
-			else if (_j1->getVelocidad().y < 0) {
-				_j1->move(0, (pBloque->getBounds().top + pBloque->getBounds().height - _j1->getBounds().top));
-			}
-			else if (_j1->getVelocidad().x > 0) {
-				_j1->move(-(_j1->getBounds().left + _j1->getBounds().width - pBloque->getBounds().left), 0);
-			}
-			else if (_j1->getVelocidad().x < 0) {
+				break;
+			case Personaje::Direcciones::Left:
 				_j1->move((pBloque->getBounds().left + pBloque->getBounds().width - _j1->getBounds().left), 0);
+				break;
+			case Personaje::Direcciones::Right:
+				_j1->move(-(_j1->getBounds().left + _j1->getBounds().width - pBloque->getBounds().left), 0);
+				break;
+			case Personaje::Direcciones::Up:
+				_j1->move(0, (pBloque->getBounds().top + pBloque->getBounds().height - _j1->getBounds().top));
+				break;
 			}
 		}
 	}
@@ -183,11 +195,12 @@ void Juego::colisionesPersonaje() /// el juego evalua cuando el personaje colisi
 void Juego::colisionesProyectil()
 {
 	/// iterator para recorrer todo la lista de proyectiles y actualizarlos.
-	std::list<Proyectil>::iterator i = _proyectiles.begin();
-	while (i != _proyectiles.end()) {
-		Proyectil& p = (*i);
+	std::list<Proyectil*>::iterator i = _proyectiles.begin();
+	while (i != _proyectiles.end()) {	
+		Proyectil& p = (**i);
 		p.update();
 		if (colisionConBloques(p)) {
+			delete (*i);
 			i = _proyectiles.erase(i);
 		}
 		else {
@@ -199,15 +212,16 @@ void Juego::colisionesProyectil()
 void Juego::colisionesEnemigo()
 {
 	/// iterator para recorrer todo la lista de enemigos y actualizarlos.
-	std::list<Enemigo>::iterator i = _enemigos.begin();
+	std::list<Enemigo*>::iterator i = _enemigos.begin();
 	while (i != _enemigos.end()) {
-		Enemigo& e = (*i);
+		Enemigo& e = (**i);
 		e.update();
 		if (_j1->isCollision(e)) {
 			i = _enemigos.erase(i);
 			_j1->setLastimado(true);
 		}
 		else if (colisionProyectilEnemigo(e)) {
+			delete (*i);
 			i = _enemigos.erase(i);
 		}
 		else {
@@ -233,22 +247,27 @@ void Juego::colisionConBloques(Enemigo& e)
 	const std::vector<Bloque*>& bloques = _mapa->getBloques();
 	for (Bloque* pBloque : bloques) {
 		if (pBloque->isSolid() && e.isCollision(*pBloque)) {
-			if (e.getVelocidad().y > 0) {
-				e.move(0, -(e.getBounds().top + e.getBounds().height - pBloque->getBounds().top));				
-				e.setSentidoY((int)Enemigo::Direcciones::Up);
-			}
-			else if (e.getVelocidad().y < 0) {
+			Enemigo::Direcciones oldDireccion = e.getDireccion();
+			switch (oldDireccion)
+			{
+			case Enemigo::Direcciones::Up:
 				e.move(0, (pBloque->getBounds().top + pBloque->getBounds().height - e.getBounds().top));
-				e.setSentidoY((int)Enemigo::Direcciones::Down);
-			}
-			else if (e.getVelocidad().x > 0) {
-				e.move(-(e.getBounds().left + e.getBounds().width - pBloque->getBounds().left), 0);
-				e.setSentidoY((int)Enemigo::Direcciones::Left);
-			}
-			else if (e.getVelocidad().x < 0) {
+				break;
+			case Enemigo::Direcciones::Left:
 				e.move((pBloque->getBounds().left + pBloque->getBounds().width - e.getBounds().left), 0);
-				e.setSentidoY((int)Enemigo::Direcciones::Right);
+				break;
+			case Enemigo::Direcciones::Down:
+				e.move(0, -(e.getBounds().top + e.getBounds().height - pBloque->getBounds().top));
+				break;
+			case Enemigo::Direcciones::Right:
+				e.move(-(e.getBounds().left + e.getBounds().width - pBloque->getBounds().left), 0);
+				break;
 			}
+			Enemigo::Direcciones newDireccion = (Enemigo::Direcciones)(rand() % 4);
+			while (newDireccion == oldDireccion) {
+				newDireccion = (Enemigo::Direcciones)(rand() % 4);
+			}
+			e.setSentidoY(newDireccion);
 			e.setSentidoX(0);
 		}
 	}
@@ -257,10 +276,11 @@ void Juego::colisionConBloques(Enemigo& e)
 
 bool Juego::colisionProyectilEnemigo(Enemigo& e)
 {
-	std::list<Proyectil>::iterator i = _proyectiles.begin();
+	std::list<Proyectil*>::iterator i = _proyectiles.begin();
 	while (i != _proyectiles.end()) {
-		Proyectil& p = (*i);
+		Proyectil& p = (**i);
 		if (p.isCollision(e)) {
+			delete (*i);
 			i = _proyectiles.erase(i);
 			return true;
 		}

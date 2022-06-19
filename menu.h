@@ -26,6 +26,8 @@ class Menu: public sf::Drawable, public sf::Transformable
 		enum class OpcMenu {Play, Ranking, Config, Credit , Exit};
 		/// Constructor
 		Menu();
+		/// Destructor
+		~Menu();
 		/// Gets
 		bool*		getOpcMenuPress();
 		sf::Sprite& getSprCamino();

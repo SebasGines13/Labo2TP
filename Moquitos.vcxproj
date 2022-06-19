@@ -156,6 +156,7 @@
     <ClCompile Include="Enemigo.cpp" />
     <ClCompile Include="GUI.cpp" />
     <ClCompile Include="JuegoProyectil.cpp" />
+    <ClCompile Include="Jugador.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Juego.cpp" />
     <ClCompile Include="Mapa.cpp" />
@@ -175,6 +176,7 @@
     <ClInclude Include="GUI.h" />
     <ClInclude Include="JuegoProyectil.h" />
     <ClInclude Include="Juego.h" />
+    <ClInclude Include="Jugador.h" />
     <ClInclude Include="Mapa.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Personaje.h" />
@@ -182,6 +184,9 @@
     <ClInclude Include="Ranking.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Sprite.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

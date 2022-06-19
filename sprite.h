@@ -6,7 +6,6 @@ class Sprite: public sf::Drawable, public sf::Transformable
 	protected:
 		sf::Texture*   _txtPersonaje; ///textura del personaje
 		sf::Sprite*	   _sprite; ///sprite del personaje
-		int			   _sprActual; /// Nro de sprite actual		
 		int			   _cantX; // Cantidad de frames en el eje x
 		int		       _cantY; // Cantidad de frames en el eje y
 		sf::Vector2f   _frameSize; //Tamaño del frame.
@@ -15,6 +14,8 @@ class Sprite: public sf::Drawable, public sf::Transformable
 	public:
 		//Constructor
 		Sprite(int sprClase, int cantX, int cantY, sf::Vector2f frameActual, float velAnima);
+		//Destructor
+		~Sprite();
 		//sets
 		void setPosicion(sf::Vector2f position);	
 		void setFrameX(float frame);

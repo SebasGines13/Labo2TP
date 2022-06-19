@@ -51,6 +51,11 @@ Mapa::Mapa(int sprClase, int tilewidth, int tileheight, int mapwidth, int maphei
     }
 }
 
+Mapa::~Mapa()
+{
+    delete _txtMapa;
+}
+
 void Mapa::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {    
     for (Bloque* pBloque : _bloques) {

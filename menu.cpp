@@ -60,6 +60,11 @@ Menu::Menu()
 	}
 }
 
+Menu::~Menu()
+{
+	delete _sprFuego;
+}
+
 void Menu::command() { /// Segun las teclas presionadas, se indica la selcción.
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
 		_soundTeclas.play();

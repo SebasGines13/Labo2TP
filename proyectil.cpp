@@ -8,6 +8,12 @@ Proyectil::Proyectil(sf::Vector2f posicion) {
     respawn(posicion);
 }
 
+Proyectil::~Proyectil()
+{
+    delete _sprite;
+}
+
+
 Sprite Proyectil::getSprite()
 {
     return *_sprite;

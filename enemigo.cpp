@@ -1,69 +1,61 @@
 #include "Enemigo.h"
-
+#include <iostream>
 ///Constructor
-Enemigo::Enemigo(sf::Vector2f posicion) {
-    _sprite = new Sprite(15, 9, 4, sf::Vector2f(0, 0), .25f);
-    _velDesplaz = 3.f;
-    _velocidad = sf::Vector2f(0, 0);
-    _direccion = (int)Direcciones::Left;
-    _sprite->setFrameY(_direccion);
-    respawn(posicion);
-}
-
-/// Gets
-
-const Sprite& Enemigo::getSprite()
+Enemigo::Enemigo(int sprClase, sf::Vector2f posicion) 
 {
-    return *_sprite;
+    if (sprClase == 11) {
+        _sprite = new Sprite(sprClase, 9, 4, sf::Vector2f(0, 0), .25f);
+        _velDesplaz = 3.f;
+        _direccion = Direcciones::Left;
+        _sprite->setFrameY((int)_direccion);
+        spawn(posicion);
+        _coolDown = 300;
+    }
 }
 
-sf::Vector2f Enemigo::getVelocidad()
+
+Enemigo::~Enemigo()
 {
-    return _velocidad;
-}
-
-/// Sets
-void Enemigo::setSentidoX(int frame) {
-    _sprite->setFrameX(frame);
-}
-
-void Enemigo::setSentidoY(int frame) {
-    _direccion = frame;
-    _sprite->setFrameY(_direccion);
-}
-
-void Enemigo::setDireccion(int direccion)
-{
-    _direccion = direccion;
+    delete _sprite;
 }
 
 /// Métodos
 void Enemigo::update() {
     _velocidad = {};
-    srand(time(NULL));
-    int aleatorio = rand() % 10;
-    if (aleatorio > 7) {
-        setSentidoY(rand() % 4);
-    }
+    _coolDown--;
+    if (_coolDown < 0) {
+        Direcciones nuevaDireccion = (Direcciones)(rand() % 4);
+        while (_direccion == nuevaDireccion){
+            nuevaDireccion = (Direcciones)(rand() % 4);
+        }
+        setSentidoY(nuevaDireccion);
+        _coolDown = 300;
+    } 
 
-    if ( _direccion == (int)Direcciones::Left ) {
+    if ( _direccion == Direcciones::Left ) {
         _velocidad.x = -_velDesplaz;
     }
-    else if ( _direccion == (int)Direcciones::Right ) {
+    else if ( _direccion == Direcciones::Right ) {
         _velocidad.x = _velDesplaz;
     }
-    else if (_direccion == (int)Direcciones::Up) {
+    else if (_direccion == Direcciones::Up) {
         _velocidad.y = -_velDesplaz;
     }
-    else if (_direccion == (int)Direcciones::Down) {
+    else if (_direccion == Direcciones::Down) {
         _velocidad.y = _velDesplaz;
     }   
     move(_velocidad);
     _sprite->animar();
 }
 
-void Enemigo::respawn(sf::Vector2f posicion) {
+void Enemigo::spawn(sf::Vector2f posicion) {
     setPosition(posicion);
+}
+
+void Enemigo::draw(sf::RenderTarget& target, sf::RenderStates states) const
+{
+    states.transform *= getTransform();
+    target.draw(_sprite->getSprite(), states);
 }
 
 const sf::FloatRect Enemigo::getBounds()
@@ -72,8 +64,3 @@ const sf::FloatRect Enemigo::getBounds()
     return rect;
 }
 
-void Enemigo::draw(sf::RenderTarget& target, sf::RenderStates states) const
-{
-    states.transform *= getTransform();
-    target.draw(_sprite->getSprite(), states);
-}

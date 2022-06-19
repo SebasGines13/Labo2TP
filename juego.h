@@ -8,32 +8,36 @@
 #include "Proyectil.h"
 #include "JuegoProyectil.h"
 #include "Enemigo.h"
+#include "Jugador.h"
 #include "Controller.h"
 #include "Menu.h"
 
 
 class Juego: public JuegoProyectil
 { 
+    public:
+        enum class coolDown { Lastimado, Enemigo, Menu };
     private:
-        sf::RenderWindow*       _ventana;  ///Ventana donde se va a mostrar el juego.
-        bool                    _gameOver;  ///Booleano que controla si se terminó el juego.
-        Personaje*              _j1;          ///Objeto de clase personaje.
-        Mapa*                   _mapa;          ///Objeto de la clase mapa.
-        int                     _fps;      /// utilizado para limitar los frames
-        sf::Music               _music;    /// música de fondo
-        std::list<Proyectil>    _proyectiles; /// lista de proyectiles
-        std::list<Enemigo>      _enemigos; /// lista de enemigos
-        Controller              _controller; /// controles asociados al jugador
-        Menu*                   _menu; /// para el menú del juego.
+        sf::RenderWindow*       _ventana;       /// Ventana donde se va a mostrar el juego.
+        bool                    _gameOver;      /// Booleano que controla si se terminó el juego.
+        Jugador*                _j1;            /// Objeto de clase personaje.
+        Mapa*                   _mapa;          /// Objeto de la clase mapa.
+        int                     _fps;           /// utilizado para limitar los frames
+        sf::Music               _music;         /// música de fondo
+        std::list<Proyectil*>   _proyectiles;   /// lista de proyectiles
+        std::list<Enemigo*>     _enemigos;      /// lista de enemigos
+        Controller              _controller;    /// controles asociados al jugador
+        Menu*                   _menu;          /// para el menú del juego.
         bool                    _primerIngreso; /// para validar si es el primer ingreso y mostrar la pantalla de controles
-        int                     _coolDown[3]; /// Cooldown para el respawn de enemigos;
-        const int               COOLDOWNENEMIGOS = 150;
+        int                     _coolDown[3];   /// Cooldown para el respawn de enemigos;
+        const int               COOLDOWNENEMIGOS = 100;
         const int               COOLDOWNLASTIMADO = 60;
         const int               COOLDOWNMENU = 250;
     public:
-        enum class coolDown { Lastimado, Enemigo, Menu };
         //Constructor
         Juego(sf::Vector2u resolucion);
+        //Destructor
+        ~Juego();
         //Métodos     
         void gameLoop();
         void command(); /// para verificar las teclas.
