@@ -97,9 +97,4 @@ void Jugador::spawn(sf::Vector2f posicion) {
     setPosition(posicion);
 }
 
-const sf::FloatRect Jugador::getBounds()
-{
-    sf::FloatRect rect = sf::FloatRect(sf::Vector2f(getPosition().x, getPosition().y), sf::Vector2f(_sprite->getFrameSize().x, _sprite->getFrameSize().y));
-    return rect;
-}
 

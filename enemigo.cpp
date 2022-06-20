@@ -51,15 +51,4 @@ void Enemigo::spawn(sf::Vector2f posicion) {
     setPosition(posicion);
 }
 
-void Enemigo::draw(sf::RenderTarget& target, sf::RenderStates states) const
-{
-    states.transform *= getTransform();
-    target.draw(_sprite->getSprite(), states);
-}
-
-const sf::FloatRect Enemigo::getBounds()
-{
-    sf::FloatRect rect = sf::FloatRect(sf::Vector2f(getPosition().x, getPosition().y), sf::Vector2f(_sprite->getFrameSize().x, _sprite->getFrameSize().y));
-    return rect;
-}
 

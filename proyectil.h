@@ -27,6 +27,6 @@ class Proyectil: public sf::Drawable, public sf::Transformable, public IColision
         void respawn(sf::Vector2f posicion);
         void playSonido();
         const sf::FloatRect getBounds() override;
-        void draw(sf::RenderTarget& target, sf::RenderStates states) const override; /// Polimorfismo del método draw en Drawable.
+        void  draw(sf::RenderTarget& target, sf::RenderStates states) const override; /// Polimorfismo del método draw en Drawable.
 };
 
