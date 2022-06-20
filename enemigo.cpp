@@ -13,7 +13,6 @@ Enemigo::Enemigo(int sprClase, sf::Vector2f posicion)
     }
 }
 
-
 Enemigo::~Enemigo()
 {
     delete _sprite;
@@ -28,7 +27,7 @@ void Enemigo::update() {
         while (_direccion == nuevaDireccion){
             nuevaDireccion = (Direcciones)(rand() % 4);
         }
-        setSentidoY(nuevaDireccion);
+        setDireccion(nuevaDireccion);
         _coolDown = 300;
     } 
 

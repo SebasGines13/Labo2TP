@@ -157,13 +157,6 @@ void Juego::draw()
 
 void Juego::crearProyectil(sf::Vector2f posicion)
 {
-	static sf::SoundBuffer _bufferP;  /// buffer para el sonido
-	static sf::Sound _sonido;   /// canal utilizado por el buffer
-	_bufferP.loadFromFile("audio/proyectil.wav");
-	_sonido.setBuffer(_bufferP);
-	_sonido.setVolume(20.f);
-	_sonido.setPitch(1.f);
-	_sonido.play();
 	_proyectiles.push_back(new Proyectil(posicion));
 }
 
@@ -267,8 +260,8 @@ void Juego::colisionConBloques(Enemigo& e)
 			while (newDireccion == oldDireccion) {
 				newDireccion = (Enemigo::Direcciones)(rand() % 4);
 			}
-			e.setSentidoY(newDireccion);
-			e.setSentidoX(0);
+			e.setDireccion(newDireccion);
+			e.setSpriteQuieto();
 		}
 	}
 }

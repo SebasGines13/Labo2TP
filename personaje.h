@@ -6,13 +6,16 @@ class Personaje
 {
     public:
         enum class Direcciones { Down, Left, Right, Up };
+        // Constructor
+        Personaje();
+        // sets
+        void             setDireccion(Direcciones direccion);
         // gets
         Direcciones      getDireccion();
         sf::Vector2f     getVelocidad();
         const Sprite&    getSprite(); ///obtengo el objeto sprite     
         // Métodos
-        void             setSentidoX(int direccion); /// Para conocer si está mirando hacia la izquierda o derecha.
-        void             setSentidoY(Direcciones direccion); /// Para conocer si está mirando hacia arriba o abajo
+        void             setSpriteQuieto(); /// Para conocer si está mirando hacia la izquierda o derecha.
         virtual void     update() = 0;
         virtual void     spawn(sf::Vector2f posicion)=0;
     protected:

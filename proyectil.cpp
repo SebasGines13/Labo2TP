@@ -6,6 +6,12 @@ Proyectil::Proyectil(sf::Vector2f posicion) {
     _velDesplaz = 6.f;
     _velocidad = sf::Vector2f(0, 0);
     respawn(posicion);
+    _buffer.loadFromFile("audio/proyectil.wav");
+    _sonido.setBuffer(_buffer);
+    _sonido.setVolume(20.f);
+    _sonido.setPitch(1.f);
+    _sonido.play();
+   
 }
 
 Proyectil::~Proyectil()
@@ -31,6 +37,10 @@ void Proyectil::update() {
 
 void Proyectil::respawn(sf::Vector2f posicion) {
     setPosition(posicion);
+}
+
+void Proyectil::playSonido() {
+    _sonido.play();
 }
 
 const sf::FloatRect Proyectil::getBounds()

@@ -6,7 +6,6 @@ Jugador::Jugador(int sprClase, JuegoProyectil& juego, Controller& controller)
     if (sprClase == 1) {
         _sprite = new Sprite(sprClase, 4, 4, sf::Vector2f(0, 0), .1f);
         _velDesplaz = 3.5f;
-        _velocidad = sf::Vector2f(0, 0);
         _direccion = Direcciones::Down;
         _coolDown = 30;
         _buffer.loadFromFile("audio/paso.wav");
