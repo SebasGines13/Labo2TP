@@ -26,6 +26,5 @@ class Jugador : public Personaje
         bool            _lastimado;
         sf::SoundBuffer _buffer;  /// buffer para el sonido
         sf::Sound       _pasos;   /// canal utilizado por el buffer
-
 };
 

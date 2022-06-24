@@ -36,7 +36,7 @@
     <ClCompile Include="JuegoProyectil.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="archivos.cpp">
+    <ClCompile Include="Listado.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
     <ClCompile Include="GUI.cpp">
@@ -89,7 +89,7 @@
     <ClInclude Include="juegoProyectil.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="archivos.h">
+    <ClInclude Include="Listado.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="GUI.h">
@@ -119,8 +119,5 @@
     <ClInclude Include="Jugador.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
 </Project>

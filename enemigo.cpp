@@ -1,11 +1,11 @@
 #include "Enemigo.h"
 #include <iostream>
 ///Constructor
-Enemigo::Enemigo(int sprClase, sf::Vector2f posicion) 
+Enemigo::Enemigo(int sprClase, float velDesplaz, sf::Vector2f posicion) 
 {
     if (sprClase == 11) {
         _sprite = new Sprite(sprClase, 9, 4, sf::Vector2f(0, 0), .25f);
-        _velDesplaz = 3.f;
+        _velDesplaz = velDesplaz;
         _direccion = Direcciones::Left;
         _sprite->setFrameY((int)_direccion);
         spawn(posicion);
@@ -49,6 +49,16 @@ void Enemigo::update() {
 
 void Enemigo::spawn(sf::Vector2f posicion) {
     setPosition(posicion);
+}
+
+
+void Enemigo::draw(sf::RenderTarget& target, sf::RenderStates states) const
+{
+    states.transform *= getTransform();
+    if (_velDesplaz > 3.f) {
+        _sprite->setColor(sf::Color(0, 255, 0, 255));
+    }
+    target.draw(_sprite->getSprite(), states);
 }
 
 

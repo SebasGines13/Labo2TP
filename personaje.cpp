@@ -27,6 +27,11 @@ sf::Vector2f Personaje::getVelocidad()
     return _velocidad;
 }
 
+const float Personaje::getVelDesplaz()
+{
+    return _velDesplaz;
+}
+
 const Sprite& Personaje::getSprite()
 {
     return *_sprite;

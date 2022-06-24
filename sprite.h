@@ -3,7 +3,7 @@
 
 class Sprite: public sf::Drawable, public sf::Transformable
 {
-	protected:
+	private:
 		sf::Texture*   _txtPersonaje; ///textura del personaje
 		sf::Sprite*	   _sprite; ///sprite del personaje
 		int			   _cantX; // Cantidad de frames en el eje x
@@ -13,7 +13,8 @@ class Sprite: public sf::Drawable, public sf::Transformable
 		float	       _velAnima; // Velocidad del cambio de frame para la animación
 	public:
 		//Constructor
-		Sprite(int sprClase, int cantX, int cantY, sf::Vector2f frameActual, float velAnima);
+		Sprite(int sprClase, int cantX, int cantY, sf::Vector2f frameActual, float velAnima); 
+		/// Primero recibo el nro. para completar el nombre del archivo imagen a dibujar, luego la cantidad de animaciones/sprites en el nivel x, luego en el nivel y, la posición inicial y por último la velocidad de animación.
 		//Destructor
 		~Sprite();
 		//sets

@@ -13,7 +13,7 @@ Menu::Menu()
 	_txtFondo.loadFromFile("img/dungeon_menu.png");
 	_txtControles.loadFromFile("img/controles.png");
 	_txtCaminoDun.loadFromFile("img/camino_mazmorra.png");
-	_txtFondo.setSmooth(true);
+	_txtFondo.setSmooth(true); /// Suavizado de la imagen, pero en realidad no se nota mucho.
 	_txtControles.setSmooth(true);
 	_txtCaminoDun.setSmooth(true);
 	_sprFondo.setTexture(_txtFondo);
@@ -27,6 +27,8 @@ Menu::Menu()
 	_buffer.loadFromFile("audio/teclas_menu.wav");
 	_soundTeclas.setBuffer(_buffer);
 	_soundTeclas.setVolume(40.f);
+
+	creditos(); // Creo la pantalla de créditos.
 
 	for (int i = 0; i < std::size(_vButtons); i++) { /// creo las opciones del menú
 		_vButtons[i].setFont(_font);		
@@ -130,6 +132,12 @@ void Menu::command() { /// Segun las teclas presionadas, se indica la selcción.
 			_vOpcMenuPress[(int)OpcMenu::Exit] = true;
 		}
 	}
+	else if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Space))) {
+		if (_vOpcMenuPress[(int)OpcMenu::Credit]) {
+			_soundTeclas.play();
+			_vOpcMenuPress[(int)OpcMenu::Credit] = false;
+		}
+	}
 }
 
 void Menu::update()  /// Segun las teclas seleccionada, actualizo colores y tamaño de los botones
@@ -182,11 +190,19 @@ void Menu::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	states.transform *= getTransform();
 	target.draw(_sprFondo, states);
-	target.draw(_gameTitle, states);
 	target.draw(*_sprFuego, states);
-	for (int i = 0; i < std::size(_vButtons); i++) {
-		target.draw(_vButtons[i], states);
+	if (_vOpcMenuPress[(int)OpcMenu::Credit]) {
+		for (int i = 0;i < std::size(_vCreditos);i++) {
+			target.draw(_vCreditos[i], states);
+		}		
 	}
+	else {
+		target.draw(_gameTitle, states);
+		for (int i = 0; i < std::size(_vButtons); i++) {
+			target.draw(_vButtons[i], states);
+		}
+	}
+	
 }
 
 bool* Menu::getOpcMenuPress()
@@ -219,4 +235,41 @@ sf::Sound& Menu::getSonidoTeclas()
 	return _soundTeclas;
 }
 
-
+void Menu::creditos() {
+	for (int i = 0; i < std::size(_vCreditos);i++) {
+		_vCreditos[i].setFont(_font);
+		_vCreditos[i].setOrigin(_vCreditos[i].getGlobalBounds().width / 2, _vCreditos[i].getGlobalBounds().height / 2);
+		_vCreditos[i].setFillColor(sf::Color(255, 255, 255, 180));
+		_vCreditos[i].setCharacterSize(30);
+		switch (i)
+		{
+			case 0:
+				_vCreditos[i].setString("CREDITOS");
+				_vCreditos[i].setPosition(50.f, 100.f);
+				_vCreditos[i].setCharacterSize(80);
+				_vCreditos[i].setFillColor(sf::Color(255, 255, 255, 220));
+				break;
+			case 1:
+				_vCreditos[i].setString("Integrantes:");
+				_vCreditos[i].setPosition(50.f, 200.f + (i * 50));
+				break;
+			case 2:
+				_vCreditos[i].setString("Camila Goncalves	- Legajo: 25504");
+				_vCreditos[i].setPosition(110.f, 200.f + (i * 50));
+				break;
+			case 3:
+				_vCreditos[i].setString("Sebastian Gines      - Legajo: 25496");
+				_vCreditos[i].setPosition(110.f, 200.f + (i * 50));
+				break;
+			case 4:
+				_vCreditos[i].setString("2DO PARCIAL - LABORATORIO II - 2022");
+				_vCreditos[i].setPosition(70.f, 200.f + (i * 70));
+				_vCreditos[i].setCharacterSize(25);
+				break;
+			case 5:
+				_vCreditos[i].setString("Presione la tecla 'ESPACIO' para continuar...");
+				_vCreditos[i].setPosition(50.f, 200.f + (i * 80));
+				break;
+		}
+	}	
+}

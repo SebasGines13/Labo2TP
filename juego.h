@@ -11,6 +11,9 @@
 #include "Jugador.h"
 #include "Controller.h"
 #include "Menu.h"
+#include "GUI.h"
+#include "Ranking.h"
+#include "Listado.h"
 
 
 class Juego: public JuegoProyectil
@@ -28,11 +31,13 @@ class Juego: public JuegoProyectil
         std::list<Enemigo*>     _enemigos;      /// lista de enemigos
         Controller              _controller;    /// controles asociados al jugador
         Menu*                   _menu;          /// para el menú del juego.
-        bool                    _primerIngreso; /// para validar si es el primer ingreso y mostrar la pantalla de controles
+        bool                    _bienvenidaAjuego; /// para validar si es el primer ingreso al juego y mostrar la pantalla de controles y camino del dungeon.
+        GUI*                    _gui;           /// para controlar y mostrar elementos varios de juego como ser la vida y el puntaje.
         int                     _coolDown[3];   /// Cooldown para el respawn de enemigos;
-        const int               COOLDOWNENEMIGOS = 100;
+        Listado*                _listado;       /// OBjeto para el manejo de listados.
+        const int               COOLDOWNENEMIGOS = 80;
         const int               COOLDOWNLASTIMADO = 60;
-        const int               COOLDOWNMENU = 250;
+        const int               COOLDOWNMENU = 200;
     public:
         //Constructor
         Juego(sf::Vector2u resolucion);
@@ -43,7 +48,8 @@ class Juego: public JuegoProyectil
         void command(); /// para verificar las teclas.
         void update(); ///Lógicas y reglas propias del juego.
         void draw(); ///Dibuja en pantalla los elementos.
-        void updateMusic();  /// Actualizo controles de música
+        void updateMusic();  /// Actualizo controles de música.
+        void reiniciarJuego(); /// Reinicia los valores del jugador.
         void crearProyectil(sf::Vector2f posicion) override; /// Para que disparar un proyectil
         void colisionesPersonaje();
         bool colisionConBloques(Proyectil& p);
@@ -51,4 +57,7 @@ class Juego: public JuegoProyectil
         bool colisionProyectilEnemigo(Enemigo& e);
         void colisionesProyectil();
         void colisionesEnemigo();
+        void mostrarGameOver();
+        void grabarPuntaje();
+        void ranking();
 };
