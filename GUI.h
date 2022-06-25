@@ -6,12 +6,12 @@ class GUI: public sf::Drawable, public sf::Transformable
 {
 	public:
 		// Constructor
-		GUI(int cantVidas);
+		GUI(int dificultad);
 		// Destructor
 		~GUI();
 		/// Métodos
 		void		 restarVida(int vida);
-		void		 sumarPuntos(int puntos);
+		void		 sumarPuntos(int puntos, int dificultad);
 		const int	 getVidasRestantes();
 		const int	 getPuntaje();
 		void		 draw(sf::RenderTarget& target, sf::RenderStates states) const override;

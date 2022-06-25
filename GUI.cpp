@@ -1,6 +1,6 @@
 #include "GUI.h"
 
-GUI::GUI(int cantVida)
+GUI::GUI(int dificultad)
 {
 	_puntaje = 0;
 	_fuente = new sf::Font;
@@ -19,7 +19,18 @@ GUI::GUI(int cantVida)
 	_txtVida = new sf::Texture;
 	_txtVida->loadFromFile("img/itemCora.png");
 	_sprVida = new sf::Sprite(*_txtVida);
-	_cantVidaInicial = cantVida;
+	switch (dificultad) ///  de acuerdo a la velocidad, asigno más o menos vida para el jugador.
+	{
+	case 1:
+		_cantVidaInicial = 6;
+		break;
+	case 2:
+		_cantVidaInicial = 4;
+		break;
+	case 3:
+		_cantVidaInicial = 2;
+		break;
+	}
 	_cantVidaRestante = _cantVidaInicial;
 }
 
@@ -37,9 +48,9 @@ void GUI::restarVida(int vida)
 	_cantVidaRestante -= vida;
 }
 
-void GUI::sumarPuntos(int puntos)
+void GUI::sumarPuntos(int puntos, int dificultad)
 {
-	_puntaje += puntos;
+	_puntaje += (puntos*dificultad);
 }
 
 const int GUI::getVidasRestantes()

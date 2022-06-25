@@ -14,6 +14,7 @@
 #include "GUI.h"
 #include "Ranking.h"
 #include "Listado.h"
+#include "Configuracion.h"
 
 
 class Juego: public JuegoProyectil
@@ -34,8 +35,10 @@ class Juego: public JuegoProyectil
         bool                    _bienvenidaAjuego; /// para validar si es el primer ingreso al juego y mostrar la pantalla de controles y camino del dungeon.
         GUI*                    _gui;           /// para controlar y mostrar elementos varios de juego como ser la vida y el puntaje.
         int                     _coolDown[3];   /// Cooldown para el respawn de enemigos;
-        Listado*                _listado;       /// OBjeto para el manejo de listados.
-        const int               COOLDOWNENEMIGOS = 80;
+        Listado*                _listado;       /// Objeto para el manejo de listados.
+        Configuracion*          _configuracion;
+        int                     _dificultad;    /// Dificultad del juego
+        int                     coolDownEnemigos;
         const int               COOLDOWNLASTIMADO = 60;
         const int               COOLDOWNMENU = 200;
     public:
@@ -57,7 +60,7 @@ class Juego: public JuegoProyectil
         bool colisionProyectilEnemigo(Enemigo& e);
         void colisionesProyectil();
         void colisionesEnemigo();
-        void mostrarGameOver();
         void grabarPuntaje();
         void ranking();
+        void configuracion();
 };

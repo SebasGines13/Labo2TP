@@ -24,6 +24,7 @@ Menu::Menu()
 	_sprFuego->setPosicion(sf::Vector2f(550.f,5.f));
 	_sprCaminoDun.setTexture(_txtCaminoDun);
 	_sprCaminoDun.setOrigin(sf::Vector2f(_txtCaminoDun.getSize().x  /2, _txtCaminoDun.getSize().y / 2));
+	_sprCaminoDun.setPosition((sf::Vector2f(_sprCaminoDun.getGlobalBounds().width / 2, _sprCaminoDun.getGlobalBounds().height / 2))); // para que luego pueda aplicar correctamente el efecto de zoom y avanzar en el camino de la mazmorra
 	_buffer.loadFromFile("audio/teclas_menu.wav");
 	_soundTeclas.setBuffer(_buffer);
 	_soundTeclas.setVolume(40.f);
@@ -45,7 +46,6 @@ Menu::Menu()
 			_vButtons[i].setString("Ranking");
 			_vButtons[i].setOrigin(_vButtons[i].getGlobalBounds().width / 2, _vButtons[i].getGlobalBounds().height / 2);
 			break;
-		default:
 		case (int)OpcMenu::Config:
 			_vButtons[i].setString("Config");
 			_vButtons[i].setOrigin(_vButtons[i].getGlobalBounds().width / 2, _vButtons[i].getGlobalBounds().height / 2);

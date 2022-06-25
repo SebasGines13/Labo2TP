@@ -25,7 +25,6 @@ Listado::Listado()
 
 Listado::~Listado()
 {
-    delete _textRanking;
     delete _textTitulo;
     delete _textFinal;
     delete _fuente;
@@ -89,7 +88,7 @@ void Listado::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
     states.transform *= getTransform();
     target.draw(*_textTitulo, states);
-    for (int i = 0; i < 5;i++) {
+    for (int i = 0; i < std::size(_textRanking);i++) {
         target.draw(_textRanking[i], states);
     }
     target.draw(*_textFinal, states);
