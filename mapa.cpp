@@ -10,13 +10,23 @@ Mapa::Mapa(int sprClase, int tilewidth, int tileheight, int mapwidth, int maphei
     _tileheight = tileheight;
     _mapWidth = mapwidth;
     _mapHeight = mapheight;
-    for (sf::Vector2f &i : _spawnEnemigo) { i.x = 0.f; i.y = 0.f; }
+    generarMapa();
+    nuevoItem(1); // creo el item estrella de puntos en el mapa
+}
+
+Mapa::~Mapa()
+{
+    delete _txtMapa;
+}
+
+void Mapa::generarMapa() {
+    for (sf::Vector2f& i : _spawnEnemigo) { i.x = 0.f; i.y = 0.f; }
     int i = 0;
     Bloque* pBloque = nullptr;
-    for (int f = 0; f < _mapHeight; f++) { 
-        for (int c = 0; c < _mapWidth; c++) { 
+    for (int f = 0; f < _mapHeight; f++) {
+        for (int c = 0; c < _mapWidth; c++) {
             int columnas = _txtMapa->getSize().x / _tilewidth;
-            int id = _vMapa[i]-1;
+            int id = _vMapa[i] - 1;
             int xAux = id % columnas;
             int yAux = id / columnas;
             switch (_vMapa[i++])
@@ -36,7 +46,7 @@ Mapa::Mapa(int sprClase, int tilewidth, int tileheight, int mapwidth, int maphei
                         i.y = (float)f * _tileheight;
                         break;
                     }
-                }           
+                }
                 pBloque = new Bloque(false);
                 break;
             default:
@@ -45,24 +55,12 @@ Mapa::Mapa(int sprClase, int tilewidth, int tileheight, int mapwidth, int maphei
             }
             pBloque->setTextureBloque(*_txtMapa);
             pBloque->setTextureRectBloque(sf::IntRect(xAux * _tilewidth, yAux * _tileheight, _tilewidth, _tileheight));
-            pBloque->setPosition(sf::Vector2f((float)c*_tilewidth, (float)f*_tileheight));
+            pBloque->setPosition(sf::Vector2f((float)c * _tilewidth, (float)f * _tileheight));
             _bloques.push_back(pBloque);
         }
     }
 }
 
-Mapa::~Mapa()
-{
-    delete _txtMapa;
-}
-
-void Mapa::draw(sf::RenderTarget& target, sf::RenderStates states) const
-{    
-    for (Bloque* pBloque : _bloques) {
-        states.transform *= getTransform();
-        target.draw(*pBloque, states);
-    }    
-}
 
 sf::Vector2f Mapa::getPlayerSpawn() const
 {
@@ -87,4 +85,59 @@ int Mapa::getTilHeight() const
 std::vector<Bloque*> Mapa::getBloques() const
 {
     return _bloques;
+}
+
+Item Mapa::getItem()
+{
+    return *_item;
+}
+
+void Mapa::nuevoItem(int tipoItem)
+{
+    sf::Vector2f posInicial;
+    int x;
+    do {
+        x = rand() % (35 * 50) + 250;
+    } while (_bloques[x]->isSolid());   /// Para devolver un lugar válido donde pueda aparecer el item.
+    _item = new Item(tipoItem, _bloques[x]->getPosition());//_bloques[x]->getPosition());   
+}
+
+void Mapa::spawnItem()
+{
+    int x;
+    do {
+        x = rand() % (35 * 50) + 250;
+    } while (_bloques[x]->isSolid());   /// Para devolver un lugar válido donde pueda aparecer el item.
+    _item->spawn(_bloques[x]->getPosition());
+    _item->setVisible(true);
+}
+
+void Mapa::spawnItem(sf::Vector2f pos)
+{
+    _item->spawn(pos);
+    _item->setVisible(true);
+}
+
+void Mapa::update() {
+    if(_item->getVisible()) _item->update();
+}
+
+void Mapa::draw(sf::RenderTarget& target, sf::RenderStates states) const
+{
+    states.transform *= getTransform();
+    for (Bloque* pBloque : _bloques) {
+        target.draw(*pBloque, states);
+    }
+    if (_item->getVisible()) target.draw(*_item, states);
+}
+
+
+void Mapa::desaparecerItem()
+{
+    _item->setVisible(false);
+}
+
+bool Mapa::getItemVisible()
+{
+    return _item->getVisible();
 }

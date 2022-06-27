@@ -4,8 +4,8 @@
 class Sprite: public sf::Drawable, public sf::Transformable
 {
 	private:
-		sf::Texture*   _txtPersonaje; ///textura del personaje
-		sf::Sprite*	   _sprite; ///sprite del personaje
+		sf::Texture*   _textura; ///textura de Sfml
+		sf::Sprite*	   _sprite; ///sprite de Sfml
 		int			   _cantX; // Cantidad de frames en el eje x
 		int		       _cantY; // Cantidad de frames en el eje y
 		sf::Vector2f   _frameSize; //Tamaño del frame.
@@ -14,6 +14,7 @@ class Sprite: public sf::Drawable, public sf::Transformable
 	public:
 		//Constructor
 		Sprite(int sprClase, int cantX, int cantY, sf::Vector2f frameActual, float velAnima); 
+		Sprite();
 		/// Primero recibo el nro. para completar el nombre del archivo imagen a dibujar, luego la cantidad de animaciones/sprites en el nivel x, luego en el nivel y, la posición inicial y por último la velocidad de animación.
 		//Destructor
 		~Sprite();

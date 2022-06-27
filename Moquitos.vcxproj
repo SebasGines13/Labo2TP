@@ -148,6 +148,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Item.cpp" />
     <ClCompile Include="Listado.cpp" />
     <ClCompile Include="Bloque.cpp" />
     <ClCompile Include="IColisionable.cpp" />
@@ -167,6 +168,7 @@
     <ClCompile Include="Sprite.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Item.h" />
     <ClInclude Include="Listado.h" />
     <ClInclude Include="Bloque.h" />
     <ClInclude Include="IColisionable.h" />
@@ -184,6 +186,9 @@
     <ClInclude Include="Ranking.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Sprite.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -3,23 +3,26 @@
 ///Constructor
 Sprite::Sprite(int sprClase, int cantX, int cantY, sf::Vector2f frameActual, float velAnima) {
     std::string path = "img/" + std::to_string(sprClase) + ".png"; //contruyo la ruta para conocer la imagen actual del sprite.
-    _txtPersonaje = new sf::Texture();
-    _txtPersonaje->loadFromFile(path);
-    _sprite = new sf::Sprite(*_txtPersonaje);
+    _textura = new sf::Texture();
+    _textura->loadFromFile(path);
+    _sprite = new sf::Sprite(*_textura);
     _cantX = cantX;
     _cantY = cantY;
-    _frameSize = sf::Vector2f((float)_txtPersonaje->getSize().x / _cantX, (float)_txtPersonaje->getSize().y / _cantY);
+    _frameSize = sf::Vector2f((float)_textura->getSize().x / _cantX, (float)_textura->getSize().y / _cantY);
     _frameActual = frameActual;
     _velAnima = velAnima;
     seleccionarFrame();
 }
 
-Sprite::~Sprite()
+Sprite::Sprite()
 {
-    delete _txtPersonaje;
-    delete _sprite;
 }
 
+Sprite::~Sprite()
+{
+    delete _textura;
+    delete _sprite;
+}
 
 ///sets
 void Sprite::setPosicion(sf::Vector2f position) {

@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "IColisionable.h"
 #include "Bloque.h"
+#include "Item.h"
 
 
 class Mapa : public sf::Drawable, public sf::Transformable
@@ -17,15 +18,25 @@ class Mapa : public sf::Drawable, public sf::Transformable
         int                  getTileWidth() const;
         int                  getTilHeight() const;
         std::vector<Bloque*> getBloques() const;
+        Item                 getItem() ;
         /// Métodos
-        void		         draw(sf::RenderTarget& target, sf::RenderStates states) const override; /// Polimorfismo del método draw en Drawable.
+        void    spawnItem();
+        void    spawnItem(sf::Vector2f pos);
+        void    update();
+        void    desaparecerItem();
+        bool    getItemVisible();
+        void	draw(sf::RenderTarget& target, sf::RenderStates states) const override; /// Polimorfismo del método draw en Drawable.
     private:
+        void    generarMapa();
+        void    nuevoItem(int tipoItem);
+
 	    sf::Texture*	_txtMapa; ///textura del mapa
 	    int				_tilewidth; ///Ancho del tile del mapa
 	    int				_tileheight; ///Alto del tile del mapa
 	    int				_sprActual; /// Nro de sprite actual
 	    int				_mapWidth; // Ancho del mapa en tiles
 	    int				_mapHeight; // Alto del mapa en tiles
+        Item*           _item; // Item que puede aparecer, ya bien sea vida o puntos.
         sf::Vector2f    _spawnPlayer; /// posición donde aparece el personaje.
         sf::Vector2f    _spawnEnemigo[3]; /// posiciones de spawn de enemigos.
 	    std::vector     <Bloque*> _bloques;/// Vector de bloques 

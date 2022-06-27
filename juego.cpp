@@ -10,7 +10,7 @@ Juego::Juego(sf::Vector2u resolucion)
 	_mapa = new Mapa(1, 16, 16, 50, 40); //Inicializo la variable dinámica para el mapa.
 	_j1 = new Jugador(1, *this, _controller); ///Inicilizo la variable dinámica de jugador.
 	_j1->setPosition(sf::Vector2f(_mapa->getPlayerSpawn())); /// Ubico el personaje de acuerdo a spawn definido en el mapa.
-	_gui = new GUI(coolDownEnemigos);
+	_gui = new GUI(_dificultad);
 	_listado = new Listado();
 	_configuracion = new Configuracion();
 	_menu = new Menu();
@@ -27,9 +27,22 @@ Juego::Juego(sf::Vector2u resolucion)
 	}
 	else {
 		_enemigos.push_back(new Enemigo(11, 3.f, sf::Vector2f(_mapa->getEnemigoSpawn(i))));
-	}	
+	}
+	switch (_dificultad) ///  de acuerdo a la velocidad, asigno más o menos frecuencia de respawn de enemigos.
+	{
+	case 1:
+		coolDownEnemigos = 80;
+		break;
+	case 2:
+		coolDownEnemigos = 50;
+		break;
+	case 3:
+		coolDownEnemigos = 30;
+		break;
+	}
 	_coolDown[(int)coolDown::Lastimado] = COOLDOWNLASTIMADO;
 	_coolDown[(int)coolDown::Enemigo] = coolDownEnemigos;
+	_coolDown[(int)coolDown::ItemPantalla ] = COOLDOWNITEMPANTALLA;
 	_coolDown[(int)coolDown::Menu] = COOLDOWNMENU;
 	gameLoop();
 }
@@ -161,36 +174,48 @@ void Juego::command()
 void Juego::update()
 {   ///Lógicas y reglas propias del juego.
 	_j1->update();
-	colisionesPersonaje(); 
-	colisionesProyectil();
-	colisionesEnemigo();
-
-	if (_gui->getVidasRestantes() > 0) {
-		_coolDown[(int)coolDown::Lastimado] --; /// para evaluar si está lastimado el personaje
-		if (_coolDown[(int)coolDown::Lastimado] == 0) {
-			_coolDown[(int)coolDown::Lastimado] = COOLDOWNLASTIMADO;
-			_j1->setLastimado(false);
-		}
-
-		_coolDown[(int)coolDown::Enemigo] --; /// para evaluar el respawn de enemigos
-		if (_coolDown[(int)coolDown::Enemigo] == 0) {
-			int i = rand() % 3;
-			int j = rand() % 10;
-			if (j > 6) {
-				_enemigos.push_back(new Enemigo(11, 5.f, sf::Vector2f(_mapa->getEnemigoSpawn(i))));
-			}
-			else {
-				_enemigos.push_back(new Enemigo(11, 3.f, sf::Vector2f(_mapa->getEnemigoSpawn(i))));
-			}
-			_coolDown[(int)coolDown::Enemigo] = coolDownEnemigos;
-		}
-		updateMusic();
-	}
-	else {
+	_mapa->update();
+	colisionesJugadorBloques();
+	colisionesProyectilBloques();
+	colisionesEnemigoBloques();
+	colisionesJugadorItem();
+	if (_gui->getVidasRestantes() <= 0) { ///  
 		grabarPuntaje();
 		reiniciarJuego();
 		_menu->getOpcMenuPress()[(int)Menu::OpcMenu::Play] = false; /// Para que regrese al menu principal
-		_bienvenidaAjuego = true; // Para que muestre la entrada a las mazmorras y los controles.
+		_bienvenidaAjuego = true; // Para que muestre la entrada a las mazmorras y los controles.	
+	}
+	else {
+		coolDowns();
+		updateMusic(); /// actualiza música por si se presionó para mute, subir o a bajar el volumen.
+	}
+}
+
+void Juego::coolDowns() {
+	_coolDown[(int)coolDown::Lastimado] --; /// para evaluar si está lastimado el personaje
+	if (_coolDown[(int)coolDown::Lastimado] == 0) {
+		_coolDown[(int)coolDown::Lastimado] = COOLDOWNLASTIMADO;
+		_j1->setLastimado(false);
+	}
+
+	_coolDown[(int)coolDown::Enemigo] --; /// para evaluar el respawn de enemigos
+	if (_coolDown[(int)coolDown::Enemigo] == 0) {
+		int i = rand() % 3;
+		int j = rand() % 10;
+		if (j > 6) {
+			_enemigos.push_back(new Enemigo(11, 5.f, sf::Vector2f(_mapa->getEnemigoSpawn(i))));
+		}
+		else {
+			_enemigos.push_back(new Enemigo(11, 3.f, sf::Vector2f(_mapa->getEnemigoSpawn(i))));
+		}
+		_coolDown[(int)coolDown::Enemigo] = coolDownEnemigos;
+	}
+	if (_mapa->getItemVisible()) { // si existe un item visible en el mapa, evaluamos si tiene que desaparecer
+		_coolDown[(int)coolDown::ItemPantalla] --; // para evaluar si existe un item para desaparecerlo de la pantalla
+		if (_coolDown[(int)coolDown::ItemPantalla] == 0) {
+			_mapa->desaparecerItem(); // desaparece el item
+			_coolDown[(int)coolDown::ItemPantalla] = COOLDOWNITEMPANTALLA;
+		}
 	}
 }
 
@@ -280,7 +305,6 @@ void Juego::grabarPuntaje() {
 		}
 		_ventana->display();
 	}
-
 }
 
 void Juego::ranking()
@@ -338,6 +362,9 @@ void Juego::configuracion()
 	_menu->getOpcMenuPress()[(int)Menu::OpcMenu::Config] = false; /// Para que regrese al menu principal
 }
 
+
+
+
 void Juego::draw()
 {	///Dibuja en pantalla los elementos.
 	_ventana->clear(); ///Limpio la pantalla con lo que había antes.
@@ -358,7 +385,7 @@ void Juego::crearProyectil(sf::Vector2f posicion)
 	_proyectiles.push_back(new Proyectil(posicion));
 }
 
-void Juego::colisionesPersonaje() /// el juego evalua cuando el personaje colisiona con los bloques y qué hacer con él en caso de que sea sólido.
+void Juego::colisionesJugadorBloques() /// el juego evalua cuando el jugador colisiona con los bloques y qué hacer con él en caso de que sea sólido.
 {
 	const std::vector<Bloque*>& bloques = _mapa->getBloques();
 	for (Bloque* pBloque : bloques) {
@@ -383,7 +410,19 @@ void Juego::colisionesPersonaje() /// el juego evalua cuando el personaje colisi
 	}
 }
 
-void Juego::colisionesProyectil()
+void Juego::colisionesJugadorItem()
+{
+	Item item = _mapa->getItem();
+	if (_mapa->getItemVisible() && _j1->isCollision(item))
+	{
+		_gui->sumarPuntos(10, _dificultad);
+		_mapa->desaparecerItem();
+		_coolDown[(int)coolDown::ItemPantalla] = COOLDOWNITEMPANTALLA;
+	}
+}
+
+
+void Juego::colisionesProyectilBloques()
 {
 	/// iterator para recorrer todo la lista de proyectiles y actualizarlos.
 	std::list<Proyectil*>::iterator i = _proyectiles.begin();
@@ -400,7 +439,7 @@ void Juego::colisionesProyectil()
 	}
 }
 
-void Juego::colisionesEnemigo()
+void Juego::colisionesEnemigoBloques()
 {
 	/// iterator para recorrer todo la lista de enemigos y actualizarlos.
 	std::list<Enemigo*>::iterator i = _enemigos.begin();
@@ -415,8 +454,15 @@ void Juego::colisionesEnemigo()
 		else if (colisionProyectilEnemigo(e)) {
 			if (e.getVelDesplaz() > 3.f) _gui->sumarPuntos(2, _dificultad);
 			else _gui->sumarPuntos(1, _dificultad);
+			/// si el jugador impactó con un proyectil, evaluamos la posibilidad de que se genere una recompensa en forma de item.
+			if (!(_mapa->getItemVisible())) { /// si no existe ya un item en pantalla, comienzo a evaluar random.
+				int i = rand() % 10;
+				if (i > 6) {
+					_mapa->spawnItem(e.getPosition());
+				}
+			}
 			delete (*i);
-			i = _enemigos.erase(i);			
+			i = _enemigos.erase(i);	
 		}
 		else {
 			colisionConBloques(e);
