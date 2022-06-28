@@ -7,9 +7,8 @@
 class Proyectil: public sf::Drawable, public sf::Transformable, public IColisionable
 {
     public:
-        enum class Direcciones { Down, Left, Right, Up };
         /// Constructor
-	    Proyectil(sf::Vector2f posicion, Direcciones direcion);
+	    Proyectil(sf::Vector2f posicion);
         /// Destructor
         ~Proyectil();
         /// Gets
@@ -28,6 +27,5 @@ class Proyectil: public sf::Drawable, public sf::Transformable, public IColision
         Sprite*         _sprite;
         sf::SoundBuffer _buffer;  /// buffer para el sonido
         sf::Sound       _sonido;   /// canal utilizado por el buffer
-        Direcciones     _direccion;
 };
 

@@ -3,14 +3,10 @@
 
 Juego::Juego(sf::Vector2u resolucion)
 { //Constructor
-	_ventana = new sf::RenderWindow(sf::VideoMode(resolucion.x, resolucion.y), "Dungeon ++ v0.9");
+	_ventana = new sf::RenderWindow(sf::VideoMode(resolucion.x, resolucion.y), "Dungeon ++ v1.1");
 	_fps = 60;
 	_dificultad = 1; /// Dificultad: 1 - fácil, 2 - Medio y 3 - Dificil
 	_ventana->setFramerateLimit(_fps);
-	_mapa = new Mapa(1, 16, 16, 50, 40); //Inicializo la variable dinámica para el mapa.
-	_j1 = new Jugador(1, *this, _controller); ///Inicilizo la variable dinámica de jugador.
-	_j1->setPosition(sf::Vector2f(_mapa->getPlayerSpawn())); /// Ubico el personaje de acuerdo a spawn definido en el mapa.
-	_gui = new GUI(_dificultad);
 	_listado = new Listado();
 	_configuracion = new Configuracion();
 	_menu = new Menu();
@@ -20,29 +16,6 @@ Juego::Juego(sf::Vector2u resolucion)
 	_gameOver = false;
 	_bienvenidaAjuego = true;
 	srand(time(NULL));
-	int i = rand() % 3; /// para obtener el lugar de respawn de enemigos
-	int j = rand() % 10; /// para manejar el aleatorio de tipo de enemigos (mayor velocidad de desplazamiento)
-	if (j > 6) {
-		_enemigos.push_back(new Enemigo(11, 5.f, sf::Vector2f(_mapa->getEnemigoSpawn(i))));
-	}
-	else {
-		_enemigos.push_back(new Enemigo(11, 3.f, sf::Vector2f(_mapa->getEnemigoSpawn(i))));
-	}
-	switch (_dificultad) ///  de acuerdo a la velocidad, asigno más o menos frecuencia de respawn de enemigos.
-	{
-	case 1:
-		coolDownEnemigos = 80;
-		break;
-	case 2:
-		coolDownEnemigos = 50;
-		break;
-	case 3:
-		coolDownEnemigos = 30;
-		break;
-	}
-	_coolDown[(int)coolDown::Lastimado] = COOLDOWNLASTIMADO;
-	_coolDown[(int)coolDown::Enemigo] = coolDownEnemigos;
-	_coolDown[(int)coolDown::ItemPantalla ] = COOLDOWNITEMPANTALLA;
 	_coolDown[(int)coolDown::Menu] = COOLDOWNMENU;
 	gameLoop();
 }
@@ -58,31 +31,35 @@ Juego::~Juego()
 	delete _configuracion;
 }
 
-void Juego::reiniciarJuego() 
+void Juego::PrepararJuego() 
 {
-	/// Eliminamos los objetos (si es que están creados) para iniciar un nuevo juego.
-	if(_j1)  delete _j1;
-	if(_mapa)delete _mapa;
-	if(_gui) delete _gui;
+	/// Eliminamos o limpiamos los objetos (si es que están creados) para iniciar un nuevo juego.
+	if(_j1)   delete _j1;
+	if(_gui)  delete _gui;
+	if(_mapa) delete _mapa;
 	_enemigos.clear();
+	_proyectiles.clear();
 	/// Creamos los objetos para iniciar un nuevo juego.
+	_j1	   = new Jugador(1, *this, _controller, _dificultad); ///Inicilizo la variable dinámica de jugador.
+	_gui   = new GUI(_j1->getVida()); /// Inicializo la variable para mostrar la vida y el puntaje.
 	_mapa  = new Mapa(1, 16, 16, 50, 40); //Inicializo la variable dinámica para el mapa.
-	_j1	   = new Jugador(1, *this, _controller); ///Inicilizo la variable dinámica de jugador.
-	_gui   = new GUI(_dificultad); /// Inicializo la variable para mostrar la vida y el puntaje.
 	_j1->setPosition(sf::Vector2f(_mapa->getPlayerSpawn())); /// Ubico el personaje de acuerdo a spawn definido en el mapa.
-	switch (_dificultad) ///  de acuerdo a la velocidad, asigno más o menos frecuencia de respawn de enemigos.
+	switch (_dificultad) ///  de acuerdo a la dificultad, asigno más o menos frecuencia de respawn de enemigos.
 	{
 	case 1:
-		coolDownEnemigos = 80;
+		coolDownEnemigos = 120;
 		break;
 	case 2:
-		coolDownEnemigos = 50;
+		coolDownEnemigos = 80;
 		break;
 	case 3:
 		coolDownEnemigos = 30;
 		break;
 	}
+	crearEnemigo();
+	_coolDown[(int)coolDown::Lastimado] = COOLDOWNLASTIMADO;
 	_coolDown[(int)coolDown::Enemigo] = coolDownEnemigos;
+	_coolDown[(int)coolDown::ItemPantalla] = COOLDOWNITEMPANTALLA;
 }
 
 void Juego::gameLoop()
@@ -116,7 +93,7 @@ void Juego::gameLoop()
 					_ventana->draw(_menu->getSprCamino());
 					_ventana->display();
 				}
-				reiniciarJuego(); /// para reiniciar los objetos necesarios en caso de que haya modificado la dificultad
+				PrepararJuego();
 			}
 			else {// ya entra al juego
 				command();
@@ -132,7 +109,6 @@ void Juego::gameLoop()
 		}
 		else if (_menu->getOpcMenuPress()[(int)Menu::OpcMenu::Config]) {
 			configuracion();
-			reiniciarJuego();
 		}
 		else {
 			_ventana->clear();
@@ -176,18 +152,27 @@ void Juego::update()
 	_j1->update();
 	_mapa->update();
 	colisionesJugadorBloques();
-	colisionesProyectilBloques();
-	colisionesEnemigoBloques();
 	colisionesJugadorItem();
-	if (_gui->getVidasRestantes() <= 0) { ///  
+	colisionesProyectilBloques();
+	colisionesEnemigo();
+	if (_gui->getVidasRestantes() <= 0) { 
 		grabarPuntaje();
-		reiniciarJuego();
 		_menu->getOpcMenuPress()[(int)Menu::OpcMenu::Play] = false; /// Para que regrese al menu principal
 		_bienvenidaAjuego = true; // Para que muestre la entrada a las mazmorras y los controles.	
 	}
 	else {
 		coolDowns();
 		updateMusic(); /// actualiza música por si se presionó para mute, subir o a bajar el volumen.
+		spawnJefe();
+		_gui->update();
+	}
+}
+
+void Juego::spawnJefe() 
+{
+	if (_gui->esTiempoJefe()) {
+		int i = rand() % 3;
+		_enemigos.push_back(new Enemigo(3, sf::Vector2f(_mapa->getEnemigoSpawn(i)))); /// genero el jefe.
 	}
 }
 
@@ -200,14 +185,7 @@ void Juego::coolDowns() {
 
 	_coolDown[(int)coolDown::Enemigo] --; /// para evaluar el respawn de enemigos
 	if (_coolDown[(int)coolDown::Enemigo] == 0) {
-		int i = rand() % 3;
-		int j = rand() % 10;
-		if (j > 6) {
-			_enemigos.push_back(new Enemigo(11, 5.f, sf::Vector2f(_mapa->getEnemigoSpawn(i))));
-		}
-		else {
-			_enemigos.push_back(new Enemigo(11, 3.f, sf::Vector2f(_mapa->getEnemigoSpawn(i))));
-		}
+		crearEnemigo();
 		_coolDown[(int)coolDown::Enemigo] = coolDownEnemigos;
 	}
 	if (_mapa->getItemVisible()) { // si existe un item visible en el mapa, evaluamos si tiene que desaparecer
@@ -216,6 +194,17 @@ void Juego::coolDowns() {
 			_mapa->desaparecerItem(); // desaparece el item
 			_coolDown[(int)coolDown::ItemPantalla] = COOLDOWNITEMPANTALLA;
 		}
+	}
+}
+
+void Juego::crearEnemigo() {
+	int i = rand() % 3;
+	int j = rand() % 10;
+	if (j > 6) {
+		_enemigos.push_back(new Enemigo(2, sf::Vector2f(_mapa->getEnemigoSpawn(i))));
+	}
+	else {
+		_enemigos.push_back(new Enemigo(1, sf::Vector2f(_mapa->getEnemigoSpawn(i))));
 	}
 }
 
@@ -380,9 +369,9 @@ void Juego::draw()
 	_ventana->display();//Muestro la ventana.
 }
 
-void Juego::crearProyectil(sf::Vector2f posicion, Proyectil::Direcciones direccion)
+void Juego::crearProyectil(sf::Vector2f posicion)
 {
-	_proyectiles.push_back(new Proyectil(posicion, direccion));
+	_proyectiles.push_back(new Proyectil(posicion));
 }
 
 void Juego::colisionesJugadorBloques() /// el juego evalua cuando el jugador colisiona con los bloques y qué hacer con él en caso de que sea sólido.
@@ -439,30 +428,37 @@ void Juego::colisionesProyectilBloques()
 	}
 }
 
-void Juego::colisionesEnemigoBloques()
+void Juego::colisionesEnemigo()
 {
 	/// iterator para recorrer todo la lista de enemigos y actualizarlos.
 	std::list<Enemigo*>::iterator i = _enemigos.begin();
 	while (i != _enemigos.end()) {
 		Enemigo& e = (**i);
+		int tipoEnemigo = e.getTipoEnemigo();
 		e.update();
 		if (_j1->isCollision(e)) {
-			i = _enemigos.erase(i);
-			_j1->setLastimado(true);
-			_gui->restarVida(1);
+			e.recibirGolpe(1);
+			if (e.getVida() <= 0) {
+				delete (*i);
+				i = _enemigos.erase(i);
+			}		
+			_gui->restarVida(tipoEnemigo);
+			_j1->recibirGolpe(tipoEnemigo);
 		}
 		else if (colisionProyectilEnemigo(e)) {
-			if (e.getVelDesplaz() > 3.f) _gui->sumarPuntos(2, _dificultad);
-			else _gui->sumarPuntos(1, _dificultad);
-			/// si el jugador impactó con un proyectil, evaluamos la posibilidad de que se genere una recompensa en forma de item.
-			if (!(_mapa->getItemVisible())) { /// si no existe ya un item en pantalla, comienzo a evaluar random.
-				int i = rand() % 10;
-				if (i > 6) {
-					_mapa->spawnItem(e.getPosition());
+			e.recibirGolpe(1);
+			if (e.getVida() <= 0) {
+				_gui->sumarPuntos(tipoEnemigo, _dificultad);
+				/// si el jugador impactó con un proyectil, evaluamos la posibilidad de que se genere una recompensa en forma de item.
+				if (!(_mapa->getItemVisible())) { /// si no existe ya un item en pantalla, comienzo a evaluar random.
+					int i = (rand() % 10) + (tipoEnemigo * 5);
+					if (i > 10) {
+						_mapa->spawnItem(e.getPosition());
+					}
 				}
+				delete (*i);
+				i = _enemigos.erase(i);
 			}
-			delete (*i);
-			i = _enemigos.erase(i);	
 		}
 		else {
 			colisionConBloques(e);

@@ -1,21 +1,49 @@
 #include "Enemigo.h"
 #include <iostream>
 ///Constructor
-Enemigo::Enemigo(int sprClase, float velDesplaz, sf::Vector2f posicion) 
+Enemigo::Enemigo(int sprClase, sf::Vector2f posicion) 
 {
-    if (sprClase == 11) {
-        _sprite = new Sprite(sprClase, 9, 4, sf::Vector2f(0, 0), .25f);
-        _velDesplaz = velDesplaz;
+    _tipoEnemigo = sprClase;
+    if (_tipoEnemigo == 1) {
+        _sprite = new Sprite(11, 9, 4, sf::Vector2f(0, 0), .25f);
+        _velDesplaz = 3.f;
         _direccion = Direcciones::Left;
         _sprite->setFrameY((int)_direccion);
         spawn(posicion);
         _coolDown = 300;
+        _vida = 1;
+    }
+    else if (_tipoEnemigo == 2) {
+        _sprite = new Sprite(11, 9, 4, sf::Vector2f(0, 0), .25f);
+        _velDesplaz = 5.f;
+        _direccion = Direcciones::Left;
+        _sprite->setFrameY((int)_direccion);
+        _sprite->setColor(sf::Color(0, 255, 0, 255));
+        spawn(posicion);
+        _coolDown = 250;
+        _vida = 2;
+    }
+    else if (_tipoEnemigo == 3) {
+        _sprite = new Sprite(13, 3, 4, sf::Vector2f(0, 0), .25f);
+        _velDesplaz = 2.5f;
+        _direccion = Direcciones::Left;
+        _sprite->setFrameY((int)_direccion);
+        spawn(posicion);
+        _coolDown = 100;
+        _vida = 5;
     }
 }
 
+///Destructor
 Enemigo::~Enemigo()
 {
     delete _sprite;
+}
+
+///Gets
+int Enemigo::getTipoEnemigo()
+{
+    return _tipoEnemigo;
 }
 
 /// Métodos
@@ -47,18 +75,25 @@ void Enemigo::update() {
     _sprite->animar();
 }
 
-void Enemigo::spawn(sf::Vector2f posicion) {
-    setPosition(posicion);
-}
-
-
-void Enemigo::draw(sf::RenderTarget& target, sf::RenderStates states) const
+void Enemigo::recibirGolpe(int vida)
 {
-    states.transform *= getTransform();
-    if (_velDesplaz > 3.f) {
-        _sprite->setColor(sf::Color(0, 255, 0, 255));
-    }
-    target.draw(_sprite->getSprite(), states);
+    _vida -= vida;
+    colorSegunVida();
 }
 
-
+void Enemigo::colorSegunVida() {
+    if (_vida > 0) {
+        switch (_tipoEnemigo)
+        {
+        case 1:
+            _sprite->setColor(sf::Color(255, 255, 255, 255));
+            break;
+        case 2:
+            if(_vida ==1 ) _sprite->setColor(sf::Color(255, 0, 0, 255));
+            break;
+        case 3:
+            _sprite->setColor(sf::Color(255, 51 * _vida, 51 * _vida, 255));
+            break;
+        }
+    }
+}

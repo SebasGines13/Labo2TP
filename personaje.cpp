@@ -3,10 +3,11 @@
 ///Constructor
 Personaje::Personaje() {
     _velocidad  = sf::Vector2f(0,0); 
-    _velDesplaz = 1.f;
+    _velDesplaz = 0;
     _direccion  = Direcciones::Left;
-    _coolDown   = 100; 
-    _velDesplaz = 3.f;
+    _coolDown   = 0; 
+    _velDesplaz = 0;
+    _vida       = 0;
 }
 
 ///sets
@@ -37,10 +38,20 @@ const Sprite& Personaje::getSprite()
     return *_sprite;
 }
 
+int Personaje::getVida()
+{
+    return _vida;
+}
+
 
 ///Métodos
 void Personaje::setSpriteQuieto() {
     _sprite->setFrameX(0);
+}
+
+void Personaje::spawn(sf::Vector2f posicion)
+{
+    setPosition(posicion);
 }
 
 void Personaje::draw(sf::RenderTarget& target, sf::RenderStates states) const

@@ -1,7 +1,7 @@
 #include "GUI.h"
 #include <iomanip>
 
-GUI::GUI(int dificultad)
+GUI::GUI(int vidas)
 {
 	_puntaje = 0;
 	_fuente = new sf::Font;
@@ -25,18 +25,7 @@ GUI::GUI(int dificultad)
 	_txtVida = new sf::Texture;
 	_txtVida->loadFromFile("img/itemCora.png");
 	_sprVida = new sf::Sprite(*_txtVida);
-	switch (dificultad) ///  de acuerdo a la velocidad, asigno más o menos vida para el jugador.
-	{
-	case 1:
-		_cantVidaInicial = 6;
-		break;
-	case 2:
-		_cantVidaInicial = 4;
-		break;
-	case 3:
-		_cantVidaInicial = 2;
-		break;
-	}
+	_cantVidaInicial = vidas; 
 	_cantVidaRestante = _cantVidaInicial;
 }
 
@@ -49,7 +38,14 @@ GUI::~GUI()
 	delete _fuente;
 }
 
-void GUI::restarVida(int vida) 
+void GUI::update()
+{
+	if ((TIEMPOJEFE - _clock.getElapsedTime().asSeconds()) <= 0) {
+		_clock.restart();
+	}
+}
+
+void GUI::restarVida(int vida)
 {
 	_cantVidaRestante -= vida;
 }
@@ -74,7 +70,7 @@ void GUI::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	states.transform *= getTransform();
 	_textPuntaje->setString("Puntos: " + std::to_string(_puntaje));
 	int tiempo = TIEMPOJEFE - _clock.getElapsedTime().asSeconds();
-	_textTiempo->setString("Jefe en " + std::to_string(tiempo/60) + ":" + std::to_string(tiempo%60));
+	_textTiempo->setString("Jefe en " + std::to_string(tiempo));
 	target.draw(*_textPuntaje, states);
 	target.draw(*_textVida, states);
 	target.draw(*_textTiempo, states);

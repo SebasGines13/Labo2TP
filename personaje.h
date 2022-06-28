@@ -15,18 +15,21 @@ class Personaje: public sf::Drawable, public sf::Transformable, public IColision
         Direcciones         getDireccion();
         sf::Vector2f        getVelocidad();
         const float         getVelDesplaz();
-        const Sprite&       getSprite(); ///obtengo el objeto sprite     
+        const Sprite&       getSprite(); ///obtengo el objeto sprite
+        int                 getVida();
         // Métodos
         const sf::FloatRect getBounds() override;
         void                draw(sf::RenderTarget& target, sf::RenderStates states) const override; /// Polimorfismo del método draw en Drawable.
         void                setSpriteQuieto(); /// Para conocer si está mirando hacia la izquierda o derecha.
+        void                spawn(sf::Vector2f posicion);
         virtual void        update() = 0;
-        virtual void        spawn(sf::Vector2f posicion)=0;
+        virtual void        recibirGolpe(int vida) = 0;
     protected:
         sf::Vector2f        _velocidad; /// Velocidad actual o posición donde se encuentra
         float               _velDesplaz; /// Velocidad a la cual camina
         Direcciones         _direccion; /// Dirección a la que el jugador está mirando
-        int                 _coolDown; /// tiempo de enfriamiento hasta que logre efectuan un nuevo disparo.
-        Sprite*             _sprite;        
+        int                 _coolDown; /// tiempo de enfriamiento hasta que logre efectuan un nuevo disparo en el caso de la clase Jugador o de cambio de direccion en el caso de enemigos.
+        Sprite*             _sprite;
+        int                 _vida;
 };
 

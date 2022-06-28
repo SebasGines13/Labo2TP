@@ -6,10 +6,11 @@ class GUI: public sf::Drawable, public sf::Transformable
 {
 	public:
 		// Constructor
-		GUI(int dificultad);
+		GUI(int vidas);
 		// Destructor
 		~GUI();
 		/// Métodos
+		void		 update();
 		void		 restarVida(int vida);
 		void		 sumarPuntos(int puntos, int dificultad);
 		const int	 getVidasRestantes();
@@ -17,7 +18,7 @@ class GUI: public sf::Drawable, public sf::Transformable
 		void		 draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 		bool		 esTiempoJefe();
 	private:
-		const int	 TIEMPOJEFE = 120;
+		const int	 TIEMPOJEFE = 100;
 		sf::Texture* _txtVida;
 		sf::Sprite*  _sprVida;
 		int			 _cantVidaInicial;

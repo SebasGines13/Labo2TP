@@ -30,12 +30,12 @@ class Juego: public JuegoProyectil
         void update(); ///Lógicas y reglas propias del juego.
         void draw(); ///Dibuja en pantalla los elementos.
         void updateMusic();  /// Actualizo controles de música.
-        void reiniciarJuego(); /// Reinicia los valores del jugador.
-        void crearProyectil(sf::Vector2f posicion, Proyectil::Direcciones direccion) override; /// Para que disparar un proyectil
+        void PrepararJuego(); 
+        void crearProyectil(sf::Vector2f posicion) override; /// Para que disparar un proyectil
         void colisionesJugadorBloques();
         void colisionesJugadorItem();
         void colisionesProyectilBloques();
-        void colisionesEnemigoBloques();
+        void colisionesEnemigo();
         bool colisionConBloques(Proyectil& p);
         void colisionConBloques(Enemigo& e);
         bool colisionProyectilEnemigo(Enemigo& e);
@@ -43,6 +43,8 @@ class Juego: public JuegoProyectil
         void ranking();
         void configuracion();
         void coolDowns();
+        void spawnJefe();
+        void crearEnemigo();
     private:
         enum class coolDown { Lastimado, Enemigo, ItemPantalla, Menu };
         sf::RenderWindow*       _ventana;       /// Ventana donde se va a mostrar el juego.

@@ -39,10 +39,10 @@ void Listado::listarRanking() {
     }
     cargarRanking(vRanking, cantReg); /// método para cargar el vector dinámico de rankings y ordenarlo
     int vueltas;
-    if (cantReg > 5) vueltas = 5;
+    if (cantReg > std::size(_textRanking)) vueltas = std::size(_textRanking);
     else vueltas = cantReg;
 
-    for (int i = 0; i < 5;i++) {
+    for (int i = 0; i < std::size(_textRanking);i++) {
         _textRanking[i].setString("#" + std::to_string(i + 1) + ": " );
     }
     for (int i = 0; i < vueltas;i++) {
