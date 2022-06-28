@@ -9,7 +9,7 @@ class Proyectil: public sf::Drawable, public sf::Transformable, public IColision
     public:
         enum class Direcciones { Down, Left, Right, Up };
         /// Constructor
-	    Proyectil(sf::Vector2f posicion);
+	    Proyectil(sf::Vector2f posicion, Direcciones direcion);
         /// Destructor
         ~Proyectil();
         /// Gets
@@ -25,8 +25,9 @@ class Proyectil: public sf::Drawable, public sf::Transformable, public IColision
     private:
         sf::Vector2f    _velocidad; /// Velocidad actual o posición donde se encuentra
         float           _velDesplaz; /// Velocidad a la cual camina
-        Sprite* _sprite;
+        Sprite*         _sprite;
         sf::SoundBuffer _buffer;  /// buffer para el sonido
         sf::Sound       _sonido;   /// canal utilizado por el buffer
+        Direcciones     _direccion;
 };
 

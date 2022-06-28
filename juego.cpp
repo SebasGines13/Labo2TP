@@ -380,9 +380,9 @@ void Juego::draw()
 	_ventana->display();//Muestro la ventana.
 }
 
-void Juego::crearProyectil(sf::Vector2f posicion)
+void Juego::crearProyectil(sf::Vector2f posicion, Proyectil::Direcciones direccion)
 {
-	_proyectiles.push_back(new Proyectil(posicion));
+	_proyectiles.push_back(new Proyectil(posicion, direccion));
 }
 
 void Juego::colisionesJugadorBloques() /// el juego evalua cuando el jugador colisiona con los bloques y qué hacer con él en caso de que sea sólido.

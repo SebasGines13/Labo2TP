@@ -31,7 +31,7 @@ class Juego: public JuegoProyectil
         void draw(); ///Dibuja en pantalla los elementos.
         void updateMusic();  /// Actualizo controles de música.
         void reiniciarJuego(); /// Reinicia los valores del jugador.
-        void crearProyectil(sf::Vector2f posicion) override; /// Para que disparar un proyectil
+        void crearProyectil(sf::Vector2f posicion, Proyectil::Direcciones direccion) override; /// Para que disparar un proyectil
         void colisionesJugadorBloques();
         void colisionesJugadorItem();
         void colisionesProyectilBloques();

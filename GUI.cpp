@@ -1,4 +1,5 @@
 #include "GUI.h"
+#include <iomanip>
 
 GUI::GUI(int dificultad)
 {
@@ -7,15 +8,20 @@ GUI::GUI(int dificultad)
 	_fuente->loadFromFile("font/CELTG.ttf");
 	_textPuntaje = new sf::Text;
 	_textVida = new sf::Text;
+	_textTiempo = new sf::Text;
 	_textPuntaje->setFont(*_fuente);
 	_textVida->setFont(*_fuente);
+	_textTiempo->setFont(*_fuente);
 	_textVida->setString("Vidas:");
 	_textPuntaje->setPosition(600.f, 15.f);
 	_textVida->setPosition(10.f, 15.f);
+	_textTiempo->setPosition(350.f, 15.f);
 	_textPuntaje->setCharacterSize(30);
 	_textVida->setCharacterSize(30);
+	_textTiempo->setCharacterSize(30);
 	_textPuntaje->setFillColor(sf::Color(255, 255, 255, 255));
 	_textVida->setFillColor(sf::Color(255, 255, 255, 255));
+	_textTiempo->setFillColor(sf::Color(255, 255, 255, 255));
 	_txtVida = new sf::Texture;
 	_txtVida->loadFromFile("img/itemCora.png");
 	_sprVida = new sf::Sprite(*_txtVida);
@@ -67,8 +73,11 @@ void GUI::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	states.transform *= getTransform();
 	_textPuntaje->setString("Puntos: " + std::to_string(_puntaje));
+	int tiempo = TIEMPOJEFE - _clock.getElapsedTime().asSeconds();
+	_textTiempo->setString("Jefe en " + std::to_string(tiempo/60) + ":" + std::to_string(tiempo%60));
 	target.draw(*_textPuntaje, states);
 	target.draw(*_textVida, states);
+	target.draw(*_textTiempo, states);
 	_sprVida->setPosition(_textVida->getGlobalBounds().width, _textVida->getGlobalBounds().top); /// Para que vuelva a dibujarse la cantidad de vidas desde la posición inicial en pantalla
 	for (int i = 1; i <= _cantVidaInicial; i++) {
 		if (i <= _cantVidaRestante) {
@@ -80,6 +89,12 @@ void GUI::draw(sf::RenderTarget& target, sf::RenderStates states) const
 		_sprVida->move(_sprVida->getGlobalBounds().width, 0);
 		target.draw(*_sprVida, states);
 	}
-	
-	
+}
+
+bool GUI::esTiempoJefe()
+{
+	if ((TIEMPOJEFE - _clock.getElapsedTime().asSeconds()) <= 0) {
+		return true;
+	}
+	return false;
 }

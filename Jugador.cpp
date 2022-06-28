@@ -81,7 +81,7 @@ void Jugador::update() {
 
 void Jugador::disparar()
 {
-    getJuegoActual().crearProyectil(getPosition());
+    getJuegoActual().crearProyectil(getPosition(), (Proyectil::Direcciones)getDireccion());
     _coolDown = 30;
 }
 

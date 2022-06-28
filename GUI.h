@@ -15,14 +15,18 @@ class GUI: public sf::Drawable, public sf::Transformable
 		const int	 getVidasRestantes();
 		const int	 getPuntaje();
 		void		 draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+		bool		 esTiempoJefe();
 	private:
+		const int	 TIEMPOJEFE = 120;
 		sf::Texture* _txtVida;
 		sf::Sprite*  _sprVida;
 		int			 _cantVidaInicial;
 		int			 _cantVidaRestante;
+		int			 _puntaje;
 		sf::Font*	 _fuente;
 		sf::Text*	 _textPuntaje;
 		sf::Text*	 _textVida;
-		int			 _puntaje;
+		sf::Text*	 _textTiempo;
+		sf::Clock	 _clock; /// reloj 
 };
 
