@@ -6,6 +6,8 @@ Personaje::Personaje() {
     _velDesplaz = 0;
     _direccion  = Direcciones::Left;
     _coolDown   = 0; 
+    _lastimado = false;
+    _coolDownLastimado = 0;
     _velDesplaz = 0;
     _vida       = 0;
 }
@@ -15,6 +17,17 @@ void Personaje::setDireccion(Direcciones direccion)
 {
     _direccion = direccion;
     _sprite->setFrameY((int)direccion);
+}
+
+void Personaje::setLastimado(bool lastimado)
+{
+    _lastimado = lastimado;
+}
+
+void Personaje::setCoolDownLastimado(int coolDown)
+{
+    if (coolDown == -1) _coolDownLastimado--;
+    else _coolDownLastimado = coolDown;
 }
 
 ///gets
@@ -43,6 +56,15 @@ int Personaje::getVida()
     return _vida;
 }
 
+bool Personaje::getLastimado() 
+{
+    return _lastimado;
+}
+
+int Personaje::getCoolDownLastimado() 
+{
+    return _coolDownLastimado;
+}
 
 ///Métodos
 void Personaje::setSpriteQuieto() {
@@ -53,6 +75,7 @@ void Personaje::spawn(sf::Vector2f posicion)
 {
     setPosition(posicion);
 }
+
 
 void Personaje::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {

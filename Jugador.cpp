@@ -1,7 +1,7 @@
 #include "Jugador.h"
 
-Jugador::Jugador(int sprClase, JuegoProyectil& juego, Controller& controller, int dificultad)
-    : _juego(juego), _controller(controller), _caminando(false), _lastimado(false)
+Jugador::Jugador(int sprClase, JuegoProyectil& juego, Controller& controller, int dificultad, int coolDownLastimado)
+    : _juego(juego), _controller(controller), _caminando(false)
 {
     if (sprClase == 1) {
         _sprite = new Sprite(sprClase, 4, 4, sf::Vector2f(0, 0), .1f);
@@ -12,6 +12,7 @@ Jugador::Jugador(int sprClase, JuegoProyectil& juego, Controller& controller, in
         _pasos.setBuffer(_buffer);
         _pasos.setVolume(10.f);
         _pasos.setPitch(1.f);
+        _coolDownLastimado = coolDownLastimado;
         switch (dificultad) ///  de acuerdo a la velocidad, asigno más o menos vida para el jugador.
         {
         case 1:
@@ -27,10 +28,6 @@ Jugador::Jugador(int sprClase, JuegoProyectil& juego, Controller& controller, in
     }  
 }
 
-void Jugador::setLastimado(const bool& lastimado)
-{
-    _lastimado = lastimado;
-}
 
 /// Gets
 JuegoProyectil& Jugador::getJuegoActual()
@@ -84,7 +81,7 @@ void Jugador::update() {
         _pasos.stop(); // para de sonar los pasos, porque está quieto
         _sprite->setFrameX(0); // para que se ubique en el primer frame de cada fila de animación.
     }
-    if (_coolDown > 0) {
+    if (_coolDown > 0) { /// coolDown para disparar
         _coolDown--;
     }
 }
@@ -107,6 +104,11 @@ void Jugador::recibirGolpe(int vida)
 {
     _vida -= vida;
     _lastimado = true;
+}
+
+void Jugador::sumarVida(int vida)
+{
+    _vida += vida;
 }
 
 

@@ -11,12 +11,16 @@ class Personaje: public sf::Drawable, public sf::Transformable, public IColision
         Personaje();
         // sets
         void                setDireccion(Direcciones direccion);
+        void                setLastimado(bool lastimado);
+        void                setCoolDownLastimado(int coolDown);
         // gets
         Direcciones         getDireccion();
         sf::Vector2f        getVelocidad();
         const float         getVelDesplaz();
         const Sprite&       getSprite(); ///obtengo el objeto sprite
         int                 getVida();
+        bool                getLastimado();
+        int                 getCoolDownLastimado();
         // Métodos
         const sf::FloatRect getBounds() override;
         void                draw(sf::RenderTarget& target, sf::RenderStates states) const override; /// Polimorfismo del método draw en Drawable.
@@ -31,5 +35,7 @@ class Personaje: public sf::Drawable, public sf::Transformable, public IColision
         int                 _coolDown; /// tiempo de enfriamiento hasta que logre efectuan un nuevo disparo en el caso de la clase Jugador o de cambio de direccion en el caso de enemigos.
         Sprite*             _sprite;
         int                 _vida;
+        bool                _lastimado;
+        int                 _coolDownLastimado;
 };
 

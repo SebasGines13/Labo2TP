@@ -1,4 +1,8 @@
 #include "Mapa.h"
+#include <fstream>
+#include <sstream>
+#include <iostream>
+
 ///Constructor
 Mapa::Mapa(int sprClase, int tilewidth, int tileheight, int mapwidth, int mapheight)
 {
@@ -11,18 +15,35 @@ Mapa::Mapa(int sprClase, int tilewidth, int tileheight, int mapwidth, int maphei
     _mapWidth = mapwidth;
     _mapHeight = mapheight;
     generarMapa();
-    nuevoItem(1); // creo el item estrella de puntos en el mapa
+    _itemPuntos = new Item(1);
+    _itemVida = new Item(2);
 }
 
 Mapa::~Mapa()
 {
+    delete _itemPuntos;
+    delete _itemVida;
     delete _txtMapa;
+}
+
+void Mapa::cargarMapaDeDisco() {
+    std::string line;
+    std::ifstream f("mapas/map1.txt");
+    if (!f.is_open()) exit(1);
+    int n;
+    getline(f, line);
+    std::istringstream ss(line);
+    while (ss >> n) {
+        _vMapa.push_back(n);
+    }
+    f.close();
 }
 
 void Mapa::generarMapa() {
     for (sf::Vector2f& i : _spawnEnemigo) { i.x = 0.f; i.y = 0.f; }
     int i = 0;
     Bloque* pBloque = nullptr;
+    cargarMapaDeDisco();
     for (int f = 0; f < _mapHeight; f++) {
         for (int c = 0; c < _mapWidth; c++) {
             int columnas = _txtMapa->getSize().x / _tilewidth;
@@ -87,39 +108,27 @@ std::vector<Bloque*> Mapa::getBloques() const
     return _bloques;
 }
 
-Item Mapa::getItem()
+Item Mapa::getItem(int tipoItem)
 {
-    return *_item;
+    if (tipoItem == 1) return *_itemPuntos;
+    return *_itemVida;
 }
 
-void Mapa::nuevoItem(int tipoItem)
+void Mapa::spawnItem(sf::Vector2f pos, int tipoItem)
 {
-    sf::Vector2f posInicial;
-    int x;
-    do {
-        x = rand() % (35 * 50) + 250;
-    } while (_bloques[x]->isSolid());   /// Para devolver un lugar válido donde pueda aparecer el item.
-    _item = new Item(tipoItem, _bloques[x]->getPosition());//_bloques[x]->getPosition());   
-}
-
-void Mapa::spawnItem()
-{
-    int x;
-    do {
-        x = rand() % (35 * 50) + 250;
-    } while (_bloques[x]->isSolid());   /// Para devolver un lugar válido donde pueda aparecer el item.
-    _item->spawn(_bloques[x]->getPosition());
-    _item->setVisible(true);
-}
-
-void Mapa::spawnItem(sf::Vector2f pos)
-{
-    _item->spawn(pos);
-    _item->setVisible(true);
+    if (tipoItem == 1) {
+        _itemPuntos->spawn(pos);
+        _itemPuntos->setVisible(true);
+    }
+    else if (tipoItem == 2) {
+        _itemVida->spawn(pos);
+        _itemVida->setVisible(true);
+    }   
 }
 
 void Mapa::update() {
-    if(_item->getVisible()) _item->update();
+    if(_itemPuntos->getVisible()) _itemPuntos->update();
+    else  if (_itemVida->getVisible()) _itemVida->update();
 }
 
 void Mapa::draw(sf::RenderTarget& target, sf::RenderStates states) const
@@ -128,16 +137,19 @@ void Mapa::draw(sf::RenderTarget& target, sf::RenderStates states) const
     for (Bloque* pBloque : _bloques) {
         target.draw(*pBloque, states);
     }
-    if (_item->getVisible()) target.draw(*_item, states);
+    if (_itemPuntos->getVisible()) target.draw(*_itemPuntos, states);
+    else  if (_itemVida->getVisible()) target.draw(*_itemVida, states);
 }
 
 
-void Mapa::desaparecerItem()
+void Mapa::desaparecerItem(int tipoItem)
 {
-    _item->setVisible(false);
+    if (tipoItem == 1) _itemPuntos->setVisible(false);
+    else if (tipoItem == 2) _itemVida->setVisible(false);
 }
 
-bool Mapa::getItemVisible()
+bool Mapa::getItemVisible(int tipoItem)
 {
-    return _item->getVisible();
+    if (tipoItem == 1) return _itemPuntos->getVisible();
+    else return _itemVida->getVisible();
 }

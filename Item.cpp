@@ -1,11 +1,12 @@
 #include "Item.h"
 
-Item::Item(int sprClase, sf::Vector2f frameActual)
+Item::Item(int sprClase)
 {
 	if (sprClase == 1) {
 		_sprite = new Sprite(30, 33, 1, sf::Vector2f(0, 0), .35f);
-	}	
-	spawn(frameActual);
+	}else if (sprClase == 2) {
+		_sprite = new Sprite(32, 10, 1, sf::Vector2f(0, 0), .25f);
+	}
 	_visible = false;
 }
 
@@ -32,7 +33,7 @@ void Item::spawn(sf::Vector2f posicion)
 	setPosition(posicion);
 }
 
-bool Item::getVisible()
+bool Item::getVisible() const
 {
 	return _visible;
 }

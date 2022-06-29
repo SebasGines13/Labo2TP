@@ -1,37 +1,29 @@
 #include "Enemigo.h"
 #include <iostream>
 ///Constructor
-Enemigo::Enemigo(int sprClase, sf::Vector2f posicion) 
+Enemigo::Enemigo(int tipoEnemigo, sf::Vector2f posicion, int dificultad, const int &coolDownLastimado) 
 {
-    _tipoEnemigo = sprClase;
+    _tipoEnemigo = tipoEnemigo;
+    _vida = tipoEnemigo;
+    _velDesplaz = 2.f + (dificultad * tipoEnemigo * 0.25f);
+    _coolDown = 80 + (dificultad * tipoEnemigo * 5);
+    _coolDownInicialDireccion = _coolDown;
+    _coolDownLastimado = coolDownLastimado;
+    _lastimado = false;
     if (_tipoEnemigo == 1) {
         _sprite = new Sprite(11, 9, 4, sf::Vector2f(0, 0), .25f);
-        _velDesplaz = 3.f;
-        _direccion = Direcciones::Left;
-        _sprite->setFrameY((int)_direccion);
-        spawn(posicion);
-        _coolDown = 300;
-        _vida = 1;
     }
     else if (_tipoEnemigo == 2) {
         _sprite = new Sprite(11, 9, 4, sf::Vector2f(0, 0), .25f);
-        _velDesplaz = 5.f;
-        _direccion = Direcciones::Left;
-        _sprite->setFrameY((int)_direccion);
         _sprite->setColor(sf::Color(0, 255, 0, 255));
-        spawn(posicion);
-        _coolDown = 250;
-        _vida = 2;
     }
     else if (_tipoEnemigo == 3) {
         _sprite = new Sprite(13, 3, 4, sf::Vector2f(0, 0), .25f);
-        _velDesplaz = 2.5f;
-        _direccion = Direcciones::Left;
-        _sprite->setFrameY((int)_direccion);
-        spawn(posicion);
-        _coolDown = 100;
-        _vida = 5;
+        _vida *= 2; // al ser el jefe, le duplico su vida.
     }
+    _direccion = Direcciones::Left;
+    _sprite->setFrameY((int)_direccion);
+    spawn(posicion);
 }
 
 ///Destructor
@@ -56,9 +48,8 @@ void Enemigo::update() {
             nuevaDireccion = (Direcciones)(rand() % 4);
         }
         setDireccion(nuevaDireccion);
-        _coolDown = 300;
+        _coolDown = _coolDownInicialDireccion;
     } 
-
     if ( _direccion == Direcciones::Left ) {
         _velocidad.x = -_velDesplaz;
     }
@@ -73,11 +64,13 @@ void Enemigo::update() {
     }   
     move(_velocidad);
     _sprite->animar();
+    colorSegunVida();
 }
 
 void Enemigo::recibirGolpe(int vida)
 {
     _vida -= vida;
+    _lastimado = true;
     colorSegunVida();
 }
 
@@ -89,10 +82,10 @@ void Enemigo::colorSegunVida() {
             _sprite->setColor(sf::Color(255, 255, 255, 255));
             break;
         case 2:
-            if(_vida ==1 ) _sprite->setColor(sf::Color(255, 0, 0, 255));
+            if(_vida == 1) _sprite->setColor(sf::Color(255, 0, 0, 255));
             break;
         case 3:
-            _sprite->setColor(sf::Color(255, 51 * _vida, 51 * _vida, 255));
+            _sprite->setColor(sf::Color(255, 42.5 * _vida, 42.5 * _vida, 255));
             break;
         }
     }

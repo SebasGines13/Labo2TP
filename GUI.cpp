@@ -50,6 +50,14 @@ void GUI::restarVida(int vida)
 	_cantVidaRestante -= vida;
 }
 
+void GUI::sumarVida(int vida)
+{
+	_cantVidaRestante += vida;
+	if (_cantVidaRestante > _cantVidaInicial) {
+		_cantVidaRestante = _cantVidaInicial;
+	}
+}
+
 void GUI::sumarPuntos(int puntos, int dificultad)
 {
 	_puntaje += (puntos*dificultad);

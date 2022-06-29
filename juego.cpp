@@ -40,7 +40,7 @@ void Juego::PrepararJuego()
 	_enemigos.clear();
 	_proyectiles.clear();
 	/// Creamos los objetos para iniciar un nuevo juego.
-	_j1	   = new Jugador(1, *this, _controller, _dificultad); ///Inicilizo la variable dinámica de jugador.
+	_j1	   = new Jugador(1, *this, _controller, _dificultad, COOLDOWNJUGADORLASTIMADO); ///Inicilizo la variable dinámica de jugador.
 	_gui   = new GUI(_j1->getVida()); /// Inicializo la variable para mostrar la vida y el puntaje.
 	_mapa  = new Mapa(1, 16, 16, 50, 40); //Inicializo la variable dinámica para el mapa.
 	_j1->setPosition(sf::Vector2f(_mapa->getPlayerSpawn())); /// Ubico el personaje de acuerdo a spawn definido en el mapa.
@@ -57,7 +57,6 @@ void Juego::PrepararJuego()
 		break;
 	}
 	crearEnemigo();
-	_coolDown[(int)coolDown::Lastimado] = COOLDOWNLASTIMADO;
 	_coolDown[(int)coolDown::Enemigo] = coolDownEnemigos;
 	_coolDown[(int)coolDown::ItemPantalla] = COOLDOWNITEMPANTALLA;
 }
@@ -155,7 +154,7 @@ void Juego::update()
 	colisionesJugadorItem();
 	colisionesProyectilBloques();
 	colisionesEnemigo();
-	if (_gui->getVidasRestantes() <= 0) { 
+	if (_gui->getVidasRestantes() <= 0) {
 		grabarPuntaje();
 		_menu->getOpcMenuPress()[(int)Menu::OpcMenu::Play] = false; /// Para que regrese al menu principal
 		_bienvenidaAjuego = true; // Para que muestre la entrada a las mazmorras y los controles.	
@@ -172,26 +171,34 @@ void Juego::spawnJefe()
 {
 	if (_gui->esTiempoJefe()) {
 		int i = rand() % 3;
-		_enemigos.push_back(new Enemigo(3, sf::Vector2f(_mapa->getEnemigoSpawn(i)))); /// genero el jefe.
+		_enemigos.push_back(new Enemigo(3, sf::Vector2f(_mapa->getEnemigoSpawn(i)), _dificultad, COOLDOWNENEMIGOLASTIMADO)); /// genero el jefe.
 	}
 }
 
 void Juego::coolDowns() {
-	_coolDown[(int)coolDown::Lastimado] --; /// para evaluar si está lastimado el personaje
-	if (_coolDown[(int)coolDown::Lastimado] == 0) {
-		_coolDown[(int)coolDown::Lastimado] = COOLDOWNLASTIMADO;
-		_j1->setLastimado(false);
+	if (_j1->getLastimado()) {
+		_j1->setCoolDownLastimado(-1); /// para evaluar si está lastimado el personaje
+		if (_j1->getCoolDownLastimado() == 0) {
+			_j1->setCoolDownLastimado(COOLDOWNJUGADORLASTIMADO);
+			_j1->setLastimado(false);
+		}
 	}
-
 	_coolDown[(int)coolDown::Enemigo] --; /// para evaluar el respawn de enemigos
 	if (_coolDown[(int)coolDown::Enemigo] == 0) {
 		crearEnemigo();
 		_coolDown[(int)coolDown::Enemigo] = coolDownEnemigos;
 	}
-	if (_mapa->getItemVisible()) { // si existe un item visible en el mapa, evaluamos si tiene que desaparecer
+
+	if (_mapa->getItemVisible(1)) { // si existe un item de tipo puntos visible en el mapa, evaluamos si tiene que desaparecer
 		_coolDown[(int)coolDown::ItemPantalla] --; // para evaluar si existe un item para desaparecerlo de la pantalla
 		if (_coolDown[(int)coolDown::ItemPantalla] == 0) {
-			_mapa->desaparecerItem(); // desaparece el item
+			_mapa->desaparecerItem(1); // desaparece el item
+			_coolDown[(int)coolDown::ItemPantalla] = COOLDOWNITEMPANTALLA;
+		}
+	} else if (_mapa->getItemVisible(2)) { // si existe un item de tipo vida visible en el mapa, evaluamos si tiene que desaparecer
+		_coolDown[(int)coolDown::ItemPantalla] --; // para evaluar si existe un item para desaparecerlo de la pantalla
+		if (_coolDown[(int)coolDown::ItemPantalla] == 0) {
+			_mapa->desaparecerItem(2); // desaparece el item
 			_coolDown[(int)coolDown::ItemPantalla] = COOLDOWNITEMPANTALLA;
 		}
 	}
@@ -201,10 +208,10 @@ void Juego::crearEnemigo() {
 	int i = rand() % 3;
 	int j = rand() % 10;
 	if (j > 6) {
-		_enemigos.push_back(new Enemigo(2, sf::Vector2f(_mapa->getEnemigoSpawn(i))));
+		_enemigos.push_back(new Enemigo(2, sf::Vector2f(_mapa->getEnemigoSpawn(i)), _dificultad, COOLDOWNENEMIGOLASTIMADO));
 	}
 	else {
-		_enemigos.push_back(new Enemigo(1, sf::Vector2f(_mapa->getEnemigoSpawn(i))));
+		_enemigos.push_back(new Enemigo(1, sf::Vector2f(_mapa->getEnemigoSpawn(i)), _dificultad, COOLDOWNENEMIGOLASTIMADO));
 	}
 }
 
@@ -268,11 +275,13 @@ void Juego::grabarPuntaje() {
 					input_text += '\n';
 				}
 				if (event.key.code == sf::Keyboard::Enter) {
-					Ranking reg;
-					reg.setJugador(input_text);
-					reg.setPuntaje(_gui->getPuntaje());
-					reg.GuardarEnDisco();
+					Ranking *reg = NULL;
+					reg = new Ranking;
+					reg->setJugador(input_text);
+					reg->setPuntaje(_gui->getPuntaje());
+					reg->GuardarEnDisco();
 					salir = true;
+					delete reg;
 				}
 			}
 		}
@@ -352,8 +361,6 @@ void Juego::configuracion()
 }
 
 
-
-
 void Juego::draw()
 {	///Dibuja en pantalla los elementos.
 	_ventana->clear(); ///Limpio la pantalla con lo que había antes.
@@ -401,11 +408,19 @@ void Juego::colisionesJugadorBloques() /// el juego evalua cuando el jugador col
 
 void Juego::colisionesJugadorItem()
 {
-	Item item = _mapa->getItem();
-	if (_mapa->getItemVisible() && _j1->isCollision(item))
+	Item itemPuntos = _mapa->getItem(1);
+	Item itemVida = _mapa->getItem(2);
+	if (_mapa->getItemVisible(1) && _j1->isCollision(itemPuntos))
 	{
 		_gui->sumarPuntos(10, _dificultad);
-		_mapa->desaparecerItem();
+		_mapa->desaparecerItem(1);
+		_coolDown[(int)coolDown::ItemPantalla] = COOLDOWNITEMPANTALLA;
+	} 
+	else if (_mapa->getItemVisible(2) && _j1->isCollision(itemVida))
+	{
+		_gui->sumarVida(1);
+		_j1->sumarVida(1);
+		_mapa->desaparecerItem(2);
 		_coolDown[(int)coolDown::ItemPantalla] = COOLDOWNITEMPANTALLA;
 	}
 }
@@ -437,27 +452,36 @@ void Juego::colisionesEnemigo()
 		int tipoEnemigo = e.getTipoEnemigo();
 		e.update();
 		if (_j1->isCollision(e)) {
-			e.recibirGolpe(1);
+			if (!e.getLastimado()) {
+				e.recibirGolpe(1);
+			}			
 			if (e.getVida() <= 0) {
 				delete (*i);
 				i = _enemigos.erase(i);
-			}		
-			_gui->restarVida(tipoEnemigo);
-			_j1->recibirGolpe(tipoEnemigo);
+			} else i++;
+			if (!_j1->getLastimado()) {
+				_gui->restarVida(tipoEnemigo);
+				_j1->recibirGolpe(tipoEnemigo);
+			}
 		}
 		else if (colisionProyectilEnemigo(e)) {
-			e.recibirGolpe(1);
-			if (e.getVida() <= 0) {
-				_gui->sumarPuntos(tipoEnemigo, _dificultad);
-				/// si el jugador impactó con un proyectil, evaluamos la posibilidad de que se genere una recompensa en forma de item.
-				if (!(_mapa->getItemVisible())) { /// si no existe ya un item en pantalla, comienzo a evaluar random.
-					int i = (rand() % 10) + (tipoEnemigo * 5);
-					if (i > 10) {
-						_mapa->spawnItem(e.getPosition());
+			if (!e.getLastimado()) {
+				e.recibirGolpe(1);
+				if (e.getVida() <= 0) {
+					_gui->sumarPuntos(tipoEnemigo, _dificultad);
+					/// si el jugador impactó con un proyectil a un enemigo y lo eliminó, evaluamos la posibilidad de que se genere una recompensa en forma de item.
+					if (!(_mapa->getItemVisible(1)) && !(_mapa->getItemVisible(2))) { /// si no existe ya un item en pantalla, comienzo a evaluar random.
+						int i = (rand() % 10) + (tipoEnemigo * 5);
+						if (i >= 15) {
+							_mapa->spawnItem(e.getPosition(), 2);
+						}
+						else if (i >= 12) {
+							_mapa->spawnItem(e.getPosition(), 1);
+						}
 					}
-				}
-				delete (*i);
-				i = _enemigos.erase(i);
+					delete (*i);
+					i = _enemigos.erase(i);
+				} 
 			}
 		}
 		else {
@@ -521,7 +545,14 @@ bool Juego::colisionProyectilEnemigo(Enemigo& e)
 			return true;
 		}
 		else {
-			i++;
+			if (e.getLastimado()) {
+				e.setCoolDownLastimado(-1);//para evaluar si está lastimado el enemigo, le bajo el cooldown de lastimado
+				if (e.getCoolDownLastimado() == 0) {
+					e.setCoolDownLastimado(COOLDOWNENEMIGOLASTIMADO);
+					e.setLastimado(false);
+				}
+			}
+			i++; /// para continuar evaluando el resto de proyectiles.
 		}
 	}
 	return false;

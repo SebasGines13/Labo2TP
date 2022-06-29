@@ -5,7 +5,7 @@ class Enemigo : public Personaje
 {
     public:        
         /// Constructor
-        Enemigo(int sprClase, sf::Vector2f posicion);
+        Enemigo(int tipoEnemigo, sf::Vector2f posicion, int dificultad, const int& coolDownLastimado);
         /// Destructor
         ~Enemigo();
         /// Gets
@@ -15,6 +15,7 @@ class Enemigo : public Personaje
         void    recibirGolpe(int vida) override;
     private:
         int     _tipoEnemigo;
+        int     _coolDownInicialDireccion;
         void    colorSegunVida();
 };
 

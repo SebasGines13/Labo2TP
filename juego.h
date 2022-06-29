@@ -46,7 +46,7 @@ class Juego: public JuegoProyectil
         void spawnJefe();
         void crearEnemigo();
     private:
-        enum class coolDown { Lastimado, Enemigo, ItemPantalla, Menu };
+        enum class coolDown { Enemigo, ItemPantalla, Menu };
         sf::RenderWindow*       _ventana;       /// Ventana donde se va a mostrar el juego.
         bool                    _gameOver;      /// Booleano que controla si se terminó el juego.
         Jugador*                _j1;           /// Objeto de clase personaje.
@@ -59,12 +59,13 @@ class Juego: public JuegoProyectil
         Menu*                   _menu;                /// para el menú del juego.
         bool                    _bienvenidaAjuego; /// para validar si es el primer ingreso al juego y mostrar la pantalla de controles y camino del dungeon.
         GUI*                    _gui;           /// para controlar y mostrar elementos varios de juego como ser la vida y el puntaje.
-        int                     _coolDown[4];   /// Cooldown varios, como el de respawn de enemigos, items, del efecto de lastimado, etc.
+        int                     _coolDown[3];   /// Cooldown varios, como el de respawn de enemigos, items, del efecto de lastimado, etc.
         Listado*                _listado;       /// Objeto para el manejo de listados.
         Configuracion*          _configuracion;
         int                     _dificultad;    /// Dificultad del juego
         int                     coolDownEnemigos;
-        const int               COOLDOWNLASTIMADO = 60;
+        const int               COOLDOWNJUGADORLASTIMADO = 60;
+        const int               COOLDOWNENEMIGOLASTIMADO = 30;
         const int               COOLDOWNMENU = 200;
-        const int               COOLDOWNITEMPANTALLA = 120;
+        const int               COOLDOWNITEMPANTALLA = 180;
 };
