@@ -20,8 +20,10 @@ class Jugador : public Personaje
     private:
         JuegoProyectil& _juego; /// instancia del juego utilizada para crear disparar proyectil
         Controller&     _controller; /// referencia de controller para saber cuál es el que le corresponde
-        sf::SoundBuffer _buffer;  /// buffer para el sonido
+        sf::SoundBuffer _bufferPasos;  /// buffer para el sonido
         sf::Sound       _pasos;   /// canal utilizado por el buffer
+        sf::SoundBuffer _bufferGolpe;  /// buffer para el sonido
+        sf::Sound       _golpe;   /// canal utilizado por el buffer
         bool            _caminando;
 };
 

@@ -8,10 +8,14 @@ Jugador::Jugador(int sprClase, JuegoProyectil& juego, Controller& controller, in
         _velDesplaz = 3.5f;
         _direccion = Direcciones::Down;
         _coolDown = 30;
-        _buffer.loadFromFile("audio/paso.wav");
-        _pasos.setBuffer(_buffer);
-        _pasos.setVolume(10.f);
+        _bufferPasos.loadFromFile("audio/paso.wav");
+        _pasos.setBuffer(_bufferPasos);
+        _pasos.setVolume(8.f);
         _pasos.setPitch(1.f);
+        _bufferGolpe.loadFromFile("audio/golpe.wav");
+        _golpe.setBuffer(_bufferGolpe);
+        _golpe.setVolume(10.f);
+        _golpe.setPitch(.9f);
         _coolDownLastimado = coolDownLastimado;
         switch (dificultad) ///  de acuerdo a la velocidad, asigno más o menos vida para el jugador.
         {
@@ -104,6 +108,7 @@ void Jugador::recibirGolpe(int vida)
 {
     _vida -= vida;
     _lastimado = true;
+    _golpe.play();
 }
 
 void Jugador::sumarVida(int vida)
