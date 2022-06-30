@@ -74,5 +74,5 @@ class Juego: public JuegoProyectil
         const int               COOLDOWNENEMIGOLASTIMADO = 30;
         const int               COOLDOWNMENU = 200;
         const int               COOLDOWNITEMPANTALLA = 180;
-        const int               TIEMPOJEFE = 5;
+        const int               TIEMPOJEFE = 30;
 };

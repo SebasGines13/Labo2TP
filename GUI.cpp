@@ -30,7 +30,6 @@ GUI::GUI(int vidas, int tiempoJefe)
 	_tiempoJefe = tiempoJefe;
 	_tiempo = _tiempoJefe;
 	_stopTiempo = false;
-
 }
 
 GUI::~GUI()

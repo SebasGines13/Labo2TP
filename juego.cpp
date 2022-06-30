@@ -304,6 +304,7 @@ void Juego::grabarPuntaje() {
 			else if (event.type == sf::Event::TextEntered && input_text.length()<=5) {
 				if (std::isprint(event.text.unicode))
 					input_text += event.text.unicode;
+					_menu->getSonidoTeclas().play();
 			}
 			else if (event.type == sf::Event::KeyPressed) {
 				if (event.key.code == sf::Keyboard::BackSpace) {
@@ -321,7 +322,9 @@ void Juego::grabarPuntaje() {
 					reg->GuardarEnDisco();
 					salir = true;
 					delete reg;
+					
 				}
+				_menu->getSonidoTeclas().play();
 			}
 		}
 		static sf::Time text_effect_time;
@@ -389,6 +392,7 @@ void Juego::avanzarNivel() {
 			else if (event.type == sf::Event::KeyPressed) {
 				if (event.key.code == sf::Keyboard::Enter) {
 					continuar = true;
+					_menu->getSonidoTeclas().play();
 				}				
 			}
 		}
@@ -481,6 +485,7 @@ void Juego::ganarJuego() {
 					salir = true;
 					delete reg;
 				}
+				_menu->getSonidoTeclas().play();
 			}
 		}
 		static sf::Time text_effect_time;
@@ -518,6 +523,7 @@ void Juego::ranking()
 				_ventana->close();
 			else if (event.key.code == sf::Keyboard::Space) {
 				salir = true;
+				_menu->getSonidoTeclas().play();
 			}
 		}
 		_ventana->clear();
@@ -545,6 +551,7 @@ void Juego::configuracion()
 				_ventana->close();
 			else if (event.key.code == sf::Keyboard::Space) {
 				salir = true;
+				_menu->getSonidoTeclas().play();
 			}
 		}
 		_configuracion->menu(bMusica, _dificultad); // Configuraciones
