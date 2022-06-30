@@ -13,8 +13,10 @@ Juego::Juego(sf::Vector2u resolucion)
 	_music.openFromFile("audio/fondo.wav");
 	_music.play();
 	_music.setVolume(10.f);
+	_music.setLoop(true);
 	_gameOver = false;
 	_bienvenidaAjuego = true;
+	_nivelMapa = 1;
 	srand(time(NULL));
 	_coolDown[(int)coolDown::Menu] = COOLDOWNMENU;
 	gameLoop();
@@ -31,33 +33,42 @@ Juego::~Juego()
 	delete _configuracion;
 }
 
-void Juego::PrepararJuego() 
+void Juego::PrepararJuego(int modo) 
 {
-	/// Eliminamos o limpiamos los objetos (si es que están creados) para iniciar un nuevo juego.
-	if(_j1)   delete _j1;
-	if(_gui)  delete _gui;
-	if(_mapa) delete _mapa;
+	if (_mapa) delete _mapa;
+	_mapa = new Mapa(1, modo, 16, 16, 50, 40); //Inicializo la variable dinámica para el mapa.
+	if (modo == 1) {
+		/// Eliminamos o limpiamos los objetos (si es que están creados) para iniciar un nuevo juego.
+		if (_j1)   delete _j1;
+		if (_gui)  delete _gui;
+		/// Creamos los objetos para iniciar un nuevo juego.
+		_j1 = new Jugador(1, *this, _controller, _dificultad, COOLDOWNJUGADORLASTIMADO); ///Inicilizo la variable dinámica de jugador.
+		_gui = new GUI(_j1->getVida(), TIEMPOJEFE); /// Inicializo la variable para mostrar la vida y el puntaje.		
+		switch (_dificultad) ///  de acuerdo a la dificultad, asigno más o menos frecuencia de respawn de enemigos.
+		{
+		case 1:
+			_coolDownEnemigos = 120;
+			break;
+		case 2:
+			_coolDownEnemigos = 80;
+			break;
+		case 3:
+			_coolDownEnemigos = 30;
+			break;
+		}
+		_nroJefeActual = 0;
+		_nivelMapa = 1;
+	}
+	else {
+		_gui->reiniciarTiempo();
+	}
+	_j1->setPosition(sf::Vector2f(_mapa->getPlayerSpawn())); /// Ubico el personaje de acuerdo a spawn definido en el mapa.
 	_enemigos.clear();
 	_proyectiles.clear();
-	/// Creamos los objetos para iniciar un nuevo juego.
-	_j1	   = new Jugador(1, *this, _controller, _dificultad, COOLDOWNJUGADORLASTIMADO); ///Inicilizo la variable dinámica de jugador.
-	_gui   = new GUI(_j1->getVida()); /// Inicializo la variable para mostrar la vida y el puntaje.
-	_mapa  = new Mapa(1, 16, 16, 50, 40); //Inicializo la variable dinámica para el mapa.
-	_j1->setPosition(sf::Vector2f(_mapa->getPlayerSpawn())); /// Ubico el personaje de acuerdo a spawn definido en el mapa.
-	switch (_dificultad) ///  de acuerdo a la dificultad, asigno más o menos frecuencia de respawn de enemigos.
-	{
-	case 1:
-		coolDownEnemigos = 120;
-		break;
-	case 2:
-		coolDownEnemigos = 80;
-		break;
-	case 3:
-		coolDownEnemigos = 30;
-		break;
-	}
 	crearEnemigo();
-	_coolDown[(int)coolDown::Enemigo] = coolDownEnemigos;
+	_juegoGanado = false;
+	_pasoNivel = false;
+	_coolDown[(int)coolDown::Enemigo] = _coolDownEnemigos;
 	_coolDown[(int)coolDown::ItemPantalla] = COOLDOWNITEMPANTALLA;
 }
 
@@ -92,7 +103,7 @@ void Juego::gameLoop()
 					_ventana->draw(_menu->getSprCamino());
 					_ventana->display();
 				}
-				PrepararJuego();
+				PrepararJuego(1);
 			}
 			else {// ya entra al juego
 				command();
@@ -154,10 +165,16 @@ void Juego::update()
 	colisionesJugadorItem();
 	colisionesProyectilBloques();
 	colisionesEnemigo();
-	if (_gui->getVidasRestantes() <= 0) {
+
+	if (_juegoGanado) {
+		ganarJuego();
+	}
+	else if (_pasoNivel) {
+		avanzarNivel();
+		PrepararJuego(2); /// 1 se reinicia el juego, con el 2 avanzo al siguiente mapa. Se limpian los objetos dependiendo de cada caso.
+	}
+	else if (_gui->getVidasRestantes() <= 0) {
 		grabarPuntaje();
-		_menu->getOpcMenuPress()[(int)Menu::OpcMenu::Play] = false; /// Para que regrese al menu principal
-		_bienvenidaAjuego = true; // Para que muestre la entrada a las mazmorras y los controles.	
 	}
 	else {
 		coolDowns();
@@ -170,8 +187,17 @@ void Juego::update()
 void Juego::spawnJefe() 
 {
 	if (_gui->esTiempoJefe()) {
-		int i = rand() % 3;
-		_enemigos.push_back(new Enemigo(3, sf::Vector2f(_mapa->getEnemigoSpawn(i)), _dificultad, COOLDOWNENEMIGOLASTIMADO)); /// genero el jefe.
+		if (_nroJefeActual > 1 && _nivelMapa == 1) {
+			_nivelMapa++;
+			_pasoNivel = true;
+		}
+		else if (_nroJefeActual < 4) {
+				int i = rand() % 3;
+				_enemigos.push_back(new Enemigo(3 + _nroJefeActual, sf::Vector2f(_mapa->getEnemigoSpawn(i)), _dificultad, COOLDOWNENEMIGOLASTIMADO)); /// genero el jefe.			
+				_gui->setStopTiempo(true);
+				_nroJefeActual++;
+		}
+		else _juegoGanado = true;	
 	}
 }
 
@@ -186,7 +212,7 @@ void Juego::coolDowns() {
 	_coolDown[(int)coolDown::Enemigo] --; /// para evaluar el respawn de enemigos
 	if (_coolDown[(int)coolDown::Enemigo] == 0) {
 		crearEnemigo();
-		_coolDown[(int)coolDown::Enemigo] = coolDownEnemigos;
+		_coolDown[(int)coolDown::Enemigo] = _coolDownEnemigos;
 	}
 
 	if (_mapa->getItemVisible(1)) { // si existe un item de tipo puntos visible en el mapa, evaluamos si tiene que desaparecer
@@ -201,6 +227,19 @@ void Juego::coolDowns() {
 			_mapa->desaparecerItem(2); // desaparece el item
 			_coolDown[(int)coolDown::ItemPantalla] = COOLDOWNITEMPANTALLA;
 		}
+	}
+
+	std::list<Enemigo*>::iterator i = _enemigos.begin();
+	while (i != _enemigos.end()) {
+		Enemigo& e = (**i);
+		if (e.getLastimado()) { //para evaluar si está lastimado el enemigo, le bajo el cooldown de lastimado
+			e.setCoolDownLastimado(-1);
+			if (e.getCoolDownLastimado() == 0) {
+				e.setCoolDownLastimado(COOLDOWNENEMIGOLASTIMADO);
+				e.setLastimado(false);
+			}
+		}
+		i++; /// para continuar evaluando el resto de proyectiles.
 	}
 }
 
@@ -303,6 +342,167 @@ void Juego::grabarPuntaje() {
 		}
 		_ventana->display();
 	}
+	_menu->getOpcMenuPress()[(int)Menu::OpcMenu::Play] = false; /// Para que regrese al menu principal
+	_bienvenidaAjuego = true; // Para que muestre la entrada a las mazmorras y los controles.	
+}
+
+void Juego::avanzarNivel() {
+	bool continuar = false;
+	sf::Font fuente;
+	fuente.loadFromFile("font/CELTG.ttf");
+	sf::Text vText[4];
+
+	for (int i = 0; i < std::size(vText); i++) {
+		vText[i].setFont(fuente);
+		vText[i].setCharacterSize(30);
+		vText[i].setFillColor(sf::Color(255, 255, 255, 180));
+		switch (i)
+		{
+		case 0:
+			vText[i].setString("Nivel superado...");
+			vText[i].setPosition(8.f, 150.f);
+			vText[i].setCharacterSize(78);
+			vText[i].setFillColor(sf::Color(255, 255, 255, 220));
+			break;
+		case 1:
+			vText[i].setString("Listo para el siguiente reto?");
+			vText[i].setPosition(10, 200.f + (i * 110));
+			break;
+		case 2:
+			vText[i].setString("Tu puntaje hasta el momento es: '" + std::to_string(_gui->getPuntaje()) + "'");
+			vText[i].setPosition(10, 200.f + (i * 110));
+			break;
+		case 3:
+			vText[i].setString("Presione la tecla 'ENTER' para continuar...");
+			vText[i].setPosition(50.f, 600.f);
+			break;
+		}
+	}
+
+	while (_ventana->isOpen() && (!continuar))
+	{
+		sf::Event event;
+		while (_ventana->pollEvent(event))
+		{
+			if (event.type == sf::Event::Closed)
+				_ventana->close();
+			else if (event.type == sf::Event::KeyPressed) {
+				if (event.key.code == sf::Keyboard::Enter) {
+					continuar = true;
+				}				
+			}
+		}
+		_ventana->clear();
+		_menu->getSprFuego()->animar();
+		_ventana->draw(_menu->getSprFondo());
+		_ventana->draw(*_menu->getSprFuego());
+		for (int i = 0; i < std::size(vText);i++) {
+			_ventana->draw(vText[i]);
+		}
+		_ventana->display();
+	}
+
+	if (continuar) {
+		delete _mapa;
+		_mapa = new Mapa(1, _nivelMapa, 16, 16, 50, 40);
+	}
+}
+
+void Juego::ganarJuego() {
+	sf::Clock clock; /// reloj para el parpadeo del cursor en el ingreso del nombre.
+	bool salir = false;
+	std::string input_text;
+	sf::Font fuente;
+	fuente.loadFromFile("font/CELTG.ttf");
+	sf::Text vText[6];
+	int puntajeFinal = _gui->getPuntaje() * 10;
+
+	for (int i = 0; i < std::size(vText); i++) {
+		vText[i].setFont(fuente);
+		vText[i].setCharacterSize(30);
+		vText[i].setFillColor(sf::Color(255, 255, 255, 180));
+		switch (i)
+		{
+		case 0:
+			vText[i].setString("FELICIDADES!!");
+			vText[i].setPosition(8.f, 150.f);
+			vText[i].setCharacterSize(70);
+			vText[i].setFillColor(sf::Color(255, 255, 255, 220));
+			break;
+		case 1:
+			vText[i].setString("Has derrotado a los Magos Supremos...");
+			vText[i].setPosition(10, 200.f + (i * 110));
+			break;
+		case 2:
+			vText[i].setString("Tu puntaje total es: '" + std::to_string(puntajeFinal) + "'");
+			vText[i].setPosition(10, 200.f + (i * 110));
+			break;
+		case 3:
+			vText[i].setString("Nombre (6 caract. max):");
+			vText[i].setPosition(10, 200.f + (i * 110));
+			break;
+		case 4:
+			vText[i].setString(" "); /// lo seteo más adelante con el ingreso del texto por parte del usuario.
+			vText[i].setPosition(570.f, 200.f + ((i - 1) * 110));
+			break;
+		case 5:
+			vText[i].setString("Presione la tecla 'ENTER' para continuar...");
+			vText[i].setPosition(50.f, 600.f);
+			vText[i].setCharacterSize(30);
+			break;
+		}
+	}
+
+	while (_ventana->isOpen() && (!salir))
+	{
+		sf::Event event;
+		while (_ventana->pollEvent(event))
+		{
+			if (event.type == sf::Event::Closed)
+				_ventana->close();
+			else if (event.type == sf::Event::TextEntered && input_text.length() <= 5) {
+				if (std::isprint(event.text.unicode))
+					input_text += event.text.unicode;
+			}
+			else if (event.type == sf::Event::KeyPressed) {
+				if (event.key.code == sf::Keyboard::BackSpace) {
+					if (!input_text.empty())
+						input_text.pop_back();
+				}
+				if (event.key.code == sf::Keyboard::Return) {
+					input_text += '\n';
+				}
+				if (event.key.code == sf::Keyboard::Enter) {
+					Ranking* reg = NULL;
+					reg = new Ranking;
+					reg->setJugador(input_text);
+					reg->setPuntaje(puntajeFinal);
+					reg->GuardarEnDisco();
+					salir = true;
+					delete reg;
+				}
+			}
+		}
+		static sf::Time text_effect_time;
+		static bool show_cursor = false;
+		text_effect_time += clock.restart();
+		if (text_effect_time >= sf::seconds(0.5f))
+		{
+			show_cursor = !show_cursor;
+			text_effect_time = sf::Time::Zero;
+		}
+		vText[4].setString(input_text + (show_cursor ? '_' : ' '));
+		_ventana->clear();
+		_menu->getSprFuego()->animar();
+		_ventana->draw(_menu->getSprFondo());
+		_ventana->draw(*_menu->getSprFuego());
+		for (int i = 0; i < std::size(vText);i++) {
+			_ventana->draw(vText[i]);
+		}
+		_ventana->display();
+	}
+	_menu->getOpcMenuPress()[(int)Menu::OpcMenu::Play] = false; /// Para que regrese al menu principal
+	_bienvenidaAjuego = true; // Para que muestre la entrada a las mazmorras y los controles.	
 }
 
 void Juego::ranking()
@@ -450,6 +650,7 @@ void Juego::colisionesEnemigo()
 	while (i != _enemigos.end()) {
 		Enemigo& e = (**i);
 		int tipoEnemigo = e.getTipoEnemigo();
+		int golpe = (tipoEnemigo > 2 ? 2 : 1);
 		e.update();
 		if (_j1->isCollision(e)) {
 			if (!e.getLastimado()) {
@@ -458,10 +659,11 @@ void Juego::colisionesEnemigo()
 			if (e.getVida() <= 0) {
 				delete (*i);
 				i = _enemigos.erase(i);
+				if(tipoEnemigo>2) _gui->setStopTiempo(false); // si se eliminó a un jefe, permito que reinicie el conteo para el siguiente jefe
 			} else i++;
 			if (!_j1->getLastimado()) {
-				_gui->restarVida(tipoEnemigo);
-				_j1->recibirGolpe(tipoEnemigo);
+				_j1->recibirGolpe(golpe);
+				_gui->restarVida(golpe);
 			}
 		}
 		else if (colisionProyectilEnemigo(e)) {
@@ -481,6 +683,7 @@ void Juego::colisionesEnemigo()
 					}
 					delete (*i);
 					i = _enemigos.erase(i);
+					if (tipoEnemigo > 2) _gui->setStopTiempo(false); // si se eliminó a un jefe, permito que reinicie el conteo para el siguiente jefe
 				} 
 			}
 		}
@@ -545,13 +748,6 @@ bool Juego::colisionProyectilEnemigo(Enemigo& e)
 			return true;
 		}
 		else {
-			if (e.getLastimado()) {
-				e.setCoolDownLastimado(-1);//para evaluar si está lastimado el enemigo, le bajo el cooldown de lastimado
-				if (e.getCoolDownLastimado() == 0) {
-					e.setCoolDownLastimado(COOLDOWNENEMIGOLASTIMADO);
-					e.setLastimado(false);
-				}
-			}
 			i++; /// para continuar evaluando el resto de proyectiles.
 		}
 	}

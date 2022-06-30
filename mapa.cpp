@@ -4,7 +4,7 @@
 #include <iostream>
 
 ///Constructor
-Mapa::Mapa(int sprClase, int tilewidth, int tileheight, int mapwidth, int mapheight)
+Mapa::Mapa(int sprClase, int nivel, int tilewidth, int tileheight, int mapwidth, int mapheight)
 {
     std::string path = "img/mapa" + std::to_string(sprClase) + ".png"; //contruyo la ruta para conocer la imagen actual del mapa.
     _sprActual = sprClase; //nro del sprite actual
@@ -14,9 +14,10 @@ Mapa::Mapa(int sprClase, int tilewidth, int tileheight, int mapwidth, int maphei
     _tileheight = tileheight;
     _mapWidth = mapwidth;
     _mapHeight = mapheight;
-    generarMapa();
     _itemPuntos = new Item(1);
     _itemVida = new Item(2);
+    _nivel = nivel;
+    generarMapa();
 }
 
 Mapa::~Mapa()
@@ -28,7 +29,7 @@ Mapa::~Mapa()
 
 void Mapa::cargarMapaDeDisco() {
     std::string line;
-    std::ifstream f("mapas/map1.txt");
+    std::ifstream f("mapas/map"+ std::to_string(_nivel) + ".txt");
     if (!f.is_open()) exit(1);
     int n;
     getline(f, line);
@@ -52,7 +53,7 @@ void Mapa::generarMapa() {
             int yAux = id / columnas;
             switch (_vMapa[i++])
             {
-            case 34: case 35: case 36: case 62: case 98: case 99: case 100: case 114: case 115: case 116: case 110: case 184: case 167: case 168: case 183: case 185: case 182: case 186: case 181: case 50:
+            case 34: case 35: case 36: case 62: case 98: case 99: case 100: case 114: case 115: case 116: case 110: case 184: case 167: case 168: case 183: case 185: case 182: case 186: case 181: case 50: case 141: case 142: case 174: case 175:
                 pBloque = new Bloque(true);
                 break;
             case 171:

@@ -14,12 +14,25 @@ Enemigo::Enemigo(int tipoEnemigo, sf::Vector2f posicion, int dificultad, const i
         _sprite = new Sprite(11, 9, 4, sf::Vector2f(0, 0), .25f);
     }
     else if (_tipoEnemigo == 2) {
-        _sprite = new Sprite(11, 9, 4, sf::Vector2f(0, 0), .25f);
-        _sprite->setColor(sf::Color(0, 255, 0, 255));
+        //_sprite = new Sprite(111, 9, 4, sf::Vector2f(0, 0), .25f);
+        //_sprite->setColor(sf::Color(0, 255, 0, 255));
+        _sprite = new Sprite(112, 3, 4, sf::Vector2f(0, 0), .15f);
     }
     else if (_tipoEnemigo == 3) {
         _sprite = new Sprite(13, 3, 4, sf::Vector2f(0, 0), .25f);
-        _vida *= 2; // al ser el jefe, le duplico su vida.
+        _vida += 2; // al ser el jefe, le sumo más vida.
+    }
+    else if (_tipoEnemigo == 4) {
+        _sprite = new Sprite(14, 3, 4, sf::Vector2f(0, 0), .25f);
+        _vida += 2; // al ser el jefe, le sumo más vida.
+    }
+    else if (_tipoEnemigo == 5) {
+        _sprite = new Sprite(15, 3, 4, sf::Vector2f(0, 0), .25f);
+        _vida += 2; // al ser el jefe, le sumo más vida.
+    }
+    else if (_tipoEnemigo == 6) {
+        _sprite = new Sprite(16, 3, 4, sf::Vector2f(0, 0), .25f);
+        _vida += 2; // al ser el jefe, le sumo más vida.
     }
     _direccion = Direcciones::Left;
     _sprite->setFrameY((int)_direccion);
@@ -35,7 +48,8 @@ Enemigo::~Enemigo()
 ///Gets
 int Enemigo::getTipoEnemigo()
 {
-    return _tipoEnemigo;
+    if (_tipoEnemigo > 2) return _tipoEnemigo * 5;
+    else return _tipoEnemigo;
 }
 
 /// Métodos
@@ -84,8 +98,8 @@ void Enemigo::colorSegunVida() {
         case 2:
             if(_vida == 1) _sprite->setColor(sf::Color(255, 0, 0, 255));
             break;
-        case 3:
-            _sprite->setColor(sf::Color(255, 42.5 * _vida, 42.5 * _vida, 255));
+        default:
+            _sprite->setColor(sf::Color(255, 255/(_tipoEnemigo+2) * _vida, 255/(_tipoEnemigo+2) * _vida, 255));
             break;
         }
     }

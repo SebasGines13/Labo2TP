@@ -9,7 +9,7 @@ class Mapa : public sf::Drawable, public sf::Transformable
 {
     public:
         /// Constructor
-	    Mapa(int sprClase, int tilewidth, int tileheight, int mapwidth, int mapheight); 
+	    Mapa(int sprClase, int nivel, int tilewidth, int tileheight, int mapwidth, int mapheight); 
         /// Destructor
         ~Mapa();
 	    /// Gets
@@ -34,6 +34,7 @@ class Mapa : public sf::Drawable, public sf::Transformable
 	    int				     _sprActual; /// Nro de sprite actual
 	    int				     _mapWidth; // Ancho del mapa en tiles
 	    int				     _mapHeight; // Alto del mapa en tiles
+        int                  _nivel; // nivel actual del mapa
         Item*                _itemPuntos; // Item que puede aparecer
         Item*                _itemVida;
         sf::Vector2f         _spawnPlayer; /// posición donde aparece el personaje.

@@ -1,7 +1,7 @@
 #include "GUI.h"
 #include <iomanip>
 
-GUI::GUI(int vidas)
+GUI::GUI(int vidas, int tiempoJefe)
 {
 	_puntaje = 0;
 	_fuente = new sf::Font;
@@ -27,6 +27,10 @@ GUI::GUI(int vidas)
 	_sprVida = new sf::Sprite(*_txtVida);
 	_cantVidaInicial = vidas; 
 	_cantVidaRestante = _cantVidaInicial;
+	_tiempoJefe = tiempoJefe;
+	_tiempo = _tiempoJefe;
+	_stopTiempo = false;
+
 }
 
 GUI::~GUI()
@@ -40,9 +44,16 @@ GUI::~GUI()
 
 void GUI::update()
 {
-	if ((TIEMPOJEFE - _clock.getElapsedTime().asSeconds()) <= 0) {
-		_clock.restart();
+	_tiempo = _tiempoJefe - _clock.getElapsedTime().asSeconds();
+	if (_tiempo <= 0){
+		if (_stopTiempo) _tiempo = 0;
+		else _clock.restart();
 	}
+}
+
+void GUI::reiniciarTiempo() {
+	_tiempo = _tiempoJefe;
+	_clock.restart();
 }
 
 void GUI::restarVida(int vida)
@@ -77,8 +88,7 @@ void GUI::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	states.transform *= getTransform();
 	_textPuntaje->setString("Puntos: " + std::to_string(_puntaje));
-	int tiempo = TIEMPOJEFE - _clock.getElapsedTime().asSeconds();
-	_textTiempo->setString("Jefe en " + std::to_string(tiempo));
+	_textTiempo->setString("Jefe en " + std::to_string(_tiempo));
 	target.draw(*_textPuntaje, states);
 	target.draw(*_textVida, states);
 	target.draw(*_textTiempo, states);
@@ -97,8 +107,16 @@ void GUI::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
 bool GUI::esTiempoJefe()
 {
-	if ((TIEMPOJEFE - _clock.getElapsedTime().asSeconds()) <= 0) {
-		return true;
+	if (_tiempo > 0 || _stopTiempo) {
+		return false;
 	}
-	return false;
+	return true;
+}
+
+void GUI::setStopTiempo(bool stopTiempo)
+{
+	_stopTiempo = stopTiempo;
+	if (_stopTiempo) {
+		_tiempo = 0;
+	}else _clock.restart();
 }

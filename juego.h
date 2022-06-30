@@ -30,7 +30,7 @@ class Juego: public JuegoProyectil
         void update(); ///Lógicas y reglas propias del juego.
         void draw(); ///Dibuja en pantalla los elementos.
         void updateMusic();  /// Actualizo controles de música.
-        void PrepararJuego(); 
+        void PrepararJuego(int modo);
         void crearProyectil(sf::Vector2f posicion) override; /// Para que disparar un proyectil
         void colisionesJugadorBloques();
         void colisionesJugadorItem();
@@ -45,6 +45,8 @@ class Juego: public JuegoProyectil
         void coolDowns();
         void spawnJefe();
         void crearEnemigo();
+        void avanzarNivel();
+        void ganarJuego();
     private:
         enum class coolDown { Enemigo, ItemPantalla, Menu };
         sf::RenderWindow*       _ventana;       /// Ventana donde se va a mostrar el juego.
@@ -58,14 +60,19 @@ class Juego: public JuegoProyectil
         Controller              _controller;    /// controles asociados al jugador
         Menu*                   _menu;                /// para el menú del juego.
         bool                    _bienvenidaAjuego; /// para validar si es el primer ingreso al juego y mostrar la pantalla de controles y camino del dungeon.
+        bool                    _juegoGanado;    /// si el jugador ganó el juego.
+        bool                    _pasoNivel;      // si el jugador paso de nivel.
         GUI*                    _gui;           /// para controlar y mostrar elementos varios de juego como ser la vida y el puntaje.
         int                     _coolDown[3];   /// Cooldown varios, como el de respawn de enemigos, items, del efecto de lastimado, etc.
         Listado*                _listado;       /// Objeto para el manejo de listados.
         Configuracion*          _configuracion;
         int                     _dificultad;    /// Dificultad del juego
-        int                     coolDownEnemigos;
+        int                     _coolDownEnemigos;
+        int                     _nroJefeActual;  /// Vector de estados de jefes.
+        int                     _nivelMapa; /// nivel del mapa
         const int               COOLDOWNJUGADORLASTIMADO = 60;
         const int               COOLDOWNENEMIGOLASTIMADO = 30;
         const int               COOLDOWNMENU = 200;
         const int               COOLDOWNITEMPANTALLA = 180;
+        const int               TIEMPOJEFE = 5;
 };
