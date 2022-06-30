@@ -9,7 +9,7 @@ Proyectil::Proyectil(sf::Vector2f posicion) {
     respawn(posicion);
     _buffer.loadFromFile("audio/proyectil.wav");
     _sonido.setBuffer(_buffer);
-    _sonido.setVolume(20.f);
+    _sonido.setVolume(8.f);
     _sonido.setPitch(1.f);
     _sonido.play();
 }

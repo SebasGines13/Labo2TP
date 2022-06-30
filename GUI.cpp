@@ -43,11 +43,14 @@ GUI::~GUI()
 
 void GUI::update()
 {
-	_tiempo = _tiempoJefe - _clock.getElapsedTime().asSeconds();
-	if (_tiempo <= 0){
-		if (_stopTiempo) _tiempo = 0;
-		else _clock.restart();
+	if (_stopTiempo) _tiempo = 0;
+	else 
+	{
+		_tiempo = _tiempoJefe - _clock.getElapsedTime().asSeconds();
+		if (_tiempo <= 0) 
+		_clock.restart();
 	}
+	
 }
 
 void GUI::reiniciarTiempo() {
@@ -87,7 +90,7 @@ void GUI::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	states.transform *= getTransform();
 	_textPuntaje->setString("Puntos: " + std::to_string(_puntaje));
-	_textTiempo->setString("Jefe en " + std::to_string(_tiempo));
+	_textTiempo->setString("Oleada en " + std::to_string(_tiempo));
 	target.draw(*_textPuntaje, states);
 	target.draw(*_textVida, states);
 	target.draw(*_textTiempo, states);

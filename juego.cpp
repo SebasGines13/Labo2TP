@@ -179,8 +179,8 @@ void Juego::update()
 	else {
 		coolDowns();
 		updateMusic(); /// actualiza música por si se presionó para mute, subir o a bajar el volumen.
-		spawnJefe();
 		_gui->update();
+		spawnJefe();
 	}
 }
 
