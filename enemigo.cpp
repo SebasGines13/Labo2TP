@@ -14,9 +14,20 @@ Enemigo::Enemigo(int tipoEnemigo, sf::Vector2f posicion, int dificultad, const i
         _sprite = new Sprite(11, 9, 4, sf::Vector2f(0, 0), .25f);
     }
     else if (_tipoEnemigo == 2) {
-        //_sprite = new Sprite(111, 9, 4, sf::Vector2f(0, 0), .25f);
-        //_sprite->setColor(sf::Color(0, 255, 0, 255));
-        _sprite = new Sprite(112, 3, 4, sf::Vector2f(0, 0), .15f);
+        int i = rand() % 3;
+        switch (i)
+        {
+            case 0:
+                _sprite = new Sprite(11, 9, 4, sf::Vector2f(0, 0), .25f);
+                _sprite->setColor(sf::Color(0, 255, 0, 255));
+                break;
+            case 1:
+                _sprite = new Sprite(111, 3, 4, sf::Vector2f(0, 0), .15f);
+                break;
+            case 2:
+                _sprite = new Sprite(112, 3, 4, sf::Vector2f(0, 0), .15f);
+                break;
+        }
     }
     else if (_tipoEnemigo == 3) {
         _sprite = new Sprite(13, 3, 4, sf::Vector2f(0, 0), .25f);
